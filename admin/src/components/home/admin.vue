@@ -7,11 +7,12 @@
 				</a>
 				<h1><a href = "http://www.mapblog.cn/admin">mapblog Admin</a></h1>
 			</div>
+
 			<span class = "phone-greet">{{ greet }}好，My Lord！</span>
 			<div class = "admin-info">
 				<img src = "/img/logo.png" style = "width: 20px;height: 20px;vertical-align: middle" alt="">
 				<span>{{ greet }}好，My Lord！上次登录是：{{ lastLogin }}</span>
-				<span class = "icon-exit" @click = "exit" title = "退出后台管理"></span>
+				<!-- <span class = "icon-exit" @click = "exit" title = "退出后台管理"></span> -->
 			</div>
 			<div class = "toggle-btn" @click = "showList = !showList">
 				<div class = "btn-box">
@@ -107,6 +108,14 @@
 									<span>账户设置</span>
 								</span>
 							</router-link>
+						</li>
+						<li>
+							<a href="javascript:void(0)"  @click = "exit">
+								<span class = "span-box">
+									<span  class = "icon-exit icon-exit-l"></span>
+									<span>退出系统</span>
+								</span>
+							</a>
 						</li>
 					</ul>
 				</div>
@@ -588,7 +597,7 @@
 	.err-border{
 		border: 1px solid red!important;
 	}
-	.icon-folder-outline-l,.icon-quill-l,.icon-messages-l,.icon-commenting-o-l,.icon-bell-l,.icon-edit-l,.icon-user-l,.icon-file-text2-l,.icon-folder-open-o-l,.icon-bullhorn-l{
+	.icon-folder-outline-l,.icon-quill-l,.icon-messages-l,.icon-commenting-o-l,.icon-bell-l,.icon-edit-l,.icon-user-l,.icon-file-text2-l,.icon-folder-open-o-l,.icon-bullhorn-l,.icon-exit-l{
 		font-size: 16px;
 		color: #fff;
 		margin: 0 5px;

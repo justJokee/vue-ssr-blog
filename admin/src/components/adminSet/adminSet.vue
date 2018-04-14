@@ -21,7 +21,7 @@
 				<div class = "input-warning-box">
 					<input type = "password" @focus = "warning.newKeySecond = ''" :class = "{'warning-border': !!warning.newKeySecond.length}" id = "new_key_s" placeholder = "请再次输入新密码" v-model = "key.newSecond">
 					<div class = "key-warning">{{ warning.newKeySecond }}</div>
-					<div class = "submit">
+					<div class = "submit-adminset">
 						<button @click = "submit" :disabled = "waitInfo.revise === '修改中...'">{{ waitInfo.revise }}</button>
 					</div>
 				</div>
@@ -109,9 +109,9 @@
 			download: function(){
 				// this.downloadDb()
 				let a = document.createElement("a")
-				let token = localStorage.getItem("validate-info-tk")
+				let token = localStorage.getItem("map_blog_token_info_item_name")
 				// a.href = "http://localhost: 8080/api/downloadDb?authToken=" + token
-				a.href = "http://localhost:6180/api/downloadDb?authToken=" + token
+				a.href = "https://www.mapblog.cn/api/downloadDb?authToken=" + token
 				a.click()
 			}
 		}
@@ -155,7 +155,7 @@
 	position: absolute;
 	top: 100%;
 }
-.submit{
+.submit-adminset{
 	button{
 		position: absolute;
 		right: 0;
