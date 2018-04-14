@@ -3,15 +3,13 @@ const webpack = require('webpack')
 const vueConfig = require('./vue-loader.config')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FriendlyErrorsPlugin = require('friendly-errors-webpack-plugin')
-
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 const isProd = process.env.NODE_ENV === 'production'
 
 module.exports = {
-  
   devtool: isProd ?
     false :
     '#cheap-module-source-map',
-
   output: {
     path: path.resolve(__dirname, '../dist/front'),
     publicPath: '/dist/front/',
@@ -80,7 +78,13 @@ module.exports = {
       new ExtractTextPlugin({
         filename: 'css/common.[chunkhash].less'
       }),
-    
+      new CopyWebpackPlugin([
+      {
+        from: path.resolve(__dirname, '../static/404.html'),
+        to: path.resolve(__dirname, '../dist'),
+        ignore: ['.*']
+      }
+    ])
     ] :
     [
       new FriendlyErrorsPlugin()
