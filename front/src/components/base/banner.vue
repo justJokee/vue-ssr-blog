@@ -6,7 +6,7 @@
 			<!-- <transition-group name = "slider-fade" tag = "div"> -->
 				<!-- transition-group中v-for若有index，则必须绑定key值，否则报错 -->
 				<li v-for = "(item,index) in bannerData"  v-bind:key = "index" :class = "{'show-opacity': index === currentIndex}"  @touchmove.stop = "touchMove($event,index)" @touchstart.stop = "touchStart($event)" @touchend.stop = "touchEnd($event)">
-					<img :src= item.url alt="">
+					<img :data-src= item.url alt="" src = "/img/pic-loading.gif" ref = "img">
 					<div class = "img-shadow">
 						<div class="wellknown">
 							<div>{{ item.word }}</div>
@@ -57,29 +57,45 @@
 						person: "歌德"
 					}
 				]
-				// bannerData: [{url: "http://cloud.mapblog.cn/one.jpeg"},{url: "http://cloud.mapblog.cn/two.jpg"},{url: "http://cloud.mapblog.cn/three.jpeg"},{url: "http://cloud.mapblog.cn/four.jpeg"},{url: "http://cloud.mapblog.cn/five.jpg"}]
 			}
 		},
 		mounted(){
-			// this.slider()
+			this.lazyLoad()
 		},
 		methods: {
+			//实现图片懒加载
+			lazyLoad: function(){
+				this.$refs.img.forEach((item,index,arr) =>{	
+					if(index === this.currentIndex){
+						//清除定时器，防止图片还没加载完成就轮播到下一张
+						clearInterval(this.timer)
+						let img = new Image()
+						img.src = item.dataset.src
+						img.onload = () =>{
+							item.src = img.src
+							this.slider()
+						}
+					}
+				})
+			},
       		slider: function(index){
-      			clearInterval(this.timer)
       			let that = this
       			this.timer = setInterval(() => {
       				if(that.currentIndex < that.bannerData.length - 1){
       					that.currentIndex++
+      					this.lazyLoad()
       				}else{
       					that.currentIndex = 0
+      					this.lazyLoad()
       				}
       			},8000)
       		},
       		chosePic: function(index){
       			this.currentIndex = index
+      			this.lazyLoad()
       		},
       		startSlider: function(){
-      			this.slider()
+      			this.lazyLoad()
       		},
       		stopSlider: function(){
       			clearInterval(this.timer)
@@ -125,7 +141,7 @@
 						this.move = {x: 0,y: 0,date: ""}
 					}
 				}
-				this.slider()
+				this.lazyLoad()
       		}
     	}
 	}

@@ -58,7 +58,7 @@ server.use('/static', serve('./src/static', true))
 server.use(express.static(path.join(__dirname, 'static'))) //设置静态文件夹
 server.use('/api/ueditor/UE', ueditor(path.join(__dirname, 'static'), function (req, res, next) {
     //客户端上传文件设置
-    let imgDir = '/img/'
+    let imgDir = '/img/upload'
     let ActionType = req.query.action;
     if (ActionType === 'uploadimage' || ActionType === 'uploadfile' || ActionType === 'uploadvideo') {
         let file_url = imgDir;//默认图片上传地址

@@ -2,7 +2,6 @@ const express = require('express')
 const path = require("path")
 const router = express.Router()
 const db = require("../db/db")
-const multer = require("multer")
 const async = require("async")
 router.get("/api/getTime",(req,res) => {
 	db.article.find({publish: req.query.publish},{date: 1},(err,doc) => {
@@ -54,27 +53,5 @@ router.get("/api/getTime",(req,res) => {
 		}
 	})
 })
-
-let storage = multer.diskStorage({
-	destination: function(req,file,cd){
-		cd(null,path.join(__dirname,"../upload"))
-	},
-	filename: function(req,file,cd){
-		cd(null,file.originalname)
-	}
-})
-let upload = multer({
-	storage: storage
-})
-router.post("/api/up",upload.array("img-key",10),(req,res) =>{
-	console.log("==========")
-	console.log(req.files)
-	// console.log("==========================")
-	// console.log(req.files.name_file.originalFilename)
-	// console.log("==========================")
-	// console.log(req.files.name_file.path)
-	res.end()
-})
-
 
 module.exports = router

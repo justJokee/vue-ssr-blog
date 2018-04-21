@@ -54,7 +54,8 @@
 <style lang="less" scoped>
 	.none-article{
 		padding: 20px;
-		background: #F7EDED;
+		// background: #F7EDED;
+		background: #FAF7F7;
 		margin-top: 10px;
 	}
 </style>
