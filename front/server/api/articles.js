@@ -255,7 +255,7 @@ router.get("/api/adminSearch",confirmToken,(req,res) => {
 })
 //推荐文章
 router.get("/api/getHot",(req,res) => {
-	db.article.find({publish: true},{title: 1,articleId: 1,tag: 1},{sort: {likeNum: -1}},(err,doc) =>{
+	db.article.find({publish: true},{title: 1,articleId: 1,tag: 1},{sort: {pv: -1}},(err,doc) =>{
 		if(err){
 			res.status(500).end()
 		}else{
