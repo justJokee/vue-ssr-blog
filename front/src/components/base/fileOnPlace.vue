@@ -3,7 +3,10 @@
 		<h1 class = "timeLine-header">时间轴</h1>
 		<div class = "timeLine-content">
 			<ul>
-				<li v-for = "item in timeLine"><a href = "jacascript: void(0)" @click = "jumpTime(item)">{{ item }}</a></li>			
+				<li v-for = "item in timeLine">
+					<a href = "jacascript: void(0)" @click = "jumpTime(item.time)">
+					{{ item.time }}({{ item.num }})</a>
+				</li>			
 		</ul>
 		</div>
 	</div>
@@ -26,6 +29,7 @@
 					month = parseInt(time.match(/\d+/g)[1]),
 					endDay,
 					date
+					console.log( time.match(/\d+/g))
 				if(month === 2){
 					endDay = 28
 				}else if(month === 1||month == 3||month === 5||month === 7||month === 8||month === 10||month === 12){
@@ -55,15 +59,17 @@
 	    background: #2e3033;
 	}
 	.timeLine-content{
-		text-align: center;
 		padding: 5px 10px 35px;
 		li{
 			list-style: none;
 			border-bottom: 1px solid #ddd;
 		}
 		a{
-			display: inline-block;
+			display: block;
+			justify-content: space-between;
+			width: 120px;
 			padding: 10px;
+			margin: 0 auto;
 			color: #16a085;
 		}
 		a:hover{

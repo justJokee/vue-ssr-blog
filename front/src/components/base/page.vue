@@ -117,24 +117,24 @@
 		margin-top: 5px;
 	}
 	.page button{
-		color: #fff;
-		border: none;
+		color: #646464;
+		border: 1px solid #85B9C8;
 		border-radius: 3px;
 		cursor: pointer;
-		background: #85B9C8;
+		background: #ffffff;
 		display: inline-block;
 		width: 30px;
 		height: 28px;
 		margin: 2px;
-		vertical-align: center
+		outline: none;
 	}
 	.page button[disabled]{
-		cursor: auto;
+		cursor: not-allowed;
 	}
 	.page .btn-bg{
 		background: #C6EAF5!important;
 	}
 	.page .changebtn{
-		width: 50px;
+		width: 30px;
 	}
 </style>

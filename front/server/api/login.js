@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const express = require('express')
+const router = express.Router()
 const jwt = require("jsonwebtoken")
 const md5 = require("md5")
 const confirmToken = require("../middleware/confirmToken")
@@ -21,7 +21,7 @@ router.post("/api/login",(req,res) => {
 				let token = createToken(doc._id,doc[0].user),
 					lastTime = doc[0].lastLogin,
 					currTime = localTime(Date.now())
-				db.user.update({user: "admin"},{lastLogin: currTime},(err,doc) =>{
+				db.user.update({user: req.body.user},{lastLogin: currTime},(err,doc) =>{
 					if(err){
 						console.log(err)
 					}

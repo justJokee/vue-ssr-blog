@@ -314,7 +314,8 @@
 		margin-left: 10px;
 	}
 	.comment{
-		background: #F7EDED;
+		/*background: #F7EDED;*/
+		background: #FAF7F7;
 		margin-top: 10px;
 		padding: 20px 10px;
 		border-radius: 5px;

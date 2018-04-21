@@ -190,14 +190,16 @@
 <style lang="less">
 	.none-article{
 		padding: 20px;
-		background: #F7EDED;
 		margin-top: 10px;
+	}
+	.article-root-box{
+		// background: #F7EDED;
+		background: #FAF7F7;
 	}
 	.article-root{
 		margin-top: 10px;
 		width: 100%;
 		min-height: 576px;
-		background: #F7EDED;
 		box-sizing: border-box;
 		position: relative;
 	}
@@ -327,6 +329,10 @@
 		background: #46AFCB
 	}
 	@media screen and(max-width: 768px){
+		.article-root{
+			margin-top: 0;
+			border-top: 1px solid #ccc;
+		}
 		.stage-list ul{
 			width: 60%;
 		}

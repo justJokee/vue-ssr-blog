@@ -1,6 +1,6 @@
 <template>
 	<div class = "gateway">	
-		<h2 class = "gateway-header">传送门</h2>
+		<h2 class = "gateway-header">标签</h2>
 		<div class = "gateway-content">
 			<ul >
 				<li v-for = "item in tags" ><a href = "javascript: void(0)" @click = "jumpGate(item.tag)" ref = "tag">{{ item.tag | changeLife }}</a></li>
@@ -28,7 +28,10 @@
 		mounted(){
 			let that = this
 			this.getTagsclass({publish: true}).then((data) =>{
-				that.initBackground()
+				//没有标签则不要初始化，否则会出错
+				if(data.length){
+					that.initBackground()
+				}
 			})
 		},
 		computed: {
@@ -37,13 +40,12 @@
 		methods: {
 			...mapActions(["getTagsclass"]),
 			initBackground: function(){
-				if(this.$refs.tag){
-					this.$nextTick(()=>{
-						this.$refs.tag.forEach((item,index,arr) =>{
-							item.style.background = this.color[Math.floor(Math.random()*10)]
-						})
+				this.$nextTick(()=>{
+					//IE10不支持refs.tag
+					this.$refs.tag.forEach((item,index,arr) =>{
+						item.style.backgroundColor = this.color[Math.floor(Math.random()*10)]
 					})
-				}
+				})
 			},
 			jumpGate: function(item){
 				if(item === "life"){

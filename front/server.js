@@ -52,7 +52,7 @@ if (isProd) {
 const serve = (path, cache) => express.static(resolve(path), {
     maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
 })
-// server.use(compression())
+server.use(compression()) //开启gzip压缩
 server.use('/dist', serve('./dist', true))
 server.use('/static', serve('./src/static', true))
 server.use(express.static(path.join(__dirname, 'static'))) //设置静态文件夹

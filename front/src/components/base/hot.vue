@@ -56,6 +56,9 @@
 			padding: 10px;
 			color: #16a085;
 		}
+		a:hover{
+			text-decoration: underline;
+		}
 	}
 	.hot-item{
 		overflow: hidden;

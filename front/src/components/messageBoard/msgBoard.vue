@@ -259,7 +259,8 @@
 </script>
 <style lang = "less" scoped >
 	.msgboard{
-		background: #F7EDED;
+		/*background: #F7EDED;*/
+		background: #FAF7F7;
 		margin-top: 10px;
 		padding: 20px 10px;
 		border-radius: 5px;
@@ -444,7 +445,7 @@
 		width: 0;
 		height: 0;
 		border-width: 12px;
-		border-color: transparent #F7EDED transparent transparent;
+		border-color: transparent #FAF7F7 transparent transparent;
 		border-style: solid;
 		margin-left: -23px;
 		margin-right: -2px;
@@ -524,6 +525,11 @@
 		opacity: 0;
 	}
 	@media screen and(max-width: 767px){
+		.msgboard{
+			margin-top: 0;
+			border-top: 1px solid #ccc;
+			border-radius: 0;
+		}
 		.say-box textarea{
 			width: 100%
 		}

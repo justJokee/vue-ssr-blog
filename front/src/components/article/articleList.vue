@@ -91,10 +91,11 @@
 		}
 	}
 	.article-item{
-		padding: 10px;
-		margin-top: 10px;
+		padding: 10px 10px 10px 15px;
+		margin-top: 15px;
 		border-radius: 3px;
-		background: #F7EDED;
+		// background: #F7EDED;
+		background: #FAF7F7;
 		list-style: none;
 		h2{
 			padding: 10px 0;
@@ -104,6 +105,7 @@
 		}
 	}
 	.article-review{
+		color: #646464;
 		display: flex;
 		align-items: center;
 		p img{
@@ -113,7 +115,7 @@
 	}
 	.article-title,.article-title a{
 		display: inline-block;
-		transition: all ease .8s;
+		transition: all ease .3s;
 	}
 	.article-title:hover{
 		transform: translateX(10px);
@@ -123,7 +125,7 @@
 		// text-decoration: underline
 	}
 	.article-abstract{
-		margin-left: 5px;
+		margin-left: 15px;
 	}
 	.article-review{
 		margin-top: 8px;
@@ -132,7 +134,8 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		color: #404040
+		// color: #404040
+		color: #646464;
 	}
 	.article-msg-tag span{
 		margin: 0 2px
@@ -169,7 +172,8 @@
 	@media screen and(max-width: 767px){
 		.article-item{
 			border-radius: 0;
-			margin-top: 2px
+			margin-top: 0;
+			border-top: 1px solid #ccc;
 		}
 	}
 </style>

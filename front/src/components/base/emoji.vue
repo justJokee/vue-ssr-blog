@@ -45,7 +45,6 @@
     }
 </script>
 <style lang='less' scoped>
-    @import '../../assets/css/emoji-sprite.css';
     .emoji {
         width: 380px;
         height: 186px;

@@ -1,23 +1,27 @@
 <template>
-	<div class = "header">
-		<!-- 给图片加遮罩层 -->
-		<div class = "banner">
-			<ul>
-				<transition-group name = "slider-fade" tag = "div">
-					<!-- transition-group中v-for若有index，则必须绑定key值，否则报错 -->
-					<li v-for = "(item,index) in bannerData"  v-bind:key = "index" v-show = "index === currentIndex" :class ="{'current-relative': index === currentIndex}" @touchmove.stop = "touchMove($event,index)" @touchstart.stop = "touchStart($event)" @touchend.stop = "touchEnd($event)">
-						<img :src= item.url alt="">
-						<div class = "banner-shadow"></div>
-					</li>
-				</transition-group>
-			</ul>
-			<div class = "circle">
-				<div v-for = "(item,_index) in bannerData">
-					<span :class = "{'current-circle': _index === currentIndex}" @click = "chosePic(_index)" @mouseover = "stopSlider_cpt" @mouseleave = "startSlider" @touchstart = "stopSlider" @touchend = "startSlider"></span>
-				</div>
+	<!-- 给图片加遮罩层 -->
+	<div class = "banner" ref = "banner">
+		<ul>
+			<!-- 此处transition有bug,离开当前标签，再次返回后，图片会消失，直到轮播到下一张图片 -->
+			<!-- <transition-group name = "slider-fade" tag = "div"> -->
+				<!-- transition-group中v-for若有index，则必须绑定key值，否则报错 -->
+				<li v-for = "(item,index) in bannerData"  v-bind:key = "index" :class = "{'show-opacity': index === currentIndex}"  @touchmove.stop = "touchMove($event,index)" @touchstart.stop = "touchStart($event)" @touchend.stop = "touchEnd($event)">
+					<img :src= item.url alt="">
+					<div class = "img-shadow">
+						<div class="wellknown">
+							<div>{{ item.word }}</div>
+							<br>
+							<div>---- {{ item.person }}</div>
+						</div>
+					</div>
+				</li>
+			<!-- </transition-group> -->
+		</ul>
+		<div class = "circle">
+			<div v-for = "(item,_index) in bannerData">
+				<span :class = "{'current-circle': _index === currentIndex}" @click = "chosePic(_index)" @mouseover = "stopSlider_cpt" @mouseleave = "startSlider" @touchstart = "stopSlider" @touchend = "startSlider"></span>
 			</div>
 		</div>
-		<!-- <div class = "banner-shadow"></div> -->
 	</div>
 </template>
 <script>
@@ -27,11 +31,37 @@
 				currentIndex: 0,
 				startPos: {x: "",y: "",date: ""},
 				move: {x: "",y: ""},
-				bannerData: [{url: "/img/banner/one.jpeg"},{url: "/img/banner/two.jpg"},{url: "/img/banner/three.jpeg"},{url: "/img/banner/four.jpeg"},{url: "/img/banner/five.jpg"}]
+				bannerData: [
+					{
+						url: "/img/banner/one.jpeg",
+						word:"Success is not final, failure is not fatal. It is the courage to continue that counts.",
+						person: "Winston Churchill"},
+					{
+						url: "/img/banner/two.jpeg",
+						word: "生命中最伟大的光辉不在于永不坠落，而是坠落后总能再度升起。我欣赏这种有弹性的生命状态，快乐地经历风雨，笑对人生。",
+						person: "曼德拉"
+					},
+					{
+						url: "/img/banner/three.jpeg",
+						word: "时间是一只藏在黑暗中的温柔的手，在你一出神一恍惚之间，物走星移。",
+						person: "龙应台"
+					},
+					{
+						url: "/img/banner/four.jpeg",
+						word: "一个人可以被毁灭，但不能被打败。",
+						person: "海明威"
+					},
+					{
+						url: "/img/banner/five.jpeg",
+						word: "我要纵身跳入时代的奔走，我要纵身跳入时代的年轮：苦痛，欢乐，失败，成功，我都不问，男儿的事业原本要昼夜不停。",
+						person: "歌德"
+					}
+				]
+				// bannerData: [{url: "http://cloud.mapblog.cn/one.jpeg"},{url: "http://cloud.mapblog.cn/two.jpg"},{url: "http://cloud.mapblog.cn/three.jpeg"},{url: "http://cloud.mapblog.cn/four.jpeg"},{url: "http://cloud.mapblog.cn/five.jpg"}]
 			}
 		},
 		mounted(){
-			this.slider()
+			// this.slider()
 		},
 		methods: {
       		slider: function(index){
@@ -43,7 +73,7 @@
       				}else{
       					that.currentIndex = 0
       				}
-      			},4500)
+      			},8000)
       		},
       		chosePic: function(index){
       			this.currentIndex = index
@@ -75,7 +105,6 @@
 				this.move.y = touch.pageY - this.startPos.y
       		},
       		touchEnd(event){
-      			console.log("touchend触发")
       			let ted = event.targetTouches[0],//touches数组对象获得屏幕上所有的touch，取第一个touch
       			moveDate = +new Date() - this.startPos.date
       			if(Math.abs(this.move.x) > Math.abs(this.move.y)&&moveDate<1000&&this.move.x < -150){
@@ -102,59 +131,61 @@
 	}
 </script>
 <style lang="less">
-	.header{
-		width: 100%;
-		height: 100%;
-		padding-bottom: 1px;
-		background: #1D5C81;
-		position: relative;
-	}
 	.banner{
+		transition: all ease .5s;
 		position: relative;
+		margin-top: 10px;
+		height: 250px;
+		ul,ul>div{
+			width: 100%;
+			height: 100%;
+		}
+		li{
+			transition: all ease 1s;
+			opacity: 0;
+			list-style: none;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+		img{
+			width: 100%;
+			height: 100%;
+		}
+	}
+	.img-shadow{
+		position: absolute;
+		top: 0;
+		left: 0;
 		width: 100%;
 		height: 100%;
-		background: #fff;
-		overflow: hidden;
-		ul{
-			height: 100%;
-			width: 100%;
-		}
-		ul div{
-			height: 100%;
-			width: 100%;
-			display: block;
-			position: relative;
-		}
-		ul li{
-			width: 100%;
-			height: 100%;
-			position: absolute;
-			top: 0;
-			left: 0;
-		}
-		img,{
-			width: 100%;
-			margin-bottom: -5px;//li包裹a标签下方会有5px间距
-			height: 100%
-		}
-		.banner-shadow{
-			position: absolute;
-			height: 100%;
-			width: 100%;
-			top: 0;
-			left: 0;
-			background: #000;
-			opacity: 0.3;
-		}
+		background: rgba(0,0,0,0.3);
+	}
+	.wellknown{
+		box-sizing: border-box;
+		line-height: 1.5;
+		color: #eee;
+		text-align: center;
+		position: absolute;
+		top: 50%;
+		left: 0;
+		padding: 0 25px;
+		transform: translateY(-50%);
+		width: 100%;
 	}
 	.headerHeight{
 		height: 0!important
+	}
+	.show-opacity{
+		opacity: 1!important
 	}
 	.slider-fade-enter,.slider-fade-leave-to{
 		opacity: 0
 	}
 	.slider-fade-enter-active,.slider-fade-leave-active{
-		transition: opacity ease-in-out 0.5s
+		transition: all ease 0.5s
 	}
 	.current-relative{
 		position: relative!important
@@ -173,7 +204,7 @@
 		}
 		span{
 			display: inline-block;
-			transition: all ease-in 0.5s;
+			transition: all ease-in .5s;
 			width: 8px;
 			height: 8px;
 			border-radius: 4px;
@@ -188,8 +219,8 @@
 		background: orange
 	}
 	@media screen and (max-width: 768px){
-		.header,.banner img{
-			height: auto
+		.banner{
+			margin-top: -50px;
 		}
 	}
 </style>

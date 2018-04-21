@@ -79,7 +79,8 @@
 	.search-tips{
 		margin-top: 10px;
 		padding: 10px;
-		background: #F7EDED;
+		/*background: #F7EDED;*/
+		background: #FAF7F7;
 	}
 </style>
 

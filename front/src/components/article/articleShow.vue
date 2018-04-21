@@ -28,17 +28,16 @@
 				<div class = "article-like" :class= "{'article-like-after': lovedArr.indexOf(item._id) !== -1}" @click = "love(item.articleId,item._id)"><span class = "love-text">{{ love_t }}</span></div>
 					<div class="article-warning" v-if = "item.original">
 					<h6>本文为作者原创文章，转载请注明出处： </h6>
-					<i><a href="javascript: void(0)">https: //www.mapblog.cn{{ $route.fullPath }}</a></i>
-					
+					<i><a href="javascript: void(0)">http://www.mapblog.cn{{ fullPath }}</a></i>
 				</div>
 				<div class="article-line"></div>
 				<h4>分享：</h4>
 				<div class="share">
-					<a href = "javascript: void(0)" @click = "share('QQ','http: //connect.qq.com/widget/shareqq/index.html')" class="design-bg-qq"></a>
-					<a href = "javascript: void(0)" @click = "share('qzone','http: //sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey')" class="design-bg-qzone"></a>
-					<a href = "javascript: void(0)" @click = "share('sina','http: //v.t.sina.com.cn/share/share.php')" class="design-bg-sina"></a>
+					<a href = "javascript: void(0)" @click = "share('QQ','http://connect.qq.com/widget/shareqq/index.html')" class="design-bg-qq"></a>
+					<a href = "javascript: void(0)" @click = "share('qzone','http://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey')" class="design-bg-qzone"></a>
+					<a href = "javascript: void(0)" @click = "share('sina','http://v.t.sina.com.cn/share/share.php')" class="design-bg-sina"></a>
 					<a href = "javascript: void(0)" @click = "qrcode" class="design-bg-weixin"></a>
-					<a href = "javascript: void(0)" @click = "share('douban','http: //shuo.douban.com/!service/share')" class="design-bg-douban"></a>
+					<a href = "javascript: void(0)" @click = "share('douban','http://shuo.douban.com/!service/share')" class="design-bg-douban"></a>
 				</div>
 				<div class = "otherArticle"></div>
 				<div class = "qrcode-box" v-show = "qrShow">
@@ -55,7 +54,8 @@
 						<a href = "javascript: void(0)" v-for = "item in articles.pre_next.next"><span @click = "jumpPn(item)"> {{ item.title }}</span> </a>
 					</div>
 				</div>
-			</div>	
+			</div>
+			
 		</div>
 		<comment></comment>
 	</div>
@@ -72,6 +72,7 @@
 				qrShow: false,
 				loveText: "赞",
 				lovedArr: [],
+				fullPath: ""
 			}
 		},
 		metaInfo(){
@@ -107,6 +108,7 @@
 			this.$nextTick(function(){
 				Prism.highlightAll()
 			})
+			this.getOriginUrl()
 		},
 		computed: {
 			...mapState(["articles"]),
@@ -149,6 +151,14 @@
 		methods: {
 			...mapActions(["getArticle","loveArticle"]),
 			...mapMutations(["changeTitle"]),
+			// 点击回复按钮会在地址栏加上锚点，故刷新时去除，第三方分享链接亦如此
+			getOriginUrl: function(){
+				if(this.$route.fullPath.indexOf("#anchor-comment") > -1){
+					this.fullPath = this.$route.fullPath.substring(0,this.$route.fullPath.indexOf("#"))
+				}else{
+					this.fullPath = this.$route.fullPath
+				}
+			},
 			love: function(aid,_id){
 				if(this.lovedArr.indexOf(_id) === -1){
 					this.loveArticle({
@@ -174,7 +184,6 @@
 						}
 						
 					})
-					
 				}
 			},
 			jumpPn: function(item){
@@ -185,17 +194,22 @@
 				}
 			},
 			share: function(type,url){
-				let _url = window.location.href,
-					title = document.title + "----本文首发于mapBlog，这是一个积累web知识的个人博客",
+				let	title = document.title + "----本文首发于mapblog小站，这是一个积累web知识的个人博客",
 					el = document.createElement("a"),
-					_href
+					_href,
+					_url
+				if(window.location.href.indexOf("#anchor-comment")){
+					_url = window.location.href.substring(0,window.location.href.indexOf("#"))
+				}else{
+					_url = window.location.href
+				}
 				el.target = "_blank"
 				switch (type){
 					case "QQ" : 
-					_href = url + "?title=" + title +"&url=" + _url + "&desc=我分享了一篇文章，快来看看哦~" + "&site=mapblog"
+					_href = url + "?title=" + title +"&url=" + _url + "&desc=我分享了一篇文章，快来看看哦~" + "&site=mapblog小站"
 					break
 					case "qzone" : 
-					_href = url + "?title=" + title + "&url=" + _url + "&desc=我分享了一篇文章，快来看看哦~" + "&site=mapblog" + "summary="
+					_href = url + "?title=" + title + "&url=" + _url + "&desc=我分享了一篇文章，快来看看哦~" + "&site=mapblog小站" + "summary="
 					break
 					case "sina" : 
 					_href = url + "?title=" + title + "&url=" + _url
@@ -237,7 +251,8 @@
 <style lang = "less">
 	.article-show-content{
 		margin-top: 10px;
-		background: #F7EDED;
+		/*background: #F7EDED;*/
+		background: #FAF7F7;
 		color: #404040;
 		font-size: 14px;
 		line-height: 1.8;

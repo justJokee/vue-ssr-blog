@@ -21,15 +21,13 @@
 					</div>
 					<div class = "third-login">
 						<div class = "line">第三方登录</div>
-						<!-- 请设置为自己的clientID -->
-						<a href = "javascript: void(0)" onclick = "return window.open('https://graph.qq.com/oauth2.0/authorize?client_id=YouID&response_type=token&scope=all&redirect_uri=http://localhost:6180/qc_back.html', 'oauth2Login_10000' ,'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes');" class = "login-qq">
+						<a href = "javascript: void(0)" onclick = "return window.open('https://graph.qq.com/oauth2.0/authorize?client_id=YourID&response_type=token&scope=all&redirect_uri=http://localhost:6180/qc_back.html', 'oauth2Login_10000' ,'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes');" class = "login-qq">
 							<img src="/img/qq.png" alt="QQ登录" >
 						</a>
 						<a href = "javascript: void(0)"  @click = "open" class = "login-github">
 							<img src = "/img/github.png" alt = "github登录" >
 						</a>
 					</div>
-				  	<div id = "wb_connect_btn"></div>
 				</div>
 			</transition>	
 		</div>

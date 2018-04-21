@@ -1,5 +1,6 @@
 <template>
-	<div class = "home" id = "test">
+	<div class = "home">
+		<banner></banner>
 		<loading v-if = "code === 404"></loading>
 		<h3 v-if = "articles.all.length === 0 && code === 200" class = "none-article">还没有文章，敬请期待···</h3>
 		<article-list :articleList = "articles.all"></article-list>
@@ -9,10 +10,12 @@
 	import { mapActions,mapState,mapMutations } from "vuex"
 	import articleList from "@/components/article/articleList"
 	import loading from "@/components/base/loading"
+	import banner from "@/components/base/banner"
 	export default {
 		components: {
 			articleList,
-			loading
+			loading,
+			banner
 		},
 		metaInfo(){
 			return {
@@ -56,7 +59,8 @@
 <style lang = "less" scoped>
 	.none-article{
 		padding: 20px;
-		background: #F7EDED;
+		/*background: #F7EDED;*/
+		background: #FAF7F7;
 		margin-top: 10px;
 	}
 </style>

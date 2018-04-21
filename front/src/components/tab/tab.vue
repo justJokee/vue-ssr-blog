@@ -17,8 +17,8 @@
 						<router-link :to = "{name: item.name}" tag = "div">
 							<span class = "bg-box"  @click.stop = "goAnchor(item.name,index)">
 								<span class = "span-box">
-									<span :class = "item.icon"></span>
-									<span>{{ item.render }}</span>
+									<span :class = "item.icon" class = "icon-rt"></span>
+									<span class = "r-t">{{ item.render }}</span>
 								</span>
 							</span>	
 						</router-link>
@@ -75,7 +75,7 @@
 				if(scrollTop < this.anchorScroll.top){
 			  		document.documentElement.scrollTop = Math.min(scrollTop + movepx,this.anchorScroll.top)
 			  		document.body.scrollTop = Math.min(scrollTop + movepx,this.anchorScroll.top)  
-					//当页面不够长使锚点滚动不到页面顶端时，清除定时器
+					//当页面不够长使container滚动不到页面顶端时，清除定时器(适合container上方有其他元素时)
 					if(getScrollTop() === scrollTop){
 						this.$router.push({name: this.routeName})
 						window.cancelAnimationFrame(that.intervalId)
@@ -107,9 +107,11 @@
 		left: 0;
 	    z-index: 1000;
 	    width: 100%;
-		color: #EEE;
+		color: #fff;
+		background: rgba(0,0,0,.9);
+		/*background: rgba(2,61,105,.8);*/
 		transition: all ease .5s;
-		transform: translateZ(0);/*开启GPU硬件加速，提高性能和流畅的动画效果,否则其他元素有css动画时，fixed的nav有异常抖动*/
+		transform: translateZ(0px);/*开启GPU硬件加速，提高性能和流畅的动画效果,否则其他元素有css动画时，fixed的nav有异常抖动*/
 		li{						 
 			list-style: none;
 		}
@@ -173,7 +175,8 @@
 			color: #1A1A1A;
 			border-radius: 17px;
 			background: #EEE;
-			transition: all ease .5s;
+			transition: all ease .3s;
+			transform: translateZ(0px);
 		}
 	}
 	.icon-search{
@@ -290,7 +293,7 @@
 				div{	
 					transition: all ease 0.5s;
 					position: relative;
-					.span-box span{
+					.span-box .r-t{
 						font-size: 18px;
 						display: inline-block;
 						width: 55px;
@@ -303,11 +306,15 @@
 					.span-box span:hover{
 						color: #FAAF2E;
 					}
+					.icon-rt{
+						display: none;
+					}
 					.span-box span:before,.span-box span:after{
 						content: "";
 						position: absolute;
 						top: 100%;
 						left: 0;
+						margin-top: -3px;
 						width: 100%;
 						height: 3px;
 						background: #EEE;
@@ -315,7 +322,7 @@
 						transform: translateZ(0);
 					}
 					.span-box span:hover:before{
-						transform: translateY(-50px) scale(1.2)
+						transform: translateY(-47px) scale(1.2)
 					}
 					.span-box span:hover:after{
 						transform: scale(1.2)

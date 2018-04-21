@@ -16,13 +16,13 @@
 <script></script>
 <style lang = "less">
 	.foot{
-		color: #939393;
+		color: #ccc;
 		background: #2e3033;
 		a{
-			color: #939393;
+			color: #ccc;
 		}
 		a:hover{
-			color: #ccc;
+			color: #ffffff;
 			text-decoration: underline;
 		}
 	}

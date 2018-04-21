@@ -1,6 +1,5 @@
 <template>
     <div id = "app">
-        <banner></banner>
         <div class = "main">
             <div id = "anchor"></div>   
             <div class = "body-content">
@@ -8,7 +7,7 @@
                 <div class = "container" ref = "container">
                     <section class = "section">
                         <div class = "content">
-                            <div class = "location">
+                            <div class = "location" v-show = "$route.name !== 'home'">
                                 <span>当前位置：</span>
                                 <a href = "javascript: void(0)" @click = "backHome">首页</a>
                                 <div v-for = "item in location">
@@ -37,14 +36,14 @@
           <div class = "rocket" v-show = "showBackTop">
             <a href = "javascript: void(0)" @click = "backTop"></a>
           </div>
-        </transition>  
+        </transition>
+        <div class = "fix-bg"></div>
     </div>
 </template>
 <script>
   import tab from "@/components/tab/tab"
   import gateWay from "@/components/base/gateWay"
   import fileOnPlace from "@/components/base/fileOnPlace"
-  import banner from "@/components/base/banner"
   import about from "@/components/base/about"
   import hot from "@/components/base/hot"
   import foot from "@/components/base/foot"
@@ -54,7 +53,6 @@
 
   export default {
     components: {
-      banner,
       tab,
       gateWay,
       fileOnPlace,
@@ -108,7 +106,7 @@
           this.positionTop(top)
         },
         getTop: function(){
-          //判断tab是否超过了banner区域
+          //计算document需要滚动的距离
           let tabOffsetTop = getElementTop(this.$refs.container) - 50
           let move = Math.abs(getScrollTop() - tabOffsetTop)
           if(getScrollTop() > 0){
@@ -116,7 +114,7 @@
           }else{
             this.showBackTop = false
           }
-          if(getScrollTop() >= tabOffsetTop){
+          if(getScrollTop() > tabOffsetTop){
             this.addTabBg(true)
           }else{
             this.addTabBg(false)
@@ -190,6 +188,8 @@
   }
 </script>
 <style lang="less">
+    @import "./assets/css/prism.css";
+    @import './assets/css/emoji-sprite.css';
     *{
       margin: 0;
       padding: 0;
@@ -197,22 +197,14 @@
     a{
       -webkit-tap-highlight-color: transparent
     }
-    html{
-      width: 100%;
-      height: 100%;
-    }
     body{
-      width: 100%;
-      height: 100%;
       font: 400 16px/20px Arial,Helvetica,Tahoma,"华文细黑","Microsoft YaHei","微软雅黑",sans-serif;
       color: #000;
     }
     #app{
-      width: 100%;
-      height: 100%
+      margin: 50px 0 0 0;
     }
     .main{
-      background: url("/img/mainBg.jpg") 0 0  repeat;
       width: 100%;
     }
     a{
@@ -222,7 +214,7 @@
       position: relative
     }
     .location{
-      background: #F7EDED;
+      background: #FAF7F7;
       margin-top: 10px;
       padding: 10px;
       font-size: 14px;
@@ -264,8 +256,19 @@
     .fade-enter-active,.fade-leave-active{
       transition: all ease .5s;
     }
+    .fix-bg{
+      width: 100%;
+      height: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
   //手机端
   @media screen and (max-width: 767px){
+    .fix-bg{
+      background: #f4f4f4
+    }
     .section{
         flex-wrap: wrap;
          // padding: 10px 15px;
@@ -273,17 +276,24 @@
       .section .content,.r-slide{
         width: 100%
       }
+      .location{
+        margin-top: 0;
+      }
   }
   //平板
   @media screen and (min-width: 768px){
+    .fix-bg{
+      background: url("/img/mainBg2.jpg") 0 0 no-repeat;
+      background-size: 100% 100%;
+    }
     .section{
-        max-width: 760px;
-        padding: 10px 30px;
-      }
-      .navbar{
-        max-width: 820px
-      }
-      .search{
+      max-width: 760px;
+      padding: 10px 30px;
+    }
+    .navbar{
+      max-width: 820px
+    }
+    .search{
       padding: 0 30px
     }
     .nav-header{
@@ -296,12 +306,12 @@
   }
   //小屏幕pc端
     @media screen and (min-width: 992px) {
-    .section{
+      .section{
         max-width: 970px;
         padding: 10px 30px;
       }
       .navbar{
-      max-width: 1030px;
+        max-width: 1030px;
       }
     }
     //大屏幕pc端
