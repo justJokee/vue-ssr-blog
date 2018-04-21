@@ -31,6 +31,11 @@ router.delete("/api/removeComments",confirmToken,(req,res)=>{
 		if(err){
 			res.status(500).end()
 		}else{
+			db.article.update({articleId: req.query.articleId},{$inc: {commentNum: -1}},(err,doc) =>{
+				if(err){
+					res.status(500)
+				}
+			})
 			res.json({deleteCode: 200})
 		}
 	})
