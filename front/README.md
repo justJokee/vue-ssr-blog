@@ -18,6 +18,7 @@
 ## 必要说明：
 - 详见根目录下的README说明
 ## 博客前台的实现功能：
+- 全局响应式
 - 文章
   - 按标签分类展示
   - 按时间归档
@@ -53,6 +54,7 @@ npm start
 | README.md
 | server.js   最重要的express服务器文件
 ├─build       webpack配置
+├─screenShot  存放README中的预览图
 ├─dist  
 ├─server    
 │  ├─api    后端数据接口
@@ -94,3 +96,10 @@ npm start
     └─ueditor
         └─nodejs  配置ueditor在nodejs环境下实现上传功能的插件
 ```
+# 预览图
+## 首页
+![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/home.png)
+## 文章详情页
+![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/article.png)
+## 留言页
+![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/msgboard.png)
