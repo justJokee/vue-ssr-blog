@@ -29,7 +29,6 @@
 					month = parseInt(time.match(/\d+/g)[1]),
 					endDay,
 					date
-					console.log( time.match(/\d+/g))
 				if(month === 2){
 					endDay = 28
 				}else if(month === 1||month == 3||month === 5||month === 7||month === 8||month === 10||month === 12){

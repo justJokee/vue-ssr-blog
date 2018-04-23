@@ -1,6 +1,5 @@
 const axios = require("axios") 
 const qs = require("qs")
-require("es6-promise").polyfill()
 import router from "../../router/"
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
 //拦截器，为后端每一个请求加上authorization
