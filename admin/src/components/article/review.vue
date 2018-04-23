@@ -10,6 +10,10 @@
 				<h4>前言：</h4>
 				<span>{{ item.abstract }}</span> 
 			</div>
+			<div class = "review-date">
+				<h4>发表时间：</h4>
+				<span>{{ item.date | reviseTime }}</span> 
+			</div>
 			<div class = "review-content" v-html = "item.content">{{ item.content }}</div>
 		</div>
 	</div>
@@ -70,10 +74,10 @@
 			margin-right: 10px;
 		}
 	}
-	.review-abstract,.review-content{
+	.review-abstract,.review-content,.review-date{
 		margin-top: 10px;
 	}
-	.review-abstract h4{
+	.review-abstract h4,.review-date h4{
 		display: inline-block;
 	}
 	.review-title{
@@ -89,6 +93,9 @@
 			height: 0;
 			border: 0;
 			border-top: 1px solid #ccc;
+		}
+		img{
+			max-width: 100%;
 		}
 	}
 	@media screen and(max-width: 767px){

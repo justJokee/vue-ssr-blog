@@ -194,11 +194,11 @@
 				}
 			},
 			share: function(type,url){
-				let	title = document.title + "----本文首发于mapblog小站，这是一个积累web知识的个人博客",
+				let	title = document.title + " 这是一个积累web知识的个人博客",
 					el = document.createElement("a"),
 					_href,
 					_url
-				if(window.location.href.indexOf("#anchor-comment")){
+				if(window.location.href.indexOf("#anchor-comment") > -1){
 					_url = window.location.href.substring(0,window.location.href.indexOf("#"))
 				}else{
 					_url = window.location.href
@@ -265,6 +265,9 @@
 			border: 0;
 			border-top: 1px solid #ccc;
 		}
+		img{
+			max-width: 100%
+		}
 	}
 	.article-title{
 		padding: 5px 0;
@@ -296,9 +299,6 @@
 	}
 	.i-p{
 		margin: 0 5px;
-	}
-	.article-show-content img{
-		max-width: 100%
 	}
 	.article-like{
 		background: url("/img/love-before.png") no-repeat;

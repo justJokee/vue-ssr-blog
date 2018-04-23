@@ -3,9 +3,9 @@
         <div class = "back">
             <div>
                 <span class = "icon-home" @click = "backHome" title = "回到管理首页"></span>
-                <span class = "client-greet">{{ greet }}好，King！</span>
+                <span class = "client-greet">{{ greet }}好，admin！</span>
             </div>
-            <span class = "phone-greet">{{ greet }}好，My Lord！</span>
+            <span class = "phone-greet">{{ greet }}好，admin！</span>
             <span class = "icon-exit" title = "退出管理界面" @click = "exit"></span>
         </div>
         <div class = "article-details" >
@@ -406,7 +406,7 @@
                 let _this = this
                 require.ensure([],(require) => {
                     require('@/../static/UE/ueditor.config.js')
-                    require('@/../static/UE/ueditor.all.js')
+                    require('@/../static/UE/ueditor.all.min.js')
                     require('@/../static/UE/lang/zh-cn/zh-cn.js')
                     require('@/../static/UE/ueditor.parse.min.js')
                 },"ue")
@@ -598,6 +598,7 @@
         padding: 15px;
         overflow: scroll;
         background: #fff;
+        line-height: 1.5;
         li{
             margin-left: 15px;
         }
@@ -606,6 +607,9 @@
             height: 0;
             border: 0;
             border-top: 1px solid #ccc;
+        }
+        img{
+            max-width: 100%;
         }
     }
     .article-handle{

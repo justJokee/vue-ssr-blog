@@ -146,64 +146,64 @@
 }
   /*==============文章列表标签背景==================*/
 .tag-bg-img{background:url(/img/tagBg.png)  no-repeat;}
-.default{height:64px;width:64px;background-position:-384px 0;}
-.react{height:64px;width:64px;background-position:0 0;}
-.sass{height:64px;width:64px;background-position:-64px 0;}
-.Sass{height:64px;width:64px;background-position:-64px 0;}
-.nodejs{height:64px;width:64px;background-position:-128px 0;}
-.NodeJs{height:64px;width:64px;background-position:-128px 0;}
-.NODE{height:64px;width:64px;background-position:-128px 0;}
-.NODEJS{height:64px;width:64px;background-position:-128px 0;}
-.mysql{height:64px;width:64px;background-position:-192px 0;}
-.Mysql{height:64px;width:64px;background-position:-192px 0;}
-.MySql{height:64px;width:64px;background-position:-192px 0;}
-.MYSQL{height:64px;width:64px;background-position:-192px 0;}
-.nginx{height:64px;width:64px;background-position:-256px 0;}
-.Nginx{height:64px;width:64px;background-position:-256px 0;}
-.unix{height:64px;width:64px;background-position:-320px 0;}
-.Unix{height:64px;width:64px;background-position:-320px 0;}
-.webserver{height:64px;width:64px;background-position:-448px 0;}
-.webServer{height:64px;width:64px;background-position:-448px 0;}
-.safe{height:64px;width:64px;background-position:-512px 0;}
-.vue{height:64px;width:64px;background-position:-576px 0;}
-.Vue{height:64px;width:64px;background-position:-576px 0;}
-.Windows{height:64px;width:64px;background-position:-640px 0;}
-.mongodb{height:64px;width:64px;background-position:-704px 0;}
-.mongoDB{height:64px;width:64px;background-position:-704px 0;}
-.chrome{height:64px;width:64px;background-position:-768px 0;}
-.Chrome{height:64px;width:64px;background-position:-768px 0;}
-.css3{height:64px;width:64px;background-position:-832px 0;}
-.Css3{height:64px;width:64px;background-position:-832px 0;}
-.CSS3{height:64px;width:64px;background-position:-832px 0;}
-.CSS{height:64px;width:64px;background-position:-832px 0;}
-.css{height:64px;width:64px;background-position:-832px 0;}
-.Css{height:64px;width:64px;background-position:-832px 0;}
-.c{height:64px;width:64px;background-position:-896px 0;}
-.C{height:64px;width:64px;background-position:-896px 0;}
-.ajax{height:64px;width:64px;background-position:-960px 0;}
-.Ajax{height:64px;width:64px;background-position:-960px 0;}
-.angular{height:64px;width:64px;background-position:-1024px 0;}
-.Angular{height:64px;width:64px;background-position:-1024px 0;}
-.html5{height:64px;width:64px;background-position:-1088px 0;}
-.Html5{height:64px;width:64px;background-position:-1088px 0;}
-.HTML5{height:64px;width:64px;background-position:-1088px 0;}
-.HTML{height:64px;width:64px;background-position:-1088px 0;}
-.html{height:64px;width:64px;background-position:-1088px 0;}
-.Html{height:64px;width:64px;background-position:-1088px 0;}
-.less{height:64px;width:64px;background-position:-1152px 0;}
-.Less{height:64px;width:64px;background-position:-1152px 0;}
-.LESS{height:64px;width:64px;background-position:-1152px 0;}
-.Life{height:64px;width:64px;background-position:-1216px 0;}
-.life{height:64px;width:64px;background-position:-1216px 0;}
-.javascript{height:64px;width:64px;background-position:-1280px 0;}
-.javaScript{height:64px;width:64px;background-position:-1280px 0;}
-.JavaScript{height:64px;width:64px;background-position:-1280px 0;}
-.http{height:64px;width:64px;background-position:-1344px 0;}
-.Http{height:64px;width:64px;background-position:-1344px 0;}
-.HTTP{height:64px;width:64px;background-position:-1344px 0;}
-.java{height:64px;width:64px;background-position:-1408px 0;}
-.Java{height:64px;width:64px;background-position:-1408px 0;}
-.JAVA{height:64px;width:64px;background-position:-1408px 0;}
+.default{height:64px;flex:0 0 64px;background-position:-384px 0;}
+.react{height:64px;flex:0 0 64px;background-position:0 0;}
+.sass{height:64px;flex:0 0 64px;background-position:-64px 0;}
+.Sass{height:64px;flex:0 0 64px;background-position:-64px 0;}
+.nodejs{height:64px;flex:0 0 64px;background-position:-128px 0;}
+.NodeJs{height:64px;flex:0 0 64px;background-position:-128px 0;}
+.NODE{height:64px;flex:0 0 64px;background-position:-128px 0;}
+.NODEJS{height:64px;flex:0 0 64px;background-position:-128px 0;}
+.mysql{height:64px;flex:0 0 64px;background-position:-192px 0;}
+.Mysql{height:64px;flex:0 0 64px;background-position:-192px 0;}
+.MySql{height:64px;flex:0 0 64px;background-position:-192px 0;}
+.MYSQL{height:64px;flex:0 0 64px;background-position:-192px 0;}
+.nginx{height:64px;flex:0 0 64px;background-position:-256px 0;}
+.Nginx{height:64px;flex:0 0 64px;background-position:-256px 0;}
+.unix{height:64px;flex:0 0 64px;background-position:-320px 0;}
+.Unix{height:64px;flex:0 0 64px;background-position:-320px 0;}
+.webserver{height:64px;flex:0 0 64px;background-position:-448px 0;}
+.webServer{height:64px;flex:0 0 64px;background-position:-448px 0;}
+.safe{height:64px;flex:0 0 64px;background-position:-512px 0;}
+.vue{height:64px;flex:0 0 64px;background-position:-576px 0;}
+.Vue{height:64px;flex:0 0 64px;background-position:-576px 0;}
+.Windows{height:64px;flex:0 0 64px;background-position:-640px 0;}
+.mongodb{height:64px;flex:0 0 64px;background-position:-704px 0;}
+.mongoDB{height:64px;flex:0 0 64px;background-position:-704px 0;}
+.chrome{height:64px;flex:0 0 64px;background-position:-768px 0;}
+.Chrome{height:64px;flex:0 0 64px;background-position:-768px 0;}
+.css3{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.Css3{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.CSS3{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.CSS{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.css{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.Css{height:64px;flex:0 0 64px;background-position:-832px 0;}
+.c{height:64px;flex:0 0 64px;background-position:-896px 0;}
+.C{height:64px;flex:0 0 64px;background-position:-896px 0;}
+.ajax{height:64px;flex:0 0 64px;background-position:-960px 0;}
+.Ajax{height:64px;flex:0 0 64px;background-position:-960px 0;}
+.angular{height:64px;flex:0 0 64px;background-position:-1024px 0;}
+.Angular{height:64px;flex:0 0 64px;background-position:-1024px 0;}
+.html5{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.Html5{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.HTML5{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.HTML{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.html{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.Html{height:64px;flex:0 0 64px;background-position:-1088px 0;}
+.less{height:64px;flex:0 0 64px;background-position:-1152px 0;}
+.Less{height:64px;flex:0 0 64px;background-position:-1152px 0;}
+.LESS{height:64px;flex:0 0 64px;background-position:-1152px 0;}
+.Life{height:64px;flex:0 0 64px;background-position:-1216px 0;}
+.life{height:64px;flex:0 0 64px;background-position:-1216px 0;}
+.javascript{height:64px;flex:0 0 64px;background-position:-1280px 0;}
+.javaScript{height:64px;flex:0 0 64px;background-position:-1280px 0;}
+.JavaScript{height:64px;flex:0 0 64px;background-position:-1280px 0;}
+.http{height:64px;flex:0 0 64px;background-position:-1344px 0;}
+.Http{height:64px;flex:0 0 64px;background-position:-1344px 0;}
+.HTTP{height:64px;flex:0 0 64px;background-position:-1344px 0;}
+.java{height:64px;flex:0 0 64px;background-position:-1408px 0;}
+.Java{height:64px;flex:0 0 64px;background-position:-1408px 0;}
+.JAVA{height:64px;flex:0 0 64px;background-position:-1408px 0;}
 .response{height:64px;width:66px;background-position:-1472px 0;}
 .cloundserver{height:64px;width:88px;background-position:-1538px 0;}
 .cloundServer{height:64px;width:88px;background-position:-1538px 0;}

@@ -8,7 +8,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const config = merge(base, {
     entry: {
         app: './src/entry-client.js',
-        vendors: ['lodash', 'axios'],
+        vendors: ['axios',"@/assets/js/prism.js"],
         vues: ['vue', 'vuex', 'vue-router']
     },
     plugins: [
