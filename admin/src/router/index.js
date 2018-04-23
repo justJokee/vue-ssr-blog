@@ -26,10 +26,10 @@ const router = new Router({
       name: "miss",
       component: miss
     },
-    // {
-    //   path: "/",
-    //   redirect: "/admin"  //方便调试，生产环境删除
-    // },
+    {
+      path: "/",
+      redirect: "/admin"  //方便调试，生产环境删除
+    },
     {
       path: "/login",
       name: "login",
