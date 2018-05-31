@@ -8,7 +8,7 @@
 │  .gitignore
 │  README.md
 │
-├─admin  后台管理（前端渲染）
+├─admin  后台管理（前台渲染）
 └─front  前台页面（vue-ssr服务端渲染）
 ```
 ## 在clone之前的必要说明：
