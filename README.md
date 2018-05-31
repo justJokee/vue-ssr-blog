@@ -25,8 +25,8 @@
   - /front/src/index.template.html
   - /front/src/components/vistors
   - /front/server/api/vistors
-- front 下所起的express服务是整个站点的后台服务器，负责前后台的数据交互。当然它也负责前台的开发模式热更新，通过NODE_ENV控制
-- admin 下所起的服务仅供热更新开发和请求转发,数据依靠front的服务器
+- front 下所起的express服务是整个站点的服务器，负责前后台的数据交互。当然它也负责前台的开发模式热更新，通过NODE_ENV控制
+- admin 下所起的服务仅供开发时的热更新和http请求转发,数据交互依靠上面所说的的front下所起的express服务器
 
 **确保启动项目前本说明中的前两点与自己的mongodb数据库保持一致，否则项目会启动失败！！**<br>
 ## clone到本地
