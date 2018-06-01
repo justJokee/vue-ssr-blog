@@ -96,8 +96,10 @@ npm start
 ```
 # 预览图
 ## 首页
-![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/home.png)
+![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/home1.png)
+## 技术文章导航（大于8个标签则列表显示）
+![articleRoot](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/articleRoot.png)
 ## 文章详情页
-![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/article.png)
+![article](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/article1.png)
 ## 留言页
-![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/msgboard.png)
+![msgboard](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/msgboard1.png)
