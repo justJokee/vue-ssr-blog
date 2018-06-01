@@ -23,8 +23,8 @@
 - 自行修改后台管理的jsonwebtoken的密码配置文件（修改目录：/front/server/secret）
 - 第三方登陆的各种clientid和secret请自行更换
   - /front/src/index.template.html
-  - /front/src/components/vistors
-  - /front/server/api/vistors
+  - /front/src/components/userLogin
+  - /front/server/api/visitors
 - front 下所起的express服务是整个站点的服务器，负责前后台的数据交互。当然它也负责前台的开发模式热更新，通过NODE_ENV控制
 - admin 下所起的服务仅供开发时的热更新和http请求转发,数据交互依靠上面所说的的front下所起的express服务器
 
