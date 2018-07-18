@@ -1,4 +1,4 @@
-const axios = require("axios") 
+const axios = require("axios")
 const qs = require("qs")
 const LRU = require('lru-cache')
 require("es6-promise").polyfill()
@@ -16,8 +16,8 @@ function ajax(type,url,options){
 			url: url,
 			// baseURL: "https://www.mapblog.cn",
 			baseURL: "http://localhost:6180",
-			params: options,
-			data: qs.stringify(options)
+      params: type === 'get' ? options : null,
+      data: type !== 'get' ? qs.stringify(options) : null
 		}).then((res) => {
 			if(res.status === 200){
 				resolve(res.data)

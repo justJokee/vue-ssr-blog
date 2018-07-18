@@ -1,4 +1,4 @@
-const axios = require("axios") 
+const axios = require("axios")
 const qs = require("qs")
 import router from "../../router/"
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8'
@@ -17,7 +17,7 @@ axios.interceptors.response.use(data => {
 	if(data.data.code&&data.data.code === 401){
 		router.push({name: "login"})
 	}
-	return data	
+	return data
 },error => {
 	return Promise.reject(error)
 })
@@ -27,15 +27,15 @@ function ajax(type,url,options){
 			method: type,
 			url: url,
 			// baseURL: "http://localhost:8080",//开发模式下vue-cli已经配置了请求转发，所以不用基础路径即可
-			params: options,
-			data: qs.stringify(options)
+      params: type === 'get' ? options : null,
+      data: type !== 'get' ? qs.stringify(options) : null
 		}).then((res) => {
 			if(res.status === 200){
 				resolve(res.data)
 			}else{
 				reject("request error in " + url)
 			}
-			
+
 		}).catch((err) => {
 			console.log(err,url)
 		})
