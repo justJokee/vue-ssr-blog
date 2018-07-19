@@ -27,8 +27,8 @@ function ajax(type,url,options){
 			method: type,
 			url: url,
 			// baseURL: "http://localhost:8080",//开发模式下vue-cli已经配置了请求转发，所以不用基础路径即可
-      params: type === 'get' ? options : null,
-      data: type !== 'get' ? qs.stringify(options) : null
+      params: type === 'get'||type === 'delete' ? options : null,
+      data: type !== 'get'&&type !== 'delete' ? qs.stringify(options) : null
 		}).then((res) => {
 			if(res.status === 200){
 				resolve(res.data)
