@@ -1,6 +1,7 @@
 .DS_Store
 node_modules
-dist
+/dist/*
+server/db/secret.js
 package-lock.json
 
 # Log files

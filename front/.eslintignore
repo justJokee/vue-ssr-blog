@@ -1,0 +1,4 @@
+
+config/*
+src/assets
+node_modules
