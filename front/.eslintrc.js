@@ -29,7 +29,9 @@ module.exports = {
     "AMap": true,
     "AMapUI": true,
     "processEnv": true,
-    "_": true
+    "_": true,
+    "Prism": true,
+    "QRCode": true
   },
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
