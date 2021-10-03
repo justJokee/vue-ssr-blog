@@ -2,85 +2,21 @@ const mongoose = require('mongoose')
 const md5 = require('js-md5')
 const dbInfo = require('./secret')
 const localTime = require('../utils/reviseTime')
+const {
+  userSchema,
+  vistorsSchema,
+  articleSchema,
+  commentSchema,
+  msgBoardSchema,
+  newMsgSchema,
+  counterSchema
+} = require('./schema')
+
 mongoose.Promise = global.Promise
 //请自行更改用户名和密码
 // mongoose.connection.openUri("mongodb://username:password@localhost:27017/blog")
 mongoose.connection.openUri(`mongodb://${dbInfo.user}:${dbInfo.pwd}@localhost:27017/${dbInfo.db}`)
-const userSchema = new mongoose.Schema({
-  user: 'string',
-  password: 'string',
-  lastLogin: 'string',
-  salt: 'string'
-})
-const vistorsSchema = new mongoose.Schema({
-  name: 'string',
-  imgUrl: 'string',
-  email: 'string',
-  githubID: 'number'
-})
-const articleSchema = new mongoose.Schema({
-  articleId: 'number',
-  original: 'boolean',
-  title: 'string',
-  abstract: 'string',
-  content: 'string',
-  publish: 'boolean',
-  tag: 'array',
-  commentNum: 'number',
-  likeNum: 'number',
-  pv: 'number',
-  date: 'date'
-})
-const commentSchema = new mongoose.Schema({
-  name: 'string',
-  imgUrl: 'string',
-  email: 'string',
-  content: 'string',
-  reply: [
-    {
-      name: 'string',
-      imgUrl: 'string',
-      email: 'string',
-      aite: 'string',
-      content: 'string',
-      like: 'number',
-      date: 'date'
-    }
-  ], //记得加上日期格式
-  like: 'number',
-  articleId: 'number',
-  title: 'string',
-  date: 'date'
-})
-const msgBoardSchema = new mongoose.Schema({
-  name: 'string',
-  imgUrl: 'string',
-  email: 'string',
-  content: 'string',
-  date: 'date',
-  reply: [
-    {
-      name: 'string',
-      aite: 'string',
-      imgUrl: 'string',
-      content: 'string',
-      date: 'date'
-    }
-  ]
-})
-const newMsgSchema = new mongoose.Schema({
-  type: 'string',
-  name: 'string',
-  say: 'string',
-  title: 'string',
-  content: 'string',
-  ip: 'string',
-  date: 'date'
-})
-const counterSchema = new mongoose.Schema({
-  _id: 'string',
-  seq: 'number'
-})
+
 //实现自增序列
 articleSchema.pre('save', function(next) {
   let _this = this
@@ -121,6 +57,7 @@ const db = {
   newMsg: mongoose.model('new', newMsgSchema),
   counter: mongoose.model('counter', counterSchema)
 }
+
 const initDbUser = () => {
   db.user.find({}, (err, doc) => {
     if (err) {
@@ -144,4 +81,5 @@ const initDbUser = () => {
 mongoose.connection.once('open', () => {
   initDbUser()
 })
+
 module.exports = db
