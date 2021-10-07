@@ -5,12 +5,15 @@ const getIp = require('../utils/getIp')
 const api = require('../http/server-api')
 const localTime = require('../utils/reviseTime')
 const confirmToken = require('../middleware/confirmToken')
+const unpublishedPermission = require('../middleware/unpublishedPermission')
 
-/***********前台**************/
+/***********查询相关**************/
 
 // 抓取文章列表
-router.get('/api/front/article/gets', (req, res) => {
-  let params = { publish: true }
+router.get('/api/front/article/gets', unpublishedPermission, (req, res) => {
+  console.log('fdfdsfsdf==========》》》》》')
+  console.log(req.query)
+  let params = { publish: req.query.publish }
   const limit = 8
   const skip = req.query.page * limit - limit
   const project = req.query.content == '0' ? { content: 0 } : {}
@@ -31,10 +34,10 @@ router.get('/api/front/article/gets', (req, res) => {
 })
 
 // 获取文章详细信息
-router.get('/api/front/article/detail', (req, res) => {
-  let { articleId } = req.query
+router.get('/api/front/article/detail', unpublishedPermission, (req, res) => {
+  let { publish, articleId } = req.query
 
-  db.article.find({ publish: true, articleId }, (err, doc) => {
+  db.article.find({ publish, articleId }, (err, doc) => {
     if (err) {
       res.status(500).end()
     } else {
@@ -112,7 +115,7 @@ router.patch('/api/front/article/love', (req, res) => {
   })
 })
 // 文章搜索
-router.get('/api/front/article/search', (req, res) => {
+router.get('/api/front/article/search', unpublishedPermission, (req, res) => {
   const limit = 8
   const skip = req.query.page * limit - limit
   if (req.query.according === 'key') {
@@ -158,77 +161,8 @@ router.get('/api/front/article/hot', (req, res) => {
     .limit(5)
 })
 
-/***********后台管理**************/
+/***********后台管理文章： 改动 删除 修改**************/
 
-// 后台管理抓取文章列表
-router.get('/api/admin/article/gets', confirmToken, (req, res) => {
-  const params = {
-    publish: req.query.publish,
-    tag: req.query.tag
-  }
-  const limit = 10
-  const skip = req.query.page * limit - limit
-
-  db.article
-    .find(params, { content: 0 }, (err, doc) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        res.json(doc)
-      }
-    })
-    .sort({ _id: -1 })
-    .skip(skip)
-    .limit(limit)
-})
-// 后台管理搜索文章
-router.get('/api/admin/article/search', confirmToken, (req, res) => {
-  const limit = 10
-  const skip = req.query.page * limit - limit
-  //后台管理根据关键词搜索
-  if (req.query.according === 'key') {
-    db.article
-      .find(
-        { publish: req.query.publish, title: { $regex: req.query.key, $options: 'i' } },
-        { content: 0 },
-        (err, doc) => {
-          if (err) {
-            res.status(500).end()
-          } else {
-            res.json(doc)
-          }
-        }
-      )
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
-    //后台管理根据时间范围搜索
-  } else {
-    const start = new Date(parseInt(req.query.start))
-    const end = new Date(parseInt(req.query.end))
-    db.article
-      .find({ publish: req.query.publish, date: { $gte: start, $lte: end } }, { content: 0 }, (err, doc) => {
-        if (err) {
-          res.status(500).end()
-        } else {
-          res.json(doc)
-        }
-      })
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
-  }
-})
-// 获取文章详细信息
-router.get('/api/admin/article/detail', confirmToken, (req, res) => {
-  db.article.find(req.query, (err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json(doc)
-    }
-  })
-})
 // 修改文章
 router.patch('/api/admin/article/update', confirmToken, (req, res) => {
   const { publish, original, title, abstract, tag, content } = req.body

@@ -14,11 +14,11 @@ const vistorsSchema = new mongoose.Schema({
 })
 const articleSchema = new mongoose.Schema({
   articleId: 'number',
-  original: 'boolean',
+  original: 'number',
   title: 'string',
   abstract: 'string',
   content: 'string',
-  publish: 'boolean',
+  publish: 'number',
   tag: 'array',
   commentNum: 'number',
   likeNum: 'number',

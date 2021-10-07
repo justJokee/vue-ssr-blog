@@ -113,7 +113,7 @@ export default {
   asyncData({ store, route }) {
     return store
       .dispatch('getArticle', {
-        publish: true,
+        publish: 1,
         // tag: route.params.articleList,
         articleId: route.params.id,
         cache: true
