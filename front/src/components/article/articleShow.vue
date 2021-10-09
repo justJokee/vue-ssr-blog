@@ -107,7 +107,10 @@ export default {
     const title = this.articles.only[0].title
     return {
       title: title + ' -mapblog小站',
-      meta: [{ vmid: 'description', name: 'description', content: title + ' -mapblog小站' }]
+      meta: [
+        { vmid: 'description', name: 'description', content: title + ' -mapblog小站' },
+        { vmid: 'keywords', name: 'keywords', content: title + ',一个关键词,两个关键词' }
+      ]
     }
   },
   asyncData({ store, route }) {

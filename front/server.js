@@ -90,38 +90,23 @@ server.use(
     }
   })
 )
-//前端请求
-server.get(
-  [
-    '/',
-    '/home',
-    '/article',
-    '/article/:articleList',
-    '/article/:articleList/:id',
-    '/life',
-    '/life/:id',
-    '/msgBoard',
-    '/search/:searchKey',
-    '/timeLine/:time',
-    '/login_qq'
-  ],
-  (req, res) => {
-    const context = {
-      title: 'mapBlog',
-      url: req.url
-    }
-    renderer.renderToString(context, (err, html) => {
-      const { title, meta } = context.meta.inject()
-      if (err) {
-        res.status(500).end('Internal Server Error')
-        return
-      }
-      html = html.replace(/<title.*?<\/title>/g, title.text())
-      html = html.replace(/<meta\s+.*?name="description".*?>/g, meta.text())
-      res.end(html)
-    })
+//前端请求 TODO: '/login_qq'处理
+server.get(['/', '/app/*'], (req, res) => {
+  const context = {
+    title: 'mapBlog',
+    url: req.url
   }
-)
+  renderer.renderToString(context, (err, html) => {
+    const { title, meta } = context.meta.inject()
+    if (err) {
+      res.status(500).end('Internal Server Error')
+      return
+    }
+    html = html.replace(/<title.*?<\/title>/g, title.text())
+    html = html.replace(/<meta\s+.*?name="description".*?>/g, meta.text())
+    res.end(html)
+  })
+})
 //后端请求
 server.get(['/admin', '/admin/*', '/login'], (req, res) => {
   res.render('admin.html', { title: '登录' })
@@ -175,9 +160,11 @@ const checkPortPromise = new Promise(resolve => {
     })
   })()
 })
-checkPortPromise.then(data => {
+checkPortPromise.then(async data => {
+  await readyPromise
   const uri = 'http://localhost:' + data
   // uri = 'http://127.0.0.1:' + data;
+  console.log()
   console.log('启动服务路径' + uri)
   server.listen(data, '0.0.0.0')
 })

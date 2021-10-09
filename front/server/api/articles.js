@@ -11,8 +11,6 @@ const unpublishedPermission = require('../middleware/unpublishedPermission')
 
 // 抓取文章列表
 router.get('/api/front/article/gets', unpublishedPermission, (req, res) => {
-  console.log('fdfdsfsdf==========》》》》》')
-  console.log(req.query)
   let params = { publish: req.query.publish }
   const limit = 8
   const skip = req.query.page * limit - limit
