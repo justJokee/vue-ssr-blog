@@ -121,8 +121,9 @@ export default {
         articleId: route.params.id,
         cache: true
       })
-      .then(() => {
+      .then(res => {
         store.commit('changeTitle', store.state.articles.only[0].title)
+        return { fakeArticle: res }
       })
   },
   filters: {

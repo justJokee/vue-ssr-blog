@@ -31,7 +31,8 @@ module.exports = {
     "processEnv": true,
     "_": true,
     "Prism": true,
-    "QRCode": true
+    "QRCode": true,
+    "QC": true
   },
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
