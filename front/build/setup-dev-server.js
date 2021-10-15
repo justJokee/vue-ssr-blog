@@ -3,6 +3,8 @@ const webpack = require('webpack')
 const MFS = require('memory-fs')
 const clientConfig = require('./webpack.client.config')
 const serverConfig = require('./webpack.server.config')
+const checkPort = require('./checkPort')
+
 process.env.NODE_ENV === 'development'
 const readFile = (fs, file) => {
   try {
@@ -12,7 +14,7 @@ const readFile = (fs, file) => {
   }
 }
 
-module.exports = function setupDevServer(app, cb) {
+module.exports = async function setupDevServer(app, cb) {
   let bundle, clientManifest
   let resolve
 
@@ -23,6 +25,23 @@ module.exports = function setupDevServer(app, cb) {
     resolve()
     cb(...args)
   }
+  const port = await checkPort()
+  // 注入环境变量
+  const injectEnv = require(`../config/env.dev.js`)
+  injectEnv.BASE_URL = `"http://localhost:${port}"`
+  clientConfig.plugins.push(
+    // strip dev-only code in Vue source
+    new webpack.DefinePlugin({
+      'process.env': { ...injectEnv, VUE_ENV: '"client"' }
+    })
+  )
+  serverConfig.plugins.push(
+    // strip dev-only code in Vue source
+    new webpack.DefinePlugin({
+      'process.env': { ...injectEnv, VUE_ENV: '"server"' }
+    })
+  )
+  process.env.__SAFE_PORT__ = port
 
   /****** client ******/
 

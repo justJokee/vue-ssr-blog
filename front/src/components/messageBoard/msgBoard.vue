@@ -120,6 +120,8 @@ export default {
   created() {},
   async mounted() {
     try {
+      console.log('看看process.env=====>>>>>')
+      console.log(process.env)
       const ret = await this.test()
       console.log('看看返回的结果', ret)
     } catch (e) {
@@ -144,7 +146,7 @@ export default {
       store
         .dispatch('getLeaveWords', {
           page: 1,
-          cache: false
+          cache: true
         })
         .then(res => {
           return { msgBoardArr: res }
