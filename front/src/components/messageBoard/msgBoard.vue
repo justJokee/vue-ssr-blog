@@ -99,6 +99,7 @@ import emoji from '@/components/base/emoji'
 import emojiData from '@/assets/js/emoji-data'
 import page from '@/components/base/page'
 import login from '@/components/userLogin/userLogin'
+import { generateTree } from '@/utils/generateTree'
 export default {
   components: {
     emoji,
@@ -119,14 +120,32 @@ export default {
   },
   created() {},
   async mounted() {
-    try {
-      console.log('看看process.env=====>>>>>')
-      console.log(process.env)
-      const ret = await this.test()
-      console.log('看看返回的结果', ret)
-    } catch (e) {
-      console.error('看看错误的结果', e)
-    }
+    var arr2 = [
+      { level: 2 },
+      { level: 3, title: '标题3单独的' },
+      { level: 3 },
+      { level: 5 },
+      { level: 2, title: '标题2' },
+      { level: 6 },
+      { level: 6 },
+      { level: 4 },
+      { level: 5 },
+      { level: 3 },
+      { level: 4 },
+      { level: 4 },
+      { level: 1 },
+      { level: 2 },
+      { level: 3 },
+      { level: 3 },
+      { level: 3 },
+      { level: 3 },
+      { level: 2 },
+      { level: 3 },
+      { level: 3 }
+    ]
+
+    console.log('test====>>>>')
+    console.log(generateTree(arr2))
   },
   metaInfo() {
     return {

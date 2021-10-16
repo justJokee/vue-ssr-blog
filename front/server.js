@@ -58,7 +58,6 @@ readyPromise.then(() => {
     express.static(resolve(path), {
       maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0
     })
-  console.log('先use为敬------>>>>>', process.env.__SAFE_PORT__)
 
   server.use(compression()) //开启gzip压缩
   server.use('/dist', serve('./dist', true))
