@@ -51,9 +51,7 @@ if (isProd) {
     renderer = createRenderer(bundle, options)
   })
 }
-///////
 readyPromise.then(() => {
-  /////
   const serve = (path, cache) =>
     express.static(resolve(path), {
       maxAge: cache && isProd ? 1000 * 60 * 60 * 24 * 30 : 0

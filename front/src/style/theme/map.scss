@@ -1,0 +1,9 @@
+/**
+ * @desc: 主题映射表 
+ * @use   key即为主题后缀 .mapblog—theme-${key}
+ */
+@import './dark/index.scss';
+
+$themes: (
+  dark: $dark
+);

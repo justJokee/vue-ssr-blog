@@ -6,6 +6,10 @@ import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import mergeAsyncData from '@/mixins/mergeAsyncData'
+import { Button, Select, Tag } from 'element-ui'
+Vue.component(Button.name, Button)
+Vue.component(Select.name, Select)
+Vue.component(Tag.name, Tag)
 Vue.filter('reviseTime', function(value) {
   let localTime = new Date(value)
   let year = localTime.getFullYear()

@@ -1,5 +1,6 @@
 <template>
   <div class="msgboard">
+    <el-tag>测试</el-tag>
     <div id="anchor-msgBoard"></div>
     <h2>我要留言：</h2>
     <div class="say-box">
@@ -322,7 +323,13 @@ export default {
   }
 }
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
+@import '~@/style/index.scss';
+@include respond-to(xs) {
+  .msgboard {
+    color: red !important;
+  }
+}
 .msgboard {
   /*background: #F7EDED;*/
   background: #faf7f7;
@@ -335,6 +342,7 @@ export default {
     color: #462c2c;
   }
 }
+
 #anchor-msgBoard {
   position: relative;
   top: -55px;
