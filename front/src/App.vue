@@ -1,44 +1,6 @@
 <template>
   <div id="app">
-    <div class="main">
-      <div id="anchor"></div>
-      <div class="body-content">
-        <tab></tab>
-        <div class="container" ref="container">
-          <section class="section">
-            <div class="content">
-              <div class="location" v-show="$route.name !== 'home'">
-                <span>当前位置：</span>
-                <a href="javascript: void(0)" @click="backHome">首页</a>
-                <div v-for="(item, index) in location" :key="index">
-                  ->
-                  <a href="javascript: void(0)" @click="back(item)">{{ item.showName }}</a>
-                </div>
-              </div>
-              <keep-alive v-if="$route.meta.keepAlive">
-                <router-view />
-              </keep-alive>
-              <router-view v-if="!$route.meta.keepAlive"></router-view>
-            </div>
-            <div class="r-slide">
-              <div class="r-slide-content">
-                <about></about>
-                <hot></hot>
-                <gateWay></gateWay>
-                <file-on-place></file-on-place>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </div>
-    <foot></foot>
-    <transition name="fade">
-      <div class="rocket" v-show="showBackTop">
-        <a href="javascript: void(0)" @click="backTop"></a>
-      </div>
-    </transition>
-    <div class="fix-bg"></div>
+    <router-view />
   </div>
 </template>
 <script>
@@ -81,11 +43,11 @@ export default {
     }
   },
   mounted() {
-    this.currentLocation(this.$route)
-    this.scrollCotainer()
-    //页面重载计算锚点距离并判断tab的背景样式
-    this.positionTop(getElementTop(this.$refs.container) - 50)
-    this.getTop()
+    // this.currentLocation(this.$route)
+    // this.scrollCotainer()
+    // //页面重载计算锚点距离并判断tab的背景样式
+    // this.positionTop(getElementTop(this.$refs.container) - 50)
+    // this.getTop()
   },
   computed: {
     ...mapState(['currentTitle'])
@@ -197,6 +159,7 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~@/style/reset.scss';
 @import './assets/css/prism.css';
 @import './assets/css/emoji-sprite.css';
 * {
@@ -213,7 +176,7 @@ body {
 }
 
 #app {
-  margin: 50px 0 0 0;
+  // margin: 50px 0 0 0;
 }
 
 .main {

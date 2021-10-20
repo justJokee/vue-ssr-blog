@@ -98,13 +98,17 @@ readyPromise.then(() => {
       url: req.url
     }
     renderer.renderToString(context, (err, html) => {
-      const { title, meta } = context.meta.inject()
       if (err) {
+        console.log('这是错误====>>>>', err)
         res.status(500).end('Internal Server Error')
         return
       }
-      html = html.replace(/<title.*?<\/title>/g, title.text())
-      html = html.replace(/<meta\s+.*?name="description".*?>/g, meta.text())
+      if (context.meta) {
+        const { title, meta } = context.meta.inject()
+        html = html.replace(/<title.*?<\/title>/g, title.text())
+        html = html.replace(/<meta\s+.*?name="description".*?>/g, meta.text())
+      }
+
       res.end(html)
     })
   })

@@ -25,11 +25,13 @@ export default context => {
           })
         )
         const __COMPONENT_ASYNCDATA__ = componentRes.map(eRes => {
-          const { res, Component } = eRes
-          // 将路由组件的 asyncData 返回值挂载到组件实例的构造项上
-          // 用于 data & asyncData 的合并策略
-          Component.__COMPONENT_ASYNCDATA__ = res
-          return res
+          if (eRes) {
+            const { res, Component } = eRes
+            // 将路由组件的 asyncData 返回值挂载到组件实例的构造项上
+            // 用于 data & asyncData 的合并策略
+            Component.__COMPONENT_ASYNCDATA__ = res
+            return res
+          }
         })
 
         // 在所有预取钩子(preFetch hook) resolve 后，
