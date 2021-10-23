@@ -5,6 +5,7 @@
 <template>
   <div class="layout">
     <header class="layout-header">
+      <navbar></navbar>
       <slot name="header">
         <div class="header-content">头部组件</div>
       </slot>
@@ -29,7 +30,10 @@
   </div>
 </template>
 <script>
+import navbar from '@/views/layout/components/navbar/'
+
 import dashboard from './components/dashboard/'
+
 export default {
   props: {
     dashboardShow: {
@@ -38,7 +42,8 @@ export default {
     }
   },
   components: {
-    dashboard
+    dashboard,
+    navbar
   },
   data() {
     return {}
@@ -55,6 +60,9 @@ export default {
   min-height: 100vh;
 
   .layout-header {
+    min-height: 150px;
+    // padding-top: 60px;
+    background: red;
   }
   .layout-body {
     .body-content {

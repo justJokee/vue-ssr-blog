@@ -1,5 +1,5 @@
 // 全局样式覆盖
-
+@import './index.scss';
 body,
 button,
 input,
@@ -28,8 +28,11 @@ canvas {
   box-sizing: border-box;
 }
 body {
-  font: 400 16px/20px Arial, Helvetica, Tahoma, '华文细黑', 'Microsoft YaHei', '微软雅黑', sans-serif;
-  color: #000;
+  font: 400 14px/20px -apple-system, BlinkMacSystemFont, Arial, Helvetica, Tahoma, '华文细黑', 'Microsoft YaHei',
+    '微软雅黑', sans-serif;
+  @include themeify() {
+    color: themed('color-default');
+  }
 }
 li {
   list-style: none;
