@@ -8,6 +8,11 @@
   align-items: center;
   justify-content: space-between;
 }
+@mixin flex-box-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 @mixin flex-box-wrap-space {
   display: flex;
   flex-wrap: wrap;

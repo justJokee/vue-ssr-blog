@@ -62,7 +62,6 @@ export default {
   .layout-header {
     min-height: 150px;
     // padding-top: 60px;
-    background: red;
   }
   .layout-body {
     .body-content {
