@@ -4,27 +4,27 @@
 </doc>
 <template>
   <div class="layout">
-    <header class="layout-header">
+    <header class="layout__header">
       <navbar></navbar>
       <slot name="header">
         <div class="header-content">头部组件</div>
       </slot>
     </header>
-    <main class="layout-body">
-      <div class="body-content">
-        <div class="body-content-page">
+    <main class="layout__body">
+      <div class="layout__body-content">
+        <div class="layout__body-page">
           <slot>
             <el-card>page....</el-card>
           </slot>
         </div>
-        <div v-if="dashboardShow" class="body-content-dashboard">
+        <div v-if="dashboardShow" class="layout__body-dashboard">
           <dashboard></dashboard>
         </div>
       </div>
     </main>
-    <footer class="layout-footer">
+    <footer class="layout__footer">
       <slot name="footer">
-        <div class="footer-content">尾部</div>
+        <div class="layout__footer-content">尾部</div>
       </slot>
     </footer>
   </div>
@@ -59,54 +59,54 @@ export default {
   flex-direction: column;
   min-height: 100vh;
 
-  .layout-header {
+  &__header {
     min-height: 150px;
-    // padding-top: 60px;
   }
-  .layout-body {
-    .body-content {
+  &__body {
+    &-content {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       margin: 0 auto;
       padding: 8px;
-      .body-content-page {
-        flex: 0 1 auto;
-        width: 75%;
-      }
-      .body-content-dashboard {
-        height: auto;
-        flex: 1 1 auto;
-        width: 25%;
-        border: 4px solid #ccc;
-        margin-left: 16px;
-      }
+    }
+    &-page {
+      flex: 0 1 auto;
+      width: 75%;
+    }
+    &-dashboard {
+      // height: auto;
+      height: 1500px;
+      flex: 1 1 auto;
+      width: 25%;
+      border: 4px solid #ccc;
+      margin-left: 16px;
     }
     @include respond-to(xs) {
-      .body-content {
+      &-content {
         max-width: 768px;
         flex-direction: column;
-        .body-content-page {
-          width: 100%;
-        }
-        .body-content-dashboard {
-          width: 100%;
-          margin-left: 0;
-        }
+      }
+      &-page {
+        width: 100%;
+      }
+      &-dashboard {
+        width: 100%;
+        margin-left: 0;
       }
     }
     @include respond-to(md) {
-      .body-content {
+      &-content {
         max-width: 992px;
       }
     }
     @include respond-to(lg) {
-      .body-content {
+      &-content {
         max-width: 1200px;
       }
     }
   }
-  .layout-footer {
+  &-footer {
     position: absolute;
     bottom: 0;
   }

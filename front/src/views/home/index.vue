@@ -3,22 +3,29 @@
   @author: justJokee
 </doc>
 <template>
-  <div class="home">
+  <div class="home-article">
     <layout>
-      <div class="home-header" slot="header">
-        <div class="home-header-dictum">
-          <div class="site-name">Marco's Blog</div>
-          <div class="dictum-info">
+      <div id="home-article-header" class="home-article__header" slot="header">
+        <div class="home-article__dictum">
+          <div class="home-article__site-name">Marco's Blog</div>
+          <div class="home-article__dictum-info">
             <span>{{ dictumInfo }}</span>
-            <span class="typed-cursor" :class="{ 'typed-cursor-anmation': watingTyped }">|</span>
+            <span class="home-article__typed-cursor" :class="{ 'is-typed-cursor-anmation': watingTyped }">|</span>
           </div>
         </div>
-        <div class="home-header-go" @click="go">
+        <div class="home-article__go" @click="go">
           <i class="el-icon-arrow-down"></i>
         </div>
       </div>
-      <div class="article">
-        <el-card>一堆文章</el-card>
+      <div class="home-article__body">
+        <el-card class="home-article__item" v-for="(article, index) in articles" :key="index">
+          <div class="home-article__item-content">
+            <div class="home-article__item-pic">
+              <img :src="article.headerPic" alt="" />
+            </div>
+            <div class="home-article__item-abstract">{{ article.abstract }}</div>
+          </div>
+        </el-card>
       </div>
     </layout>
   </div>
@@ -27,6 +34,7 @@
 <script>
 // 导入工具/组件
 import scrollTo from '@/utils/scrollTo'
+import api from '@/api/'
 export default {
   // 组件名称
   name: 'home',
@@ -39,10 +47,11 @@ export default {
       timer: null,
       backTimer: null,
       watingTyped: false,
+      articles: [],
       dictums: [
-        ['你瞧这些白云聚了又散，散了又聚，人生离合，亦复如斯', '出自：金庸'],
-        ['人在江湖，身不由己', '出自：古龙'],
-        ['倘若我问心有愧呢', '出自：《倚天屠龙记》']
+        ['你瞧这些白云聚了又散，散了又聚，人生离合，亦复如斯。', '出自：金庸'],
+        ['人在江湖，身不由己。', '出自：古龙'],
+        ['天涯思君不可忘。', '出自：《倚天屠龙记》']
       ]
     }
   },
@@ -50,11 +59,18 @@ export default {
   watch: {},
   mounted() {
     this.startPlay()
+    console.log(666677777)
   },
-
+  async asyncData() {
+    const articles = await api.getArticles({
+      publish: 1,
+      page: 1
+    })
+    return { articles }
+  },
   methods: {
     go() {
-      const height = document.querySelector('.home-header').clientHeight
+      const height = document.querySelector('#home-article-header').clientHeight
       scrollTo(height)
     },
     async startPlay() {
@@ -111,56 +127,90 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss">
 @import '~@/style/index.scss';
-.home {
-  .home-header {
+.home-article {
+  &__header {
     height: 100vh;
     background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/index.jpg);
     background-position: center;
     background-size: cover;
     position: relative;
     @include flex-box-center;
-    .home-header-dictum {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+  }
+  &__dictum {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    @include themeify() {
+      color: themed('color-navbar');
+    }
+  }
+  &__dictum-info {
+    font-size: 24px;
+    margin-top: 24px;
+  }
+  &__typed-cursor {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 28px;
+  }
+  .is-typed-cursor-anmation {
+    animation: typed 0.5s ease infinite alternate;
+  }
+  &__site-name {
+    font-size: 38px;
+  }
+  &__go {
+    position: absolute;
+    bottom: 0;
+    padding: 8px 0;
+    text-align: center;
+    width: 100%;
+    cursor: pointer;
+    .el-icon-arrow-down {
+      animation: dance 1.5s ease-in infinite alternate;
+      font-weight: 900;
+      font-size: 24px;
       @include themeify() {
         color: themed('color-navbar');
       }
-      .dictum-info {
-        font-size: 24px;
-        margin-top: 24px;
-        .typed-cursor {
-          display: inline-block;
-          margin-left: 4px;
-          font-size: 28px;
-        }
-        .typed-cursor-anmation {
-          animation: typed 0.5s ease infinite alternate;
-        }
-      }
-      .site-name {
-        font-size: 38px;
-      }
-    }
-    .home-header-go {
-      position: absolute;
-      bottom: 0;
-      padding: 8px 0;
-      text-align: center;
-      width: 100%;
-      cursor: pointer;
-      .el-icon-arrow-down {
-        animation: dance 1.5s ease-in infinite alternate;
-        font-weight: 900;
-        font-size: 24px;
-        @include themeify() {
-          color: themed('color-navbar');
-        }
-      }
     }
   }
-  .article {
-    height: 2500px;
+  &__body {
+    padding: 40px 15px;
+  }
+  &__item {
+    height: 280px;
+    > .el-card__body {
+      width: 100%;
+      height: 100%;
+      padding: 0;
+    }
+    &-pic {
+      width: 45%;
+      height: 100%;
+      flex: 0 0 auto;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+    &-abstract {
+      width: 55%;
+      flex: 0 0 auto;
+    }
+  }
+  &__item-content {
+    display: flex;
+
+    width: 100%;
+    height: 100%;
+  }
+  &__item:not(:first-child) {
+    margin-top: 20px;
+  }
+  &__item:nth-child(even) .home-article__item-pic {
+    order: 2;
   }
 }
 @keyframes dance {

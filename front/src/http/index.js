@@ -8,6 +8,7 @@ function ajax(type, url, options) {
     axios({
       method: type,
       url: url,
+      // baseURL: "https://www.mapblog.cn",
       baseURL: process.env.BASE_URL,
       params: type === 'get' ? options : null,
       data: type !== 'get' ? qs.stringify(options) : null

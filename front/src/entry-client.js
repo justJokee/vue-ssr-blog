@@ -56,3 +56,8 @@ router.onReady(() => {
   })
   app.$mount('#app')
 })
+if (process.env.NODE_ENV === 'development') {
+  if (module.hot) {
+    // 热更新处理
+  }
+}
