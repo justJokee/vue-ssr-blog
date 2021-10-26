@@ -59,7 +59,6 @@ export default {
   watch: {},
   mounted() {
     this.startPlay()
-    console.log(666677777)
   },
   async asyncData() {
     const articles = await api.getArticles({

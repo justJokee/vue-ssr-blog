@@ -1,6 +1,5 @@
 import { createApp } from './app'
 import Vue from 'vue'
-
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
     const { asyncData } = this.$options
@@ -19,7 +18,7 @@ Vue.mixin({
 
 const { app, router, store } = createApp()
 
-// 将服务端渲染时候的状态写入vuex中
+// 将服务端渲染时的状态写入vuex中
 if (window.__INITIAL_STATE__) {
   store.replaceState(window.__INITIAL_STATE__.state)
 }
