@@ -32,6 +32,7 @@ export default {
   },
   watch: {
     $route() {
+      // scrollTo(0)
       if (this.$route.name === 'home') {
         this.location = []
       }

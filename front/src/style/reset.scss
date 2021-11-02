@@ -30,6 +30,7 @@ canvas {
 body {
   font: 400 14px/20px -apple-system, BlinkMacSystemFont, Arial, Helvetica, Tahoma, '华文细黑', 'Microsoft YaHei',
     '微软雅黑', sans-serif;
+
   @include themeify() {
     color: themed('color-default');
   }
@@ -39,6 +40,9 @@ li {
 }
 a {
   text-decoration: none;
+  @include themeify() {
+    color: themed('color-default');
+  }
 }
 #app {
   overflow: hidden;

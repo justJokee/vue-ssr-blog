@@ -13,6 +13,7 @@ const miss = resolve => require(['@/components/base/miss'], resolve)
 // const timeLine = resolve => require(['@/components/timeLine/timeLine'], resolve)
 
 const home = () => import('@/views/home/')
+const articleDetail = () => import('@/views/article/articleDetail')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -30,6 +31,11 @@ export function createRouter() {
         path: '/',
         name: 'home',
         component: home
+      },
+      {
+        path: '/app/article/:id',
+        name: 'articleDetail',
+        component: articleDetail
       }
       // {
       //   path: '/',
@@ -86,6 +92,13 @@ export function createRouter() {
       //   name: 'loginGithub',
       //   component: loginGithub
       // }
-    ]
+    ],
+    scrollBehavior(to, from, savedPosition) {
+      if (savedPosition) {
+        return savedPosition
+      } else {
+        return { x: 0, y: 0 }
+      }
+    }
   })
 }

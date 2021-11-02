@@ -3,7 +3,9 @@
   @author: justJokee 
 </doc>
 <template>
-  <div class="dashboard">卡片们</div>
+  <div class="dashboard">
+    <el-card>卡片</el-card>
+  </div>
 </template>
 <script>
 export default {

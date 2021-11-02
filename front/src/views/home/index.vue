@@ -23,9 +23,38 @@
             <div class="home-article__item-pic">
               <img :src="article.headerPic" alt="" />
             </div>
-            <div class="home-article__item-abstract">{{ article.abstract }}</div>
+            <div class="home-article__item-info">
+              <div>
+                <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
+              </div>
+              <div class="home-article__item-detail">
+                <span>
+                  <i class="el-icon-date"></i>
+                  发表时间 {{ article.date | formatDate }}
+                </span>
+                <span>&nbsp;|&nbsp;</span>
+                <span>
+                  <i class="el-icon-chat-dot-round"></i>
+                  评论数 {{ article.commentNum }}
+                </span>
+                <span>&nbsp;|&nbsp;</span>
+                <span>
+                  <i class="el-icon-star-off"></i>
+                  点赞 {{ article.likeNum }}
+                </span>
+              </div>
+              <div class="home-article__item-abstract">{{ article.abstract }}</div>
+            </div>
           </div>
         </el-card>
+        <div class="home-article__page">
+          <el-pagination
+            :total="total"
+            layout="prev, pager, next"
+            :page-size="pageSize"
+            @current-change="currentChange"
+          ></el-pagination>
+        </div>
       </div>
     </layout>
   </div>
@@ -35,6 +64,7 @@
 // 导入工具/组件
 import scrollTo from '@/utils/scrollTo'
 import api from '@/api/'
+import moment from 'moment'
 export default {
   // 组件名称
   name: 'home',
@@ -43,10 +73,13 @@ export default {
   props: {},
   data() {
     return {
+      total: 0, //
+      pageSize: 8,
       dictumInfo: '',
       timer: null,
       backTimer: null,
       watingTyped: false,
+      hidePage: false,
       articles: [],
       dictums: [
         ['你瞧这些白云聚了又散，散了又聚，人生离合，亦复如斯。', '出自：金庸'],
@@ -61,13 +94,30 @@ export default {
     this.startPlay()
   },
   async asyncData() {
-    const articles = await api.getArticles({
+    const articleRes = await api.getArticles({
       publish: 1,
       page: 1
     })
-    return { articles }
+    if (articleRes.status === 200) return { articles: articleRes.data, total: articleRes.total }
+  },
+  filters: {
+    formatDate(val) {
+      return moment(val).format('YYYY-MM-DD HH:mm')
+    }
   },
   methods: {
+    async currentChange(val) {
+      const articleRes = await api.getArticles({
+        publish: 1,
+        limit: 1,
+        page: val
+      })
+      if (articleRes.status === 200) {
+        this.total = articleRes.total
+        this.articles = articleRes.data
+      }
+    },
+
     go() {
       const height = document.querySelector('#home-article-header').clientHeight
       scrollTo(height)
@@ -175,7 +225,12 @@ export default {
     }
   }
   &__body {
-    padding: 40px 15px;
+    // padding: 40px 0px;
+  }
+
+  &__page {
+    padding: 16px 0;
+    @include flex-box-center;
   }
   &__item {
     height: 280px;
@@ -194,16 +249,39 @@ export default {
         object-fit: cover;
       }
     }
-    &-abstract {
+    &-info {
       width: 55%;
+      padding: 20px 30px;
       flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    &-detail {
+      @include themeify() {
+        color: themed('color-home-article-detail');
+      }
+      font-size: 12px;
+      padding: 12px 0;
+    }
+    &-abstract {
+      line-height: 2;
     }
   }
   &__item-content {
     display: flex;
-
     width: 100%;
     height: 100%;
+    a {
+      font-size: 24px;
+      line-height: 1.5;
+      transition: all ease-in-out 0.25s;
+    }
+    a:hover {
+      @include themeify() {
+        color: themed('color-ele-primary');
+      }
+    }
   }
   &__item:not(:first-child) {
     margin-top: 20px;

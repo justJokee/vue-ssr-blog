@@ -2,7 +2,7 @@ const express = require('express')
 const router = express.Router()
 const db = require('../db/')
 const getIp = require('../utils/getIp')
-const api = require('../http/server-api')
+const api = require('../http/')
 const localTime = require('../utils/reviseTime')
 const confirmToken = require('../middleware/confirmToken')
 const unpublishedPermission = require('../middleware/unpublishedPermission')
@@ -10,55 +10,73 @@ const unpublishedPermission = require('../middleware/unpublishedPermission')
 /***********查询相关**************/
 
 // 抓取文章列表
-router.get('/api/front/article/gets', unpublishedPermission, (req, res) => {
-  let params = { publish: req.query.publish }
-  const limit = 8
+router.get('/api/front/article/gets', unpublishedPermission, async (req, res) => {
+  const params = { publish: req.query.publish }
+  const limit = parseInt(req.query.limit) || 8
   const skip = req.query.page * limit - limit
   const project = req.query.content == '0' ? { content: 0 } : {}
-
   if (req.query.tag) params.tag = req.query.tag
-
-  db.article
-    .find(params, project, (err, doc) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        res.json(doc)
-      }
+  try {
+    const total = await db.article.count(params)
+    const articles = await db.article
+      .find(params, project)
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+    res.json({
+      status: 200,
+      data: articles,
+      total,
+      page: parseInt(req.query.page)
     })
-    .sort({ _id: -1 })
-    .skip(skip)
-    .limit(limit)
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 
 // 获取文章详细信息
-router.get('/api/front/article/detail', unpublishedPermission, (req, res) => {
-  let { publish, articleId } = req.query
-
-  db.article.find({ publish, articleId }, (err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      if (doc.length === 0) {
-        res.json([{ title: '您访问的路径不存在' }])
-      } else {
-        res.json(doc)
-        db.article.update({ articleId: req.query.articleId }, { $inc: { pv: 1 } }, (err, doc) => {
-          if (err) {
-            res.status(500).end()
-          }
-        })
-        if (process.env.NODEW_ENV === 'production') {
-          api.get('http://ip.taobao.com/service/getIpInfo.php', { ip: getIp(req) }).then(data => {
-            new db.newMsg({
-              type: 'pv',
-              content: data.data.city + '网友 在' + localTime(Date.now()) + '浏览了你的文章--' + doc[0].title
-            }).save()
-          })
-        }
-      }
+router.get('/api/front/article/detail', unpublishedPermission, async (req, res) => {
+  const { publish, articleId } = req.query
+  try {
+    const detail = await db.article.find({ publish, articleId })
+    res.json({
+      status: 200,
+      data: detail[0] || {}
+    })
+    // 更新pv
+    await db.article.update({ articleId }, { $inc: { pv: 1 } })
+    // 获取访客信息
+    if (process.env.NODEW_ENV === 'production') {
+      // const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
     }
-  })
+  } catch (e) {
+    res.status(500).end()
+  }
+
+  // db.article.find({ publish, articleId }, (err, doc) => {
+  //   if (err) {
+  //     res.status(500).end()
+  //   } else {
+  //     if (doc.length === 0) {
+  //       res.json([{ title: '您访问的路径不存在' }])
+  //     } else {
+  //       res.json(doc)
+  //       db.article.update({ articleId: req.query.articleId }, { $inc: { pv: 1 } }, (err, doc) => {
+  //         if (err) {
+  //           res.status(500).end()
+  //         }
+  //       })
+  //       if (process.env.NODEW_ENV === 'production') {
+  //         api.get('http://ip.taobao.com/service/getIpInfo.php', { ip: getIp(req) }).then(data => {
+  //           new db.newMsg({
+  //             type: 'pv',
+  //             content: data.data.city + '网友 在' + localTime(Date.now()) + '浏览了你的文章--' + doc[0].title
+  //           }).save()
+  //         })
+  //       }
+  //     }
+  //   }
+  // })
 })
 // 获得上一篇文章和下一篇文章
 router.get('/api/front/article/preAndNext', (req, res) => {

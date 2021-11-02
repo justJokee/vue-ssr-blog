@@ -7,7 +7,9 @@
     <header class="layout__header">
       <navbar></navbar>
       <slot name="header">
-        <div class="header-content">头部组件</div>
+        <div class="header-content">
+          <layout-header v-bind="$attrs"></layout-header>
+        </div>
       </slot>
     </header>
     <main class="layout__body">
@@ -31,6 +33,7 @@
 </template>
 <script>
 import navbar from '@/views/layout/components/navbar/'
+import layoutHeader from '@/views/layout/components/header/'
 
 import dashboard from './components/dashboard/'
 
@@ -43,8 +46,10 @@ export default {
   },
   components: {
     dashboard,
+    layoutHeader,
     navbar
   },
+
   data() {
     return {}
   },
@@ -68,7 +73,7 @@ export default {
       justify-content: space-between;
       align-items: flex-start;
       margin: 0 auto;
-      padding: 8px;
+      padding: 40px 15px;
     }
     &-page {
       flex: 0 1 auto;
@@ -86,6 +91,7 @@ export default {
       &-content {
         max-width: 768px;
         flex-direction: column;
+        padding: 20px 5px;
       }
       &-page {
         width: 100%;
