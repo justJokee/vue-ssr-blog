@@ -7,16 +7,20 @@
     <header class="layout__header">
       <navbar></navbar>
       <slot name="header">
-        <div class="header-content">
-          <layout-header v-bind="$attrs"></layout-header>
+        <div class="layout__header-content">
+          <layout-header v-bind="$attrs">
+            <slot name="custom-header"></slot>
+          </layout-header>
         </div>
       </slot>
     </header>
     <main class="layout__body">
       <div class="layout__body-content">
         <div class="layout__body-page">
-          <slot>
-            <el-card>page....</el-card>
+          <slot name="custom-body">
+            <el-card>
+              <slot></slot>
+            </el-card>
           </slot>
         </div>
         <div v-if="dashboardShow" class="layout__body-dashboard">

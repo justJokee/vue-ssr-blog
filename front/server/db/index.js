@@ -8,7 +8,7 @@ const {
   articleSchema,
   commentSchema,
   msgBoardSchema,
-  newMsgSchema,
+  newsSchema,
   counterSchema
 } = require('./schema')
 
@@ -54,7 +54,7 @@ const db = {
   comment: mongoose.model('comment', commentSchema),
   msgBoard: mongoose.model('msgBoard', msgBoardSchema),
   vistor: mongoose.model('vistor', vistorsSchema),
-  newMsg: mongoose.model('new', newMsgSchema),
+  news: mongoose.model('new', newsSchema),
   counter: mongoose.model('counter', counterSchema)
 }
 

@@ -17,7 +17,7 @@
           <i class="el-icon-arrow-down"></i>
         </div>
       </div>
-      <div class="home-article__body">
+      <div class="home-article__body" slot="custom-body">
         <el-card class="home-article__item" v-for="(article, index) in articles" :key="index">
           <div class="home-article__item-content">
             <div class="home-article__item-pic">
@@ -64,7 +64,6 @@
 // 导入工具/组件
 import scrollTo from '@/utils/scrollTo'
 import api from '@/api/'
-import moment from 'moment'
 export default {
   // 组件名称
   name: 'home',
@@ -99,11 +98,6 @@ export default {
       page: 1
     })
     if (articleRes.status === 200) return { articles: articleRes.data, total: articleRes.total }
-  },
-  filters: {
-    formatDate(val) {
-      return moment(val).format('YYYY-MM-DD HH:mm')
-    }
   },
   methods: {
     async currentChange(val) {

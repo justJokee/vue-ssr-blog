@@ -54,14 +54,25 @@ const msgBoardSchema = new mongoose.Schema({
     }
   ]
 })
-const newMsgSchema = new mongoose.Schema({
+const newsSchema = new mongoose.Schema({
   type: 'string',
+  // 文章评论/留言板
   name: 'string',
-  say: 'string',
-  title: 'string',
-  content: 'string',
   ip: 'string',
-  date: 'date'
+  lng: 'string',
+  lat: 'string',
+  date: 'date',
+  // 国际区域
+  nation: 'string',
+  // 省份
+  province: 'string',
+  city: 'string',
+  // 区域
+  district: 'string',
+  // 存储 _id
+  articleId: 'string',
+  commentId: 'string',
+  leaveMessageId: 'string'
 })
 const counterSchema = new mongoose.Schema({
   _id: 'string',
@@ -74,6 +85,6 @@ module.exports = {
   articleSchema,
   commentSchema,
   msgBoardSchema,
-  newMsgSchema,
+  newsSchema,
   counterSchema
 }

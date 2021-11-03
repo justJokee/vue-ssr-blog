@@ -43,40 +43,31 @@ router.get('/api/front/article/detail', unpublishedPermission, async (req, res) 
       status: 200,
       data: detail[0] || {}
     })
-    // 更新pv
-    await db.article.update({ articleId }, { $inc: { pv: 1 } })
+
     // 获取访客信息
     if (process.env.NODEW_ENV === 'production') {
-      // const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
+      // 更新pv
+      await db.article.update({ articleId }, { $inc: { pv: 1 } })
+      const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
+      if (ipInfo.status === '200' && ipInfo.data.length) {
+        const info = ipInfo.data[0]
+        await new db.news({
+          type: 'pv',
+          ip: info.ip,
+          lng: info.adlng,
+          lat: info.adlat,
+          nation: info.nation,
+          province: info.province,
+          city: info.city,
+          district: info.district,
+          articleId: detail[0]._id,
+          date: new Date()
+        }).save()
+      }
     }
   } catch (e) {
     res.status(500).end()
   }
-
-  // db.article.find({ publish, articleId }, (err, doc) => {
-  //   if (err) {
-  //     res.status(500).end()
-  //   } else {
-  //     if (doc.length === 0) {
-  //       res.json([{ title: '您访问的路径不存在' }])
-  //     } else {
-  //       res.json(doc)
-  //       db.article.update({ articleId: req.query.articleId }, { $inc: { pv: 1 } }, (err, doc) => {
-  //         if (err) {
-  //           res.status(500).end()
-  //         }
-  //       })
-  //       if (process.env.NODEW_ENV === 'production') {
-  //         api.get('http://ip.taobao.com/service/getIpInfo.php', { ip: getIp(req) }).then(data => {
-  //           new db.newMsg({
-  //             type: 'pv',
-  //             content: data.data.city + '网友 在' + localTime(Date.now()) + '浏览了你的文章--' + doc[0].title
-  //           }).save()
-  //         })
-  //       }
-  //     }
-  //   }
-  // })
 })
 // 获得上一篇文章和下一篇文章
 router.get('/api/front/article/preAndNext', (req, res) => {

@@ -3,8 +3,12 @@
   @author: justJokee 
 </doc>
 <template>
-  <div class="layout-header" :style="{ background: 'url(' + headerBg + ')' }">
-    头部
+  <div class="header" :style="{ backgroundImage: 'url(' + headerBg + ')' }">
+    <div class="header__content">
+      <slot>
+        头部
+      </slot>
+    </div>
   </div>
 </template>
 <script>
@@ -22,9 +26,28 @@ export default {
 }
 </script>
 <style lang="scss">
-.layout-header {
+@import '~@/style/index.scss';
+
+.header {
+  position: relative;
   height: 400px;
-  background-size: 100% 100%;
-  background-position: center;
+  background-size: cover;
+  background-position: center center;
+  &__content {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+}
+.header:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  @include themeify() {
+    background: themed('bg-header-mask');
+  }
 }
 </style>

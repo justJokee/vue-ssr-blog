@@ -20,6 +20,9 @@ Vue.use(DropdownItem)
 Vue.use(Pagination)
 
 // Vue.config.productionTip = false
+Vue.filter('formatDate', val => {
+  return moment(val).format('YYYY-MM-DD HH:mm')
+})
 Vue.mixin(mergeAsyncData)
 Vue.prototype.$moment = moment
 /* eslint-disable no-new */
