@@ -94,6 +94,7 @@ export function createRouter() {
       // }
     ],
     scrollBehavior(to, from, savedPosition) {
+      if (to.hash) return false
       if (savedPosition) {
         return savedPosition
       } else {

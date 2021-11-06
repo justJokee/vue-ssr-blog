@@ -17,7 +17,12 @@ Vue.mixin({
 })
 
 const { app, router, store } = createApp()
-
+Prism.plugins.toolbar.registerButton('macostyle', function(env) {
+  const content = document.createElement('div')
+  content.setAttribute('class', 'toolbar-item__content')
+  content.innerHTML = '<span class="toolbar-item__icon"></span>'
+  return content
+})
 // 将服务端渲染时的状态写入vuex中
 if (window.__INITIAL_STATE__) {
   store.replaceState(window.__INITIAL_STATE__.state)
@@ -55,8 +60,3 @@ router.onReady(() => {
   })
   app.$mount('#app')
 })
-if (process.env.NODE_ENV === 'development') {
-  if (module.hot) {
-    // 热更新处理
-  }
-}

@@ -15,7 +15,7 @@
           <span>&nbsp;|&nbsp;</span>
           <span>
             <i class="el-icon-price-tag"></i>
-            标签 {{ article.tag.join('&nbsp;&nbsp;') }}
+            标签 {{ tags }}
           </span>
         </div>
         <div class="article-detail__info info-2">
@@ -35,6 +35,10 @@
           </span>
         </div>
       </div>
+      <a href="#这是第2个h2">点击跳转</a>
+      <note>
+        <p>{{ article.abstract }}</p>
+      </note>
       <div v-html="article.content" class="article-detail__body"></div>
     </layout>
   </div>
@@ -42,10 +46,11 @@
 
 <script>
 import api from '@/api/'
-
+import note from '@/components/note/'
+import { generateTree } from '@/utils/generateTree'
 export default {
   name: 'articleDetail',
-  components: {},
+  components: { note },
   props: {},
   // 动态属性
   data() {
@@ -53,13 +58,18 @@ export default {
       article: {}
     }
   },
-  computed: {},
+  computed: {
+    tags() {
+      if (this.article.tag) return this.article.tag.join('&nbsp;&nbsp;')
+    }
+  },
   watch: {},
   filters: {},
   mounted() {
     this.$nextTick(function() {
       Prism.highlightAll()
     })
+    this.collectTitles()
   },
   updated() {},
   async asyncData({ route }) {
@@ -70,7 +80,23 @@ export default {
     if (articleRes.status === 200) return { article: articleRes.data }
   },
   methods: {
-    getDemo() {}
+    collectTitles() {
+      const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(et => '.article-detail__body ' + et).join(',')
+      const nodeList = document.querySelectorAll(selectors)
+      if (!nodeList) return
+      console.log(nodeList)
+      const flatTree = Array.from(nodeList).map(node => {
+        const a = document.createElement('a')
+        a.setAttribute('name', node.innerText)
+        node.appendChild(a)
+        return {
+          level: parseInt(node.nodeName.substr(1)),
+          name: node.innerText
+        }
+      })
+      console.log(flatTree)
+      console.log(generateTree(flatTree))
+    }
   },
   destroyed() {}
 }

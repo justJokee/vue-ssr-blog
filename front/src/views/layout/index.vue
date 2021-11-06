@@ -18,7 +18,7 @@
       <div class="layout__body-content">
         <div class="layout__body-page">
           <slot name="custom-body">
-            <el-card>
+            <el-card class="layout__body-default">
               <slot></slot>
             </el-card>
           </slot>
@@ -82,6 +82,15 @@ export default {
     &-page {
       flex: 0 1 auto;
       width: 75%;
+      .el-card {
+        box-shadow: 0 3px 8px 6px rgba(7, 17, 27, 0.06);
+        border-radius: 8px;
+      }
+    }
+    &-default {
+      .el-card__body {
+        padding: 50px 40px;
+      }
     }
     &-dashboard {
       // height: auto;
