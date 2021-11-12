@@ -45,6 +45,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import api from '@/api/'
 import note from '@/components/note/'
 import { generateTree } from '@/utils/generateTree'
@@ -80,6 +81,7 @@ export default {
     if (articleRes.status === 200) return { article: articleRes.data }
   },
   methods: {
+    ...mapMutations(['setCatalogs']),
     collectTitles() {
       const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(et => '.article-detail__body ' + et).join(',')
       const nodeList = document.querySelectorAll(selectors)
@@ -94,8 +96,20 @@ export default {
           name: node.innerText
         }
       })
-      console.log(flatTree)
-      console.log(generateTree(flatTree))
+      const catalogs = generateTree(flatTree)
+      this.addTreeLevel(catalogs)
+      this.setCatalogs(catalogs)
+      console.log(catalogs)
+    },
+    addTreeLevel(catalogs, level, order) {
+      catalogs.forEach((catalog, index) => {
+        if (!level) level = 0
+        catalog.level_tree = level
+        catalog.order = order ? order + '.' + (index + 1) : index + 1
+        if (catalog.children && catalog.children.length) {
+          this.addTreeLevel(catalog.children, level + 1, index + 1)
+        }
+      })
     }
   },
   destroyed() {}

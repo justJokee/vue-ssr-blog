@@ -4,13 +4,17 @@
 </doc>
 <template>
   <div class="dashboard">
-    <el-card>卡片</el-card>
+    <introduction></introduction>
+    <catalog></catalog>
   </div>
 </template>
 <script>
+import introduction from './components/introduction'
+import catalog from './components/catalog'
 export default {
   name: 'dashboard',
   props: {},
+  components: { introduction, catalog },
   data() {
     return {}
   },
