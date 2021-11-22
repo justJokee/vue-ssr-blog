@@ -1,0 +1,108 @@
+<doc>
+  @desc:   看板
+  @author: justJokee 
+</doc>
+<template>
+  <div class="pannel">
+    <introduction></introduction>
+    <div
+      class="pannel__sticky"
+      :class="{
+        'pannel--sticky-top': sticky,
+        'pannel--sticky-rollback': rollBack && !stickyBottom,
+        'pannel--sticky-bottom': stickyBottom
+      }"
+      :style="{ width: stickyOffsetWidth }"
+    >
+      <catalog></catalog>
+      <div style="border:2px solid green;height: 2500px"></div>
+    </div>
+  </div>
+</template>
+<script>
+import { mapState } from 'vuex'
+import introduction from './components/introduction'
+import catalog from './components/catalog'
+import { getScrollTop } from '@/utils/getScrollTop'
+import { getElementTop } from '@/utils/getElementTop'
+import debounce from 'lodash/debounce'
+export default {
+  name: 'pannel',
+  components: { introduction, catalog },
+  props: {},
+  data() {
+    return {
+      sticky: false,
+      stickyBottom: false,
+      pannelOffsetTop: 0,
+      stickyOffsetTop: 0,
+      pannelOffsetHeight: 0,
+      stickyOffsetWidth: 'auto',
+      stickyOffsetHeight: 0
+    }
+  },
+  mounted() {
+    this.initStickybehavior()
+    // TODO: RESIZE事件更新stickyOffsetWidth
+  },
+  computed: {
+    ...mapState(['rollBack'])
+  },
+  methods: {
+    initStickybehavior() {
+      window.addEventListener('scroll', this.stickyHandler, false)
+      window.addEventListener('resize', this.resizeHandler, false)
+      const pannelNode = document.querySelector('.pannel')
+      const stickNode = document.querySelector('.pannel__sticky')
+      this.$nextTick(() => {
+        this.stickyOffsetTop = getElementTop(stickNode)
+        this.pannelOffsetTop = getElementTop(pannelNode)
+        this.stickyOffsetHeight = stickNode.offsetHeight
+        this.stickyOffsetWidth = stickNode.offsetWidth + 'px'
+        this.pannelOffsetHeight = pannelNode.offsetHeight
+      })
+    },
+    stickyHandler(e) {
+      const scrollTop = getScrollTop()
+      const distance = this.rollBack ? 70 : 20
+      if (this.stickyOffsetTop - scrollTop <= distance) {
+        this.sticky = true
+        this.stickyBottom = false
+        // 当页面回滚，sticky容器将固定与top：70px位置，正常向下滚动，位于top：20px位置
+        // 避免像素跳转，产生闪烁问题
+        const threshold = this.rollBack ? 70 : 20
+        if (this.pannelOffsetHeight + this.pannelOffsetTop - scrollTop - threshold <= this.stickyOffsetHeight) {
+          this.sticky = false
+          this.stickyBottom = true
+        }
+      } else {
+        this.sticky = false
+      }
+    },
+    resizeHandler: debounce(e => {
+      const stickNode = document.querySelector('.pannel__sticky')
+      this.stickyOffsetWidth = stickNode.offsetWidth + 'px'
+    }, 200)
+  }
+}
+</script>
+<style lang="scss">
+.pannel {
+  position: relative;
+  height: 100%;
+  &__sticky {
+    transition: all ease 0.38s;
+  }
+}
+.pannel--sticky-top {
+  position: fixed;
+  top: 20px;
+}
+.pannel--sticky-bottom {
+  position: absolute;
+  bottom: 0;
+}
+.pannel--sticky-rollback {
+  top: 70px;
+}
+</style>

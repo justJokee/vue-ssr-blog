@@ -5,7 +5,7 @@
 <template>
   <ol class="tree-folder">
     <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index">
-      <div class="tree-folder__content">
+      <div class="tree-folder__content" :class="{ 'tree-folder__content--active': catalog.tempId === activeCatalog }">
         <div class="tree-folder__order">
           <span v-if="catalog.level_tree">{{ curIndex + 1 + '.' + (index + 1) }}</span>
           <span v-else>{{ index + 1 }}.</span>
@@ -22,6 +22,7 @@
   </ol>
 </template>
 <script>
+import { mapState } from 'vuex'
 export default {
   name: 'tree-folder',
   props: {
@@ -39,6 +40,9 @@ export default {
   data() {
     return {}
   },
+  computed: {
+    ...mapState(['activeCatalog'])
+  },
   methods: {}
 }
 </script>
@@ -46,6 +50,9 @@ export default {
 .tree-folder {
   &__content {
     padding: 4px;
+    &--active {
+      background: red;
+    }
   }
   &__order {
     display: inline-block;

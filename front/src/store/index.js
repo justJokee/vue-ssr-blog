@@ -31,6 +31,8 @@ export function createStore() {
       anchorScroll: { top: 0, move: 0 },
       code: 404,
       // new=====>>>>
+      activeCatalog: '',
+      rollBack: false,
       catalogs: []
     },
     mutations,

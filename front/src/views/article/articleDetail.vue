@@ -35,7 +35,7 @@
           </span>
         </div>
       </div>
-      <a href="#这是第2个h2">点击跳转</a>
+      <a href="#2.2">点击跳转</a>
       <note>
         <p>{{ article.abstract }}</p>
       </note>
@@ -49,6 +49,8 @@ import { mapMutations } from 'vuex'
 import api from '@/api/'
 import note from '@/components/note/'
 import { generateTree } from '@/utils/generateTree'
+import { getRandomCharacter } from '@/utils/getRandomCharacter'
+
 export default {
   name: 'articleDetail',
   components: { note },
@@ -56,7 +58,8 @@ export default {
   // 动态属性
   data() {
     return {
-      article: {}
+      article: {},
+      flatTree: null
     }
   },
   computed: {
@@ -71,6 +74,7 @@ export default {
       Prism.highlightAll()
     })
     this.collectTitles()
+    window.addEventListener('scroll', this.handleScroll, false)
   },
   updated() {},
   async asyncData({ route }) {
@@ -81,21 +85,29 @@ export default {
     if (articleRes.status === 200) return { article: articleRes.data }
   },
   methods: {
-    ...mapMutations(['setCatalogs']),
+    ...mapMutations(['setCatalogs', 'setActiveCatalog']),
     collectTitles() {
       const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(et => '.article-detail__body ' + et).join(',')
       const nodeList = document.querySelectorAll(selectors)
       if (!nodeList) return
       console.log(nodeList)
+
       const flatTree = Array.from(nodeList).map(node => {
         const a = document.createElement('a')
+        const tempId = getRandomCharacter(4)
+        const firstChild = node.firstChild
         a.setAttribute('name', node.innerText)
-        node.appendChild(a)
+        a.setAttribute('id', tempId)
+        // node.appendChild(a)
+        node.insertBefore(a, firstChild)
         return {
           level: parseInt(node.nodeName.substr(1)),
-          name: node.innerText
+          name: node.innerText,
+          tempId
         }
       })
+      this.flatTree = [...flatTree]
+      this.flatTree.reverse()
       const catalogs = generateTree(flatTree)
       this.addTreeLevel(catalogs)
       this.setCatalogs(catalogs)
@@ -106,13 +118,27 @@ export default {
         if (!level) level = 0
         catalog.level_tree = level
         catalog.order = order ? order + '.' + (index + 1) : index + 1
+        const dom = document.getElementById(catalog.tempId)
+        dom.removeAttribute('name')
+        dom.setAttribute('name', catalog.order)
         if (catalog.children && catalog.children.length) {
           this.addTreeLevel(catalog.children, level + 1, index + 1)
         }
       })
+    },
+    handleScroll(e) {
+      this.flatTree.some(item => {
+        const node = document.getElementById(item.tempId)
+        if (node.getBoundingClientRect().y < 5) {
+          this.setActiveCatalog(item.tempId)
+          return true
+        }
+      })
     }
   },
-  destroyed() {}
+  destroyed() {
+    window.removeEventListener('scroll', this.handleScroll, false)
+  }
 }
 </script>
 

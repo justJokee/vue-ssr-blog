@@ -23,8 +23,9 @@
             </el-card>
           </slot>
         </div>
-        <div v-if="dashboardShow" class="layout__body-dashboard">
-          <dashboard></dashboard>
+        <div v-if="pannelShow" class="layout__body-pannel">
+          <pannel></pannel>
+          <div style="border-top: 1px solid red;width:150%"></div>
         </div>
       </div>
     </main>
@@ -39,17 +40,17 @@
 import navbar from '@/views/layout/components/navbar/'
 import layoutHeader from '@/views/layout/components/header/'
 
-import dashboard from './components/dashboard/'
+import pannel from '@/views/pannel/'
 
 export default {
   props: {
-    dashboardShow: {
+    pannelShow: {
       type: Boolean,
       default: true
     }
   },
   components: {
-    dashboard,
+    pannel,
     layoutHeader,
     navbar
   },
@@ -75,7 +76,7 @@ export default {
     &-content {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
+      // align-items: flex-start;
       margin: 0 auto;
       padding: 40px 15px;
     }
@@ -92,12 +93,10 @@ export default {
         padding: 50px 40px;
       }
     }
-    &-dashboard {
-      // height: auto;
-      height: 1500px;
+    &-pannel {
       flex: 1 1 auto;
       width: 25%;
-      border: 4px solid #ccc;
+      // border: 4px solid #ccc;
       margin-left: 16px;
     }
     @include respond-to(xs) {
@@ -109,7 +108,7 @@ export default {
       &-page {
         width: 100%;
       }
-      &-dashboard {
+      &-pannel {
         width: 100%;
         margin-left: 0;
       }

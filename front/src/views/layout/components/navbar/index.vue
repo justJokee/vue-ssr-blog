@@ -3,7 +3,7 @@
   @author: justJokee 
 </doc>
 <template>
-  <nav class="navbar" :class="{ 'navbar-rollup': rollback, 'navbar-transparent': rollbackTop }">
+  <nav class="navbar" :class="{ 'navbar-rollup': rollBack, 'navbar-transparent': rollbackTop }">
     <div class="navbar-name">mapblog</div>
     <div class="navbar-menus">
       <div class="navbar-menu">
@@ -57,6 +57,7 @@
   </nav>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
 import { getScrollTop } from '@/utils/getScrollTop'
 
 export default {
@@ -65,7 +66,6 @@ export default {
   data() {
     return {
       lastTopPos: 0,
-      rollback: false,
       rollbackTop: false
     }
   },
@@ -76,17 +76,22 @@ export default {
       e => {
         const nowTopPos = getScrollTop()
         if (nowTopPos - this.lastTopPos > 0) {
-          this.rollback = false
+          this.setRollBack(false)
           this.rollbackTop = false
         } else if (nowTopPos == 0) {
           this.rollbackTop = true
-        } else this.rollback = true
+        } else this.setRollBack(true)
         this.lastTopPos = nowTopPos
       },
       false
     )
   },
-  methods: {}
+  computed: {
+    ...mapState(['rollBack'])
+  },
+  methods: {
+    ...mapMutations(['setRollBack'])
+  }
 }
 </script>
 <style lang="scss">

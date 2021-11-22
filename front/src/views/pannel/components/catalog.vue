@@ -12,6 +12,7 @@
 <script>
 import { mapState } from 'vuex'
 import treeFolder from './tree-folder.vue'
+
 export default {
   name: 'catalog',
   props: {},
@@ -21,10 +22,12 @@ export default {
   data() {
     return {}
   },
+  mounted() {},
   computed: {
     ...mapState(['catalogs'])
   },
-  methods: {}
+  methods: {},
+  destroyed() {}
 }
 </script>
 <style lang="scss">

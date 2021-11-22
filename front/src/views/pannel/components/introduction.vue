@@ -32,5 +32,6 @@ export default {
 <style lang="scss">
 .introduction {
   height: 400px;
+  border: 1px solid red;
 }
 </style>
