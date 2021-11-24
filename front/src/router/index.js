@@ -14,6 +14,7 @@ const miss = resolve => require(['@/components/base/miss'], resolve)
 
 const home = () => import('@/views/home/')
 const articleDetail = () => import('@/views/article/articleDetail')
+const messageBoard = () => import('@/views/messageBoard/')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -36,6 +37,11 @@ export function createRouter() {
         path: '/app/article/:id',
         name: 'articleDetail',
         component: articleDetail
+      },
+      {
+        path: '/app/messageBoard',
+        name: 'messageBoard',
+        component: messageBoard
       }
       // {
       //   path: '/',

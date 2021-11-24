@@ -1,5 +1,5 @@
 <doc>
-  @desc: 文章详情
+  @desc:   文章详情
   @author: justJokee
 </doc>
 <template>
@@ -40,10 +40,11 @@
         <p>{{ article.abstract }}</p>
       </note>
       <div v-html="article.content" class="article-detail__body"></div>
+      <div :style="{ height: height + 'px' }"></div>
+      <button @click="height = 400">666</button>
     </layout>
   </div>
 </template>
-
 <script>
 import { mapMutations } from 'vuex'
 import api from '@/api/'
@@ -58,6 +59,7 @@ export default {
   // 动态属性
   data() {
     return {
+      height: 0,
       article: {},
       flatTree: null
     }

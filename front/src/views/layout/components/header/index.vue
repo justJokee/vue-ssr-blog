@@ -6,7 +6,9 @@
   <div class="header" :style="{ backgroundImage: 'url(' + headerBg + ')' }">
     <div class="header__content">
       <slot>
-        头部
+        <div class="header__default-title">
+          <h1>{{ title }}</h1>
+        </div>
       </slot>
     </div>
   </div>
@@ -18,6 +20,10 @@ export default {
     headerBg: {
       type: String,
       default: ''
+    },
+    title: {
+      type: String,
+      default: '标题'
     }
   },
   data() {
@@ -37,6 +43,13 @@ export default {
     position: absolute;
     width: 100%;
     height: 100%;
+  }
+  &__default-title {
+    width: 100%;
+    height: 100%;
+    font-size: 20px;
+    color: #fff;
+    @include flex-box-center;
   }
 }
 .header:before {

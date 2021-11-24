@@ -1,5 +1,9 @@
 import { createApp } from './app'
+import R_O_P from 'resize-observer-polyfill'
 import Vue from 'vue'
+if (!window.ResizeObserver) {
+  window.ResizeObserver = R_O_P
+}
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
     const { asyncData } = this.$options

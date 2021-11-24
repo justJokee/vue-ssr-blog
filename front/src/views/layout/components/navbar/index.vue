@@ -47,7 +47,7 @@
       </el-dropdown>
       <div class="navbar-menu">
         <i class="el-icon-chat-dot-round"></i>
-        <span>留言板</span>
+        <span @click="goTo('messageBoard')">留言板</span>
       </div>
       <div class="navbar-menu">
         <i class="el-icon-ship"></i>
@@ -90,7 +90,10 @@ export default {
     ...mapState(['rollBack'])
   },
   methods: {
-    ...mapMutations(['setRollBack'])
+    ...mapMutations(['setRollBack']),
+    goTo(name) {
+      this.$router.push({ name })
+    }
   }
 }
 </script>

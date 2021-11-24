@@ -15,7 +15,6 @@
       :style="{ width: stickyOffsetWidth }"
     >
       <catalog></catalog>
-      <div style="border:2px solid green;height: 2500px"></div>
     </div>
   </div>
 </template>
@@ -54,6 +53,11 @@ export default {
       window.addEventListener('resize', this.resizeHandler, false)
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
+      const observer = new ResizeObserver((mu, ob) => {
+        console.log('dom被更新了===>>>>>>')
+        this.pannelOffsetHeight = pannelNode.offsetHeight
+      })
+      observer.observe(pannelNode, { attributes: true, childList: false, subtree: false })
       this.$nextTick(() => {
         this.stickyOffsetTop = getElementTop(stickNode)
         this.pannelOffsetTop = getElementTop(pannelNode)
