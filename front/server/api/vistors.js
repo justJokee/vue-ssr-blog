@@ -1,7 +1,10 @@
 const express = require('express')
+const qs = require('qs')
+const { Octokit } = require('@octokit/core')
 const api = require('../http/server-api')
 const router = express.Router()
 const db = require('../db/')
+const secret = require('../db/secret')
 //自定义用户名
 router.get('/api/searchUser', (req, res) => {
   db.vistor.find({ name: req.query.name }, (err, doc) => {
@@ -33,14 +36,16 @@ router.get('/api/getGithub', (req, res) => {
 })
 router.get('/login/git', (req, res) => {
   //请替换为自己的client_id
-  let path = "https://github.com/login/oauth/authorize?client_id=YourID&scope=['user']"
+  let path = `https://github.com/login/oauth/authorize?client_id=${secret.github_client_id}&scope=['user']&redirect_uri=http://localhost:6180/login_github`
   res.redirect(path)
+  res.status(200).end()
 })
 router.get('/login_github', (req, res) => {
   //请替换为自己的client_id和client_secret
+  console.log('已经指向到login-github：：', req.query)
   let params = {
-    client_id: 'YourID',
-    client_secret: 'Your Secret',
+    client_id: secret.github_client_id,
+    client_secret: secret.github_client_secret,
     code: req.query.code,
     scope: ['user'],
     redirect_uri: 'http://localhost:6180/login_github'
@@ -51,9 +56,20 @@ router.get('/login_github', (req, res) => {
       let arr1 = fullData.split('&')
       let arr2 = arr1[0].split('=')
       let token = arr2[1]
+      console.log('获取到了token====>>>>>')
+      console.log(token)
       return token
     })
-    .then(token => {
+    .then(async token => {
+      const octokit = new Octokit({ auth: `${token}` })
+      const info = await octokit.request('GET /user')
+      console.log('返回用户信息了====>>>>', info)
+      // res.location(`/login_github?${qs.stringify(req.query)}&${qs.stringify(info.data)}`)
+      // res.location(`/login_github`)
+      res.json(JSON.stringify(info.data))
+      // res.status(200).end()
+
+      return 666
       api
         .get('https://api.github.com/user', { access_token: token })
         .then(user_info => {
@@ -74,10 +90,13 @@ router.get('/login_github', (req, res) => {
           })
         })
         .catch(err => {
+          console.log('致命错误1----->>>>', err)
           res.status(500).end()
         })
     })
     .catch(err => {
+      console.log('致命错误2----->>>>', err)
+
       res.status(500).end()
     })
 })

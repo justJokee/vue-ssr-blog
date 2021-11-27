@@ -23,6 +23,7 @@
     }
   },
   "dependencies": {
+    "@octokit/core": "^3.5.1",
     "archiver": "^2.1.1",
     "axios": "^0.17.1",
     "element-ui": "^2.15.6",

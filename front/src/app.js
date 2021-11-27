@@ -1,23 +1,14 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+// eslint-disable-next-line no-unused-vars
+import loadEle from '@/utils/loadEle'
 import App from './App.vue'
 import moment from 'moment'
 import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 import mergeAsyncData from '@/mixins/mergeAsyncData'
-import { Button, Select, Tag, Card, Dropdown, DropdownMenu, DropdownItem, Pagination } from 'element-ui'
-import layout from '@/views/layout/'
-Vue.component('layout', layout)
-Vue.component(Button.name, Button)
-Vue.component(Select.name, Select)
-Vue.component(Tag.name, Tag)
-Vue.use(Card)
-Vue.use(Dropdown)
-Vue.use(DropdownMenu)
-Vue.use(DropdownItem)
-Vue.use(Pagination)
 
 // Vue.config.productionTip = false
 Vue.filter('formatDate', val => {

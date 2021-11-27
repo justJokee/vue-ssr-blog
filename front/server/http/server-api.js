@@ -4,13 +4,15 @@ const LRU = require('lru-cache')
 require('es6-promise').polyfill()
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 function ajax(type, url, options) {
+  let _params = {}
+  if (type === 'get') _params = { params: options }
+  if (type === 'post') _params = { data: qs.stringify(options) }
   return new Promise((resolve, reject) => {
     axios({
       method: type,
       url: url,
       // baseURL: "http://localhost: 6180",
-      params: options,
-      data: qs.stringify(options)
+      ..._params
     })
       .then(_res => {
         if (_res.status === 200) {

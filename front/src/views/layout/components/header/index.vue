@@ -7,7 +7,7 @@
     <div class="header__content">
       <slot>
         <div class="header__default-title">
-          <h1>{{ title }}</h1>
+          <h1>{{ _title }}</h1>
         </div>
       </slot>
     </div>
@@ -21,7 +21,7 @@ export default {
       type: String,
       default: ''
     },
-    title: {
+    _title: {
       type: String,
       default: '标题'
     }
