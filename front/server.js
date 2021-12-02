@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
 const ueditor = require('ueditor')
 const logger = require('morgan')
+const ejs = require('ejs')
 const route = require('./server/api/')
 const compression = require('compression')
 const { createBundleRenderer } = require('vue-server-renderer')
@@ -19,8 +20,8 @@ server.use(bodyParser.urlencoded({ extended: true }))
 server.use(cookieParser())
 
 //引入ejs模板引擎
-server.set('views', path.join(__dirname, 'dist'))
-server.engine('.html', require('ejs').__express)
+server.set('views', [path.join(__dirname, 'dist'), path.join(__dirname, 'static')])
+server.engine('.html', ejs.__express)
 server.set('view engine', 'ejs')
 route(server)
 function createRenderer(bundle, options) {
@@ -99,7 +100,6 @@ readyPromise.then(() => {
     }
     renderer.renderToString(context, (err, html) => {
       if (err) {
-        console.log('这是错误====>>>>', err)
         res.status(500).end('Internal Server Error')
         return
       }

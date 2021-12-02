@@ -4,7 +4,7 @@ const dbInfo = require('./secret')
 const localTime = require('../utils/reviseTime')
 const {
   userSchema,
-  vistorsSchema,
+  visitorsSchema,
   articleSchema,
   commentSchema,
   msgBoardSchema,
@@ -53,7 +53,7 @@ const db = {
   article: mongoose.model('article', articleSchema),
   comment: mongoose.model('comment', commentSchema),
   msgBoard: mongoose.model('msgBoard', msgBoardSchema),
-  vistor: mongoose.model('vistor', vistorsSchema),
+  visitor: mongoose.model('visitor', visitorsSchema),
   news: mongoose.model('new', newsSchema),
   counter: mongoose.model('counter', counterSchema)
 }

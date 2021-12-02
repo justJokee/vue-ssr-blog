@@ -21,30 +21,26 @@
         </div>
       </div>
     </div>
-    <el-dialog title="登录" :visible.sync="dialogVisible" width="30%">
+    <el-dialog title="登录" :visible.sync="submitVisible" width="30%">
       <div class="submit__login">
-        <el-form label-width="80px" :model="submitInfo">
-          <el-form-item label="昵称">
-            <el-input v-model="submitInfo.name" placeholder="请输入昵称"></el-input>
+        <el-form label-width="80px" :model="customInfo" :rules="submitRules" ref="customForm">
+          <el-form-item label="昵称" prop="name">
+            <el-input v-model="customInfo.name" placeholder="请输入昵称"></el-input>
           </el-form-item>
-          <el-form-item label="邮箱">
-            <el-input v-model="submitInfo.email" placeholder="请输入邮箱"></el-input>
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="customInfo.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
-          <el-form-item label="网址">
-            <el-input v-model="submitInfo.link" placeholder="请输入你的主页"></el-input>
+          <el-form-item label="网址" prop="link">
+            <el-input v-model="customInfo.link" placeholder="请输入你的主页 例如：https://awesome.me"></el-input>
           </el-form-item>
         </el-form>
         <div class="submit__register">
-          <el-button size="small" type="primary">注册</el-button>
+          <el-button size="small" type="primary" @click="register">注册</el-button>
         </div>
         <div class="submit__third-part">
           <div class="line">第三方登录</div>
           <div class="submit__third-app">
-            <a
-              href="javascript: void(0)"
-              onclick="return window.open('https://graph.qq.com/oauth2.0/authorize?client_id=&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html', 'oauth2Login_10000' ,'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes');"
-              class="login-qq"
-            >
+            <a href="javascript: void(0)" @click="openQQ" class="login-qq">
               <img src="/img/qq.png" alt="QQ登录" />
             </a>
             <a href="javascript: void(0)" class="login-github" @click="login">
@@ -54,29 +50,77 @@
         </div>
       </div>
     </el-dialog>
+
+    <el-dialog
+      title="信息完善"
+      width="30%"
+      :visible.sync="perfectVisible"
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+    >
+      <div class="submit__perfect">
+        <el-form label-width="80px" :model="perfect" :rules="submitRules" ref="perfectForm">
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model="perfect.email" placeholder="请输入邮箱"></el-input>
+          </el-form-item>
+          <el-form-item label="网址">
+            <el-input
+              v-model="perfect.link"
+              placeholder="请输入你的主页 例如：https://awesome.me"
+              prop="link"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="submit__perfect-footer">
+          <el-button type="primary" size="small" @click="submitPerfect">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script>
 import note from '@/components/note/'
-
 export default {
   name: 'submit',
   components: {
     note
   },
   data() {
+    const nameValidator = (rule, value, callback) => {
+      const reg = /^[\u4e00-\u9fa5_a-zA-Z0-9]{1,16}$/gi
+      if (value === '') {
+        callback(new Error('请输入昵称'))
+      } else if (!reg.test(value)) {
+        callback(new Error('昵称支持中英文、数字、下划线的组合，限16位'))
+      } else {
+        callback()
+      }
+    }
     return {
       comment: '',
-      dialogVisible: false,
-      submitInfo: {
+      submitVisible: false,
+      perfectVisible: false,
+      customInfo: {
         name: '',
         email: '',
         link: ''
+      },
+      perfect: {
+        email: '',
+        link: ''
+      },
+      tempInfo: {},
+      submitRules: {
+        name: [{ required: true, validator: nameValidator, trigger: 'change' }],
+        email: [{ type: 'email', required: true, message: '请填写邮箱', trigger: 'change' }],
+        link: [{ type: 'url', required: false, message: '请输入合法地址' }]
       }
     }
   },
   mounted() {
     this.initQQ()
+    this.addMessageListener()
   },
   methods: {
     login() {
@@ -87,18 +131,87 @@ export default {
       )
     },
     initQQ() {
+      /**
+       *  oInfo：{
+            "ret":0,
+            "msg":"",
+            "nickname":"遲來の垨堠",
+            "figureurl":"http://qzapp.qlogo.cn/qzapp/100229030/ECCC463F76A2E3C1D9217BBC30418164/30",
+            "figureurl_1":"http://qzapp.qlogo.cn/qzapp/100229030/ECCC463F76A2E3C1D9217BBC30418164/50",
+            "figureurl_2":"http://qzapp.qlogo.cn/qzapp/100229030/ECCC463F76A2E3C1D9217BBC30418164/100",
+            "gender":"男",
+            "vip":"1",
+            "level":"7"
+          }
+       */
+
       QC.Login({}, (info, opts) => {
         // 获取opeId accessToken
         QC.Login.getMe((openId, accessToken) => {
           // 存储
+          this.tempInfo = {
+            name: info.nickname,
+            imgUrl: info.figureurl_2,
+            type: 1,
+            qqOpenId: openId
+          }
+
+          this.perfectVisible = true
         })
       })
     },
+    openQQ() {
+      this.perfectVisible = true
+
+      this.qq_win = window.open(
+        'https://graph.qq.com/oauth2.0/authorize?client_id=101454722&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
+        'oauth2Login_10000',
+        'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
+      )
+    },
+    register() {
+      this.$refs.customForm.validate(async valid => {
+        if (valid) {
+          const res = await this.$api.saveVisitor({
+            ...this.customInfo,
+            imgUrl: '',
+            type: 0
+          })
+
+          if (res.status === 200) {
+            //
+          }
+        }
+      })
+    },
+    submitPerfect() {
+      this.$refs.perfectForm.validate(async valid => {
+        if (valid) {
+          const res = this.$api.saveVisitor({
+            ...this.tempInfo,
+            date: new Date()
+          })
+          if (res.status === 200) {
+            //
+          }
+        }
+      })
+    },
+    addMessageListener() {
+      window.addEventListener('message', this.handleGithubCb, false)
+    },
+    handleGithubCb(e) {
+      if (e.data.type === 'github') {
+        console.log('github登陆成功=====>>>>', e.data.data)
+        this.perfectVisible = true
+      }
+    },
     focus() {
-      // alert(33)
-      this.dialogVisible = true
-      console.log(333)
+      this.submitVisible = true
     }
+  },
+  destroyed() {
+    window.removeEventListener('message', this.handleGithubCb)
   }
 }
 </script>
@@ -166,6 +279,12 @@ export default {
       width: 100%;
       height: 100%;
     }
+  }
+  &__perfect {
+    padding: 0 30px 0 0;
+  }
+  &__perfect-footer {
+    text-align: right;
   }
 }
 </style>

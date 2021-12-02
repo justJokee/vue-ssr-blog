@@ -1,29 +1,37 @@
 const express = require('express')
-const qs = require('qs')
 const { Octokit } = require('@octokit/core')
 const api = require('../http/server-api')
 const router = express.Router()
 const db = require('../db/')
 const secret = require('../db/secret')
-//自定义用户名
-router.get('/api/searchUser', (req, res) => {
-  db.vistor.find({ name: req.query.name }, (err, doc) => {
-    if (doc.length) {
-      res.json({ exist: 'yes' })
-    } else {
-      res.json({ exist: 'no' })
-    }
-  })
-})
-router.post('/api/saveDesignUser', (req, res) => {
-  new db.vistor(req.body).save((err, doc) => {
+
+// 存储访客信息
+router.post('/api/front/saveVisitor', async (req, res) => {
+  const exist = await db.visitor.find({ name: req.body.name })
+  if (exist.length) {
+    res.json({ status: 100, info: '用户名已存在' })
+    return
+  }
+  new db.visitor(req.body).save((err, doc) => {
     if (err) {
       res.status(500).end()
     } else {
-      res.json({ code: 200 })
+      res.json({ status: 200, data: doc })
     }
   })
 })
+
+//自定义用户名
+router.get('/api/searchVisitor', (req, res) => {
+  db.vistor.find({ name: req.query.name }, (err, doc) => {
+    if (doc.length) {
+      res.json({ status: 200, exist: 1 })
+    } else {
+      res.json({ status: 200, exist: 0 })
+    }
+  })
+})
+
 //github登录
 router.get('/api/getGithub', (req, res) => {
   db.vistor.find({ githubID: req.query.id }, (err, doc) => {
@@ -63,10 +71,8 @@ router.get('/login_github', (req, res) => {
     .then(async token => {
       const octokit = new Octokit({ auth: `${token}` })
       const info = await octokit.request('GET /user')
-      console.log('返回用户信息了====>>>>', info)
-      // res.location(`/login_github?${qs.stringify(req.query)}&${qs.stringify(info.data)}`)
-      // res.location(`/login_github`)
-      res.json(JSON.stringify(info.data))
+      console.log('返回用户信息了====>>>>', info.data)
+      res.render('gc_back.html', { title: 'github登陆成功', userInfo: JSON.stringify(info.data) })
       // res.status(200).end()
 
       return 666

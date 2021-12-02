@@ -9,11 +9,16 @@ const userSchema = new mongoose.Schema({
   lastLogin: 'string',
   salt: 'string'
 })
-const vistorsSchema = new mongoose.Schema({
+const visitorsSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
   email: 'string',
-  githubID: 'number'
+  link: 'string',
+  // 0: 自定义用户 1: qq 2: github
+  type: 'number',
+  githubId: 'number',
+  qqOpenId: 'number',
+  date: 'date'
 })
 const articleSchema = new mongoose.Schema({
   articleId: 'number',
@@ -36,23 +41,15 @@ const commentSchema = new mongoose.Schema({
   like: 'number',
   articleId: 'number',
   title: 'string',
-  date: 'date'
+  date: 'date',
+  parentId: 'string'
 })
 const msgBoardSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
   email: 'string',
   content: 'string',
-  date: 'date',
-  reply: [
-    {
-      name: 'string',
-      aite: 'string',
-      imgUrl: 'string',
-      content: 'string',
-      date: 'date'
-    }
-  ]
+  date: 'date'
 })
 const newsSchema = new mongoose.Schema({
   type: 'string',
@@ -81,7 +78,7 @@ const counterSchema = new mongoose.Schema({
 
 module.exports = {
   userSchema,
-  vistorsSchema,
+  visitorsSchema,
   articleSchema,
   commentSchema,
   msgBoardSchema,
