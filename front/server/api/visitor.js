@@ -7,10 +7,12 @@ const secret = require('../db/secret')
 
 // 存储访客信息
 router.post('/api/front/saveVisitor', async (req, res) => {
-  const exist = await db.visitor.find({ name: req.body.name })
-  if (exist.length) {
-    res.json({ status: 100, info: '用户名已存在' })
-    return
+  if (req.body.type === '0') {
+    const exist = await db.visitor.find({ name: req.body.name })
+    if (exist.length) {
+      res.json({ status: 100, info: '用户名已存在' })
+      return
+    }
   }
   new db.visitor(req.body).save((err, doc) => {
     if (err) {

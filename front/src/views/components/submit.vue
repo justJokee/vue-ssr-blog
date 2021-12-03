@@ -6,7 +6,8 @@
   <div class="submit">
     <div class="submit__avatar">
       <div class="submit__avatar-default">
-        <i class="el-icon-user"></i>
+        <img v-if="!!visitorInfo.imgUrl" :src="visitorInfo.imgUrl" :alt="visitorInfo.name" />
+        <i v-else class="el-icon-user"></i>
       </div>
       <div class="submit__avatar-rel"></div>
     </div>
@@ -21,7 +22,7 @@
         </div>
       </div>
     </div>
-    <el-dialog title="登录" :visible.sync="submitVisible" width="30%">
+    <el-dialog title="登录" :visible.sync="customVisible" width="30%">
       <div class="submit__login">
         <el-form label-width="80px" :model="customInfo" :rules="submitRules" ref="customForm">
           <el-form-item label="昵称" prop="name">
@@ -43,14 +44,13 @@
             <a href="javascript: void(0)" @click="openQQ" class="login-qq">
               <img src="/img/qq.png" alt="QQ登录" />
             </a>
-            <a href="javascript: void(0)" class="login-github" @click="login">
+            <a href="javascript: void(0)" class="login-github" @click="openGithub">
               <img src="/img/github.png" alt="github登录" />
             </a>
           </div>
         </div>
       </div>
     </el-dialog>
-
     <el-dialog
       title="信息完善"
       width="30%"
@@ -64,7 +64,7 @@
           <el-form-item label="邮箱" prop="email">
             <el-input v-model="perfect.email" placeholder="请输入邮箱"></el-input>
           </el-form-item>
-          <el-form-item label="网址">
+          <el-form-item label="网址" prop="link">
             <el-input
               v-model="perfect.link"
               placeholder="请输入你的主页 例如：https://awesome.me"
@@ -80,6 +80,8 @@
   </div>
 </template>
 <script>
+import { mapState, mapMutations } from 'vuex'
+import { storage } from '@/utils/storage'
 import note from '@/components/note/'
 export default {
   name: 'submit',
@@ -99,7 +101,7 @@ export default {
     }
     return {
       comment: '',
-      submitVisible: false,
+      customVisible: false,
       perfectVisible: false,
       customInfo: {
         name: '',
@@ -119,18 +121,72 @@ export default {
     }
   },
   mounted() {
-    this.initQQ()
+    this.handleQQCb()
     this.addMessageListener()
   },
+  computed: {
+    ...mapState(['visitorInfo'])
+  },
   methods: {
-    login() {
+    ...mapMutations(['setVisitor']),
+    openGithub() {
       window.open(
         'http://localhost:6180/login/git',
         '_blank',
         'height=600,width=800,toolbar=no, menubar=no, scrollbars=no'
       )
     },
-    initQQ() {
+    openQQ() {
+      this.qq_win = window.open(
+        'https://graph.qq.com/oauth2.0/authorize?client_id=101454722&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
+        'oauth2Login_10000',
+        'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
+      )
+    },
+    register() {
+      this.$refs.customForm.validate(async valid => {
+        if (valid) {
+          const res = await this.$api.saveVisitor({
+            ...this.customInfo,
+            imgUrl: '',
+            type: 0
+          })
+
+          if (res.status === 200) {
+            this.setVisitorInfo(res.data)
+            this.customInfo = {
+              name: '',
+              email: '',
+              link: ''
+            }
+          }
+        }
+      })
+    },
+    submitPerfect() {
+      this.$refs.perfectForm.validate(async valid => {
+        if (valid) {
+          const res = await this.$api.saveVisitor({
+            ...this.tempInfo,
+            ...this.perfect,
+            date: new Date()
+          })
+          if (res.status === 200) {
+            this.setVisitorInfo(res.data)
+            this.perfect = {
+              email: '',
+              link: ''
+            }
+            this.tempInfo = {}
+            this.perfectVisible = false
+          }
+        }
+      })
+    },
+    addMessageListener() {
+      window.addEventListener('message', this.handleGithubCb, false)
+    },
+    handleQQCb() {
       /**
        *  oInfo：{
             "ret":0,
@@ -155,59 +211,31 @@ export default {
             type: 1,
             qqOpenId: openId
           }
-
+          this.customVisible = false
           this.perfectVisible = true
         })
       })
     },
-    openQQ() {
-      this.perfectVisible = true
-
-      this.qq_win = window.open(
-        'https://graph.qq.com/oauth2.0/authorize?client_id=101454722&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
-        'oauth2Login_10000',
-        'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
-      )
-    },
-    register() {
-      this.$refs.customForm.validate(async valid => {
-        if (valid) {
-          const res = await this.$api.saveVisitor({
-            ...this.customInfo,
-            imgUrl: '',
-            type: 0
-          })
-
-          if (res.status === 200) {
-            //
-          }
-        }
-      })
-    },
-    submitPerfect() {
-      this.$refs.perfectForm.validate(async valid => {
-        if (valid) {
-          const res = this.$api.saveVisitor({
-            ...this.tempInfo,
-            date: new Date()
-          })
-          if (res.status === 200) {
-            //
-          }
-        }
-      })
-    },
-    addMessageListener() {
-      window.addEventListener('message', this.handleGithubCb, false)
-    },
     handleGithubCb(e) {
       if (e.data.type === 'github') {
         console.log('github登陆成功=====>>>>', e.data.data)
+        const info = e.data.data
+        this.tempInfo = {
+          name: info.login,
+          imgUrl: info.avatar_url,
+          type: 2,
+          githubId: info.id
+        }
+        this.customVisible = false
         this.perfectVisible = true
       }
     },
+    setVisitorInfo(info) {
+      this.setVisitor(info)
+      storage.setVisitor(info)
+    },
     focus() {
-      this.submitVisible = true
+      this.customVisible = true
     }
   },
   destroyed() {
@@ -235,6 +263,11 @@ export default {
       height: 100%;
       .el-icon-user {
         font-size: 42px;
+      }
+      img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50% 50%;
       }
     }
   }

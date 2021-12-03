@@ -33,6 +33,8 @@ export function createStore() {
       // new=====>>>>
       activeCatalog: '',
       rollBack: false,
+      // 访客信息
+      visitorInfo: {},
       catalogs: []
     },
     mutations,

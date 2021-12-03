@@ -1,4 +1,5 @@
 import { createApp } from './app'
+import { storage } from '@/utils/storage'
 import R_O_P from 'resize-observer-polyfill'
 import Vue from 'vue'
 if (!window.ResizeObserver) {
@@ -31,7 +32,8 @@ Prism.plugins.toolbar.registerButton('macostyle', function(env) {
 if (window.__INITIAL_STATE__) {
   store.replaceState(window.__INITIAL_STATE__.state)
 }
-
+// 同步访客登录信息
+if (storage.getVisitor()) store.commit('setVisitor', storage.getVisitor())
 router.onReady(() => {
   router.beforeResolve(async (to, from, next) => {
     const matched = router.getMatchedComponents(to)
@@ -62,5 +64,6 @@ router.onReady(() => {
       next(e)
     }
   })
+
   app.$mount('#app')
 })

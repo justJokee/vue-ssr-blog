@@ -8,6 +8,9 @@ export default {
   setRollBack(state, rollBack) {
     state.rollBack = rollBack
   },
+  setVisitor(state, info) {
+    state.visitorInfo = info
+  },
   // ==== >>>> old
   pageArray(state, data) {
     let pageNum = Math.ceil(data / 8)
