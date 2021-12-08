@@ -13,11 +13,7 @@ import foot from '@/components/base/foot'
 import { mapState, mapMutations } from 'vuex'
 import { getScrollTop } from '@/utils/getScrollTop'
 import { getElementTop } from '@/utils/getElementTop'
-import emoji from 'emojilib'
-const emojis = Object.keys(emoji).filter(key => {
-  return emoji[key].includes('face')
-})
-console.log('这是emoji======>>>>>', emojis)
+
 export default {
   components: {
     tab,

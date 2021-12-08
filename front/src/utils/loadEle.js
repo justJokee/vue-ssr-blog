@@ -11,13 +11,17 @@ import {
   Input,
   Dialog,
   Form,
-  FormItem
+  FormItem,
+  Popover,
+  Tabs,
+  TabPane,
+  Scrollbar
 } from 'element-ui'
 import layout from '@/views/layout/'
 Vue.component('layout', layout)
-Vue.component(Button.name, Button)
-Vue.component(Select.name, Select)
-Vue.component(Tag.name, Tag)
+Vue.use(Button)
+Vue.use(Select)
+Vue.use(Tag)
 Vue.use(Card)
 Vue.use(Dropdown)
 Vue.use(DropdownMenu)
@@ -27,3 +31,7 @@ Vue.use(Input)
 Vue.use(Dialog)
 Vue.use(Form)
 Vue.use(FormItem)
+Vue.use(Popover)
+Vue.use(Tabs)
+Vue.use(TabPane)
+Vue.use(Scrollbar)

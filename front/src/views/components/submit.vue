@@ -6,19 +6,35 @@
   <div class="submit">
     <div class="submit__avatar">
       <div class="submit__avatar-default">
-        <img v-if="!!visitorInfo.imgUrl" :src="visitorInfo.imgUrl" :alt="visitorInfo.name" />
-        <i v-else class="el-icon-user"></i>
+        <img v-if="!!visitorInfo.imgUrl" :src="visitorInfo.imgUrl" :title="visitorInfo.name" />
+        <i v-else class="el-icon-user" :title="visitorInfo.name"></i>
       </div>
       <div class="submit__avatar-rel"></div>
     </div>
     <div class="submit__content">
       <div class="submit__input">
-        <el-input type="textarea" :rows="3" placeholder="说点什么" @focus="focus" v-model="comment"></el-input>
+        <el-input
+          ref="comment"
+          type="textarea"
+          :rows="3"
+          placeholder="说点什么"
+          @focus="focus"
+          v-model="comment"
+        ></el-input>
       </div>
       <div class="submit__handle">
-        <div class="submit__emoji"></div>
+        <div class="submit__emoji-userTag">
+          <div class="submit__emoji">
+            <emoji @getEmoji="getEmoji"></emoji>
+          </div>
+          <div class="submit__userTag">
+            <span>欢迎，justjokee</span>
+            <i class="el-icon-circle-close" title="退出"></i>
+          </div>
+        </div>
+
         <div class="submit__btn">
-          <el-button size="medium">提交</el-button>
+          <el-button size="medium" :disabled="!visitorInfo._id">提交</el-button>
         </div>
       </div>
     </div>
@@ -83,10 +99,12 @@
 import { mapState, mapMutations } from 'vuex'
 import { storage } from '@/utils/storage'
 import note from '@/components/note/'
+import emoji from '@/components/emoji'
 export default {
   name: 'submit',
   components: {
-    note
+    note,
+    emoji
   },
   data() {
     const nameValidator = (rule, value, callback) => {
@@ -114,8 +132,8 @@ export default {
       },
       tempInfo: {},
       submitRules: {
-        name: [{ required: true, validator: nameValidator, trigger: 'change' }],
-        email: [{ type: 'email', required: true, message: '请填写邮箱', trigger: 'change' }],
+        name: [{ required: true, validator: nameValidator, trigger: 'blur' }],
+        email: [{ type: 'email', required: true, message: '请填写邮箱', trigger: 'blur' }],
         link: [{ type: 'url', required: false, message: '请输入合法地址' }]
       }
     }
@@ -154,6 +172,7 @@ export default {
 
           if (res.status === 200) {
             this.setVisitorInfo(res.data)
+            this.customVisible = false
             this.customInfo = {
               name: '',
               email: '',
@@ -235,7 +254,11 @@ export default {
       storage.setVisitor(info)
     },
     focus() {
-      this.customVisible = true
+      if (!storage.getVisitor()) this.customVisible = true
+    },
+    getEmoji(emoji) {
+      this.$refs.comment.focus()
+      this.comment += emoji
     }
   },
   destroyed() {
@@ -278,8 +301,34 @@ export default {
     margin-left: 18px;
   }
   &__handle {
-    @include flex-box-space;
+    display: flex;
+    justify-content: space-between;
     padding: 12px 0;
+  }
+  &__emoji-userTag {
+    display: flex;
+    align-items: flex-start;
+  }
+  &__userTag {
+    margin-left: 28px;
+    color: #909399;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all ease 0.38s;
+    .el-icon-circle-close {
+      margin-left: 8px;
+      font-size: 16px;
+      opacity: 0;
+      transition: all ease 0.38s;
+    }
+  }
+
+  &__userTag:hover {
+    color: #409eff;
+    .el-icon-circle-close {
+      opacity: 1;
+    }
   }
   &__input {
     width: 100%;
