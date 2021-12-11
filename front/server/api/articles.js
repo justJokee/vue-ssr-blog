@@ -12,7 +12,7 @@ const unpublishedPermission = require('../middleware/unpublishedPermission')
 // 抓取文章列表
 router.get('/api/front/article/gets', unpublishedPermission, async (req, res) => {
   const params = { publish: req.query.publish }
-  const limit = parseInt(req.query.limit) || 8
+  const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
   const project = req.query.content == '0' ? { content: 0 } : {}
   if (req.query.tag) params.tag = req.query.tag

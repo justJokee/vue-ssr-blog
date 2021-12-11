@@ -14,5 +14,8 @@ export const storage = {
   },
   setVisitor(info) {
     localStorage.setItem(visitorKey, JSON.stringify(info))
+  },
+  removeVisitor() {
+    localStorage.removeItem(visitorKey)
   }
 }

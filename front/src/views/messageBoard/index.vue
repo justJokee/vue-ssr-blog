@@ -17,6 +17,14 @@
         <div class="message-board__submit">
           <submit></submit>
         </div>
+        <div class="message-board__list">
+          <div class="message-board__total">
+            <span>{{ total }}条留言</span>
+          </div>
+          <div class="message-board__list">
+            <comments :messages="messages"></comments>
+          </div>
+        </div>
       </div>
     </layout>
   </div>
@@ -25,12 +33,28 @@
 import note from '@/components/note/'
 import splitLine from '@/components/splitLine/'
 import submit from '@/views/components/submit'
+import comments from '@/views/components/comments'
+import api from '@/api/messageBoard'
+
 export default {
   name: 'messageBoard',
   components: {
     note,
     submit,
-    splitLine
+    splitLine,
+    comments
+  },
+  data() {
+    return {
+      total: 0,
+      messages: []
+    }
+  },
+  async asyncData({ route }) {
+    const msgRes = await api.getMessageBoard({
+      page: 1
+    })
+    if (msgRes.status === 200) return { messages: msgRes.data, total: msgRes.total }
   }
 }
 </script>
@@ -51,6 +75,14 @@ export default {
     span {
       margin-left: 12px;
     }
+  }
+  &__list {
+    margin-top: 28px;
+  }
+  &__total {
+    color: #4c4948;
+    font-size: 25px;
+    font-weight: bold;
   }
 }
 </style>

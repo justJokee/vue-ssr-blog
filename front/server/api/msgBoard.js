@@ -3,25 +3,44 @@ const router = express.Router()
 const db = require('../db/')
 const localTime = require('../utils/reviseTime')
 const confirmToken = require('../middleware/confirmToken')
-router.get('/api/getMsgBoard', (req, res) => {
-  let limit = 8
-  let skip = req.query.page * limit - limit
-  db.msgBoard
-    .find({}, (err, doc) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        res.json(doc)
-      }
+
+// 获取留言列表
+router.get('/api/front/messageBoard/gets', async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const skip = req.query.page * limit - limit
+  try {
+    const total = await db.msgBoard.count()
+    const doc = await db.msgBoard.aggregate([
+      { $match: { parentId: null } },
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: db.msgBoard.collection.name,
+          let: { pid: '$_id' },
+          pipeline: [{ $match: { $expr: { $eq: ['$parentId', '$$pid'] } } }, { $sort: { _id: -1 } }],
+          as: 'reply'
+        }
+      },
+      { $sort: { _id: -1 } }
+    ])
+    res.json({
+      status: 200,
+      data: doc,
+      total,
+      page: parseInt(req.query.page)
     })
-    .sort({ _id: -1 })
-    .skip(skip)
-    .limit(limit)
+  } catch (e) {
+    console.log('出错---->>>>', e)
+    res.status(500).end()
+  }
 })
+
 //后台留言板抓取
 router.get('/api/getAdminBoard', confirmToken, (req, res) => {
   let limit = 10
   let skip = req.query.page * limit - limit
+
   db.msgBoard
     .find({}, (err, doc) => {
       if (err) {

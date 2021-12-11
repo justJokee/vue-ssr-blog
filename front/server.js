@@ -60,7 +60,7 @@ readyPromise.then(() => {
 
   server.use(compression()) //开启gzip压缩
   server.use('/dist', serve('./dist', true))
-  server.use('/static', serve('./src/static', true))
+  // server.use('/static', serve('./src/static', true))
   server.use(express.static(path.join(__dirname, 'static'))) //设置静态文件夹
   server.use(
     '/api/ueditor/UE',

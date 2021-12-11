@@ -6,8 +6,8 @@
   <div class="submit">
     <div class="submit__avatar">
       <div class="submit__avatar-default">
-        <img v-if="!!visitorInfo.imgUrl" :src="visitorInfo.imgUrl" :title="visitorInfo.name" />
-        <i v-else class="el-icon-user" :title="visitorInfo.name"></i>
+        <img v-show="!!visitorInfo.imgUrl" :src="visitorInfo.imgUrl" :title="visitorInfo.name" />
+        <i v-show="!visitorInfo.imgUrl" class="el-icon-user" :title="visitorInfo.name"></i>
       </div>
       <div class="submit__avatar-rel"></div>
     </div>
@@ -27,9 +27,9 @@
           <div class="submit__emoji">
             <emoji @getEmoji="getEmoji"></emoji>
           </div>
-          <div class="submit__userTag">
-            <span>欢迎，justjokee</span>
-            <i class="el-icon-circle-close" title="退出"></i>
+          <div class="submit__userTag" v-show="visitorInfo.name">
+            <span>欢迎，{{ visitorInfo.name }}</span>
+            <i class="el-icon-circle-close" title="退出" @click="logout"></i>
           </div>
         </div>
 
@@ -166,7 +166,7 @@ export default {
         if (valid) {
           const res = await this.$api.saveVisitor({
             ...this.customInfo,
-            imgUrl: '',
+            imgUrl: '/img/avatar/avatar.jpeg',
             type: 0
           })
 
@@ -252,6 +252,10 @@ export default {
     setVisitorInfo(info) {
       this.setVisitor(info)
       storage.setVisitor(info)
+    },
+    logout() {
+      this.setVisitor({})
+      storage.removeVisitor()
     },
     focus() {
       if (!storage.getVisitor()) this.customVisible = true

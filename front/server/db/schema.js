@@ -49,6 +49,7 @@ const msgBoardSchema = new mongoose.Schema({
   imgUrl: 'string',
   email: 'string',
   content: 'string',
+  like: 'number',
   date: 'date'
 })
 const newsSchema = new mongoose.Schema({
