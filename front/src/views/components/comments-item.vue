@@ -21,7 +21,7 @@
         <span class="detail-visitor-date">{{ message.date | formatDate }}</span>
         <i class="el-icon-thumb"></i>
         <span>{{ message.like }}</span>
-        <i class="el-icon-chat-dot-round"></i>
+        <i class="el-icon-chat-dot-round" @click="changeCurrentReplyMessage(message)"></i>
         <span>{{ message | replycCount }}</span>
       </div>
     </div>
@@ -48,10 +48,17 @@ export default {
       if (message.reply && message.reply.length) return message.reply.length
       return ''
     }
+  },
+  methods: {
+    changeCurrentReplyMessage(message) {
+      this.$emit('changeCurrentReplyMessage', message)
+    }
   }
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+
 .comments-item {
   display: flex;
   padding: 14px 0;
@@ -87,7 +94,10 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    color: #909399;
+    // color: #909399;
+    @include themeify() {
+      color: themed('color-home-article-detail');
+    }
     margin-top: 10px;
     i {
       font-size: 16px;

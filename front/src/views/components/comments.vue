@@ -5,20 +5,36 @@
 <template>
   <div class="comments">
     <div class="comments__top" v-for="(msg, index) in messages" :key="index">
-      <comments-item :message="msg"></comments-item>
+      <comments-item :message="msg" @changeCurrentReplyMessage="changeCurrentReplyMessage"></comments-item>
+      <submit
+        v-if="msg._id === currentReplyMessage._id"
+        :currentReplyMessage="currentReplyMessage"
+        @changeCurrentReplyMessage="changeCurrentReplyMessage"
+        @submitContent="submitContent"
+      ></submit>
       <div class="comments__sub" v-if="msg.reply && msg.reply.length">
-        <comments-item
-          v-for="(reply, _index) in msg.reply"
-          :key="'reply_' + _index"
-          :message="reply"
-          :subType="true"
-        ></comments-item>
+        <template v-for="(reply, _index) in msg.reply">
+          <comments-item
+            :key="'reply_' + _index"
+            :message="reply"
+            :subType="true"
+            @changeCurrentReplyMessage="changeCurrentReplyMessage"
+          ></comments-item>
+          <submit
+            v-if="reply._id === currentReplyMessage._id"
+            :key="_index"
+            :currentReplyMessage="currentReplyMessage"
+            @submitContent="submitContent"
+            @changeCurrentReplyMessage="changeCurrentReplyMessage"
+          ></submit>
+        </template>
       </div>
     </div>
   </div>
 </template>
 <script>
 import commentsItem from './comments-item.vue'
+import submit from './submit'
 export default {
   name: 'comments',
   props: {
@@ -29,8 +45,22 @@ export default {
       }
     }
   },
+  data() {
+    return {
+      currentReplyMessage: {}
+    }
+  },
   components: {
-    commentsItem
+    commentsItem,
+    submit
+  },
+  methods: {
+    submitContent(content, cb) {
+      this.$emit('submitReply', content, this.currentReplyMessage, cb)
+    },
+    changeCurrentReplyMessage(message) {
+      this.currentReplyMessage = message
+    }
   }
 }
 </script>

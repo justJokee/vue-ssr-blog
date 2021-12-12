@@ -39,17 +39,21 @@ const commentSchema = new mongoose.Schema({
   email: 'string',
   content: 'string',
   like: 'number',
+  aite: 'string',
   articleId: 'number',
   title: 'string',
   date: 'date',
-  parentId: 'string'
+  parentId: mongoose.Schema.Types.ObjectId
 })
 const msgBoardSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
   email: 'string',
   content: 'string',
+  link: 'string',
   like: 'number',
+  aite: 'string',
+  parentId: mongoose.Schema.Types.ObjectId,
   date: 'date'
 })
 const newsSchema = new mongoose.Schema({
@@ -68,9 +72,10 @@ const newsSchema = new mongoose.Schema({
   // 区域
   district: 'string',
   // 存储 _id
-  articleId: 'string',
-  commentId: 'string',
-  leaveMessageId: 'string'
+  articleId: mongoose.Schema.Types.ObjectId,
+  commentId: mongoose.Schema.Types.ObjectId,
+  leaveMessageId: mongoose.Schema.Types.ObjectId,
+  content: 'string'
 })
 const counterSchema = new mongoose.Schema({
   _id: 'string',

@@ -15,14 +15,23 @@
           <span>留言</span>
         </div>
         <div class="message-board__submit">
-          <submit></submit>
+          <submit @submitContent="submitContent"></submit>
         </div>
         <div class="message-board__list">
           <div class="message-board__total">
             <span>{{ total }}条留言</span>
           </div>
           <div class="message-board__list">
-            <comments :messages="messages"></comments>
+            <comments :messages="messages" @submitReply="submitReply"></comments>
+            <div class="message-board__page">
+              <el-pagination
+                :current-page.sync="currentPage"
+                :total="total"
+                layout="prev, pager, next"
+                :page-size="pageSize"
+                @current-change="currentChange"
+              ></el-pagination>
+            </div>
           </div>
         </div>
       </div>
@@ -30,6 +39,7 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex'
 import note from '@/components/note/'
 import splitLine from '@/components/splitLine/'
 import submit from '@/views/components/submit'
@@ -46,7 +56,9 @@ export default {
   },
   data() {
     return {
+      currentPage: 1,
       total: 0,
+      pageSize: 10,
       messages: []
     }
   },
@@ -55,10 +67,61 @@ export default {
       page: 1
     })
     if (msgRes.status === 200) return { messages: msgRes.data, total: msgRes.total }
+  },
+  computed: {
+    ...mapState(['visitorInfo'])
+  },
+  methods: {
+    submitContent(content, cb) {
+      this.submit(content, null, cb)
+    },
+    submitReply(content, currentReplyMessage, cb) {
+      this.submit(content, currentReplyMessage, cb)
+    },
+    async submit(content, currentReplyMessage, cb) {
+      let parentId
+      let aite
+      if (currentReplyMessage) {
+        if (currentReplyMessage.parentId) parentId = currentReplyMessage.parentId
+        else parentId = currentReplyMessage._id
+        aite = currentReplyMessage.name
+      }
+      const res = await api.saveMessageBoard({
+        name: this.visitorInfo.name,
+        imgUrl: this.visitorInfo.imgUrl,
+        email: this.visitorInfo.email,
+        link: this.visitorInfo.link,
+        content: content,
+        parentId,
+        aite
+      })
+      if (res.status === 200) {
+        if (cb) cb()
+        this.$message({
+          type: 'success',
+          message: '留言成功'
+        })
+        this.getMessageBoard()
+      }
+    },
+    async getMessageBoard() {
+      const msgRes = await api.getMessageBoard({
+        page: this.currentPage
+      })
+      if (msgRes.status === 200) {
+        this.messages = msgRes.data
+        this.total = msgRes.total
+      }
+    },
+    currentChange(val) {
+      this.getMessageBoard()
+    }
   }
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+
 .message-board {
   &__welcome {
     font-family: 'sf-arch';
@@ -83,6 +146,10 @@ export default {
     color: #4c4948;
     font-size: 25px;
     font-weight: bold;
+  }
+  &__page {
+    @include flex-box-center;
+    padding: 16px 0;
   }
 }
 </style>

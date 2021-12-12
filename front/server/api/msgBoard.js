@@ -1,7 +1,8 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
-const localTime = require('../utils/reviseTime')
+const getIp = require('../utils/getIp')
+const api = require('../http/')
 const confirmToken = require('../middleware/confirmToken')
 
 // 获取留言列表
@@ -9,7 +10,7 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
   try {
-    const total = await db.msgBoard.count()
+    const total = await db.msgBoard.count({ parentId: null })
     const doc = await db.msgBoard.aggregate([
       { $match: { parentId: null } },
       { $skip: skip },
@@ -31,7 +32,6 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
       page: parseInt(req.query.page)
     })
   } catch (e) {
-    console.log('出错---->>>>', e)
     res.status(500).end()
   }
 })
@@ -53,20 +53,40 @@ router.get('/api/getAdminBoard', confirmToken, (req, res) => {
     .skip(skip)
     .limit(limit)
 })
-router.post('/api/saveLeaveW', (req, res) => {
-  new db.msgBoard(req.body).save((err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json(doc)
-      new db.newMsg({
-        type: 'msgboard',
-        name: req.body.name,
-        say: req.body.content,
-        content: req.body.name + '在' + localTime(Date.now()) + '给你留言啦~~'
-      }).save()
+// 留言存储
+router.post('/api/front/messageBoard/save', async (req, res) => {
+  try {
+    const doc = await new db.msgBoard({
+      ...req.body,
+      like: 0
+    }).save()
+    res.json({
+      status: 200,
+      data: doc
+    })
+    if (process.env.NODEW_ENV === 'production') {
+      const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
+      console.log('返回ip信息===>>>>', ipInfo)
+      if (ipInfo.status === '200' && ipInfo.data.length) {
+        const info = ipInfo.data[0]
+        await new db.news({
+          type: 'msgboard',
+          ip: info.ip,
+          lng: info.adlng,
+          lat: info.adlat,
+          nation: info.nation,
+          province: info.province,
+          city: info.city,
+          district: info.district,
+          leaveMessageId: doc._id,
+          content: doc.content,
+          date: new Date()
+        }).save()
+      }
     }
-  })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 router.patch('/api/addReply', (req, res) => {
   let reply = {

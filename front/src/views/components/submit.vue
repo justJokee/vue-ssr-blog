@@ -34,7 +34,10 @@
         </div>
 
         <div class="submit__btn">
-          <el-button size="medium" :disabled="!visitorInfo._id">提交</el-button>
+          <el-button v-if="currentReplyMessage._id" size="medium" :disabled="!visitorInfo._id" @click="cancelReply">
+            取消
+          </el-button>
+          <el-button size="medium" :disabled="!visitorInfo._id" @click="submitMessage">提交</el-button>
         </div>
       </div>
     </div>
@@ -100,8 +103,17 @@ import { mapState, mapMutations } from 'vuex'
 import { storage } from '@/utils/storage'
 import note from '@/components/note/'
 import emoji from '@/components/emoji'
+
 export default {
   name: 'submit',
+  props: {
+    currentReplyMessage: {
+      type: Object,
+      default() {
+        return {}
+      }
+    }
+  },
   components: {
     note,
     emoji
@@ -252,6 +264,21 @@ export default {
     setVisitorInfo(info) {
       this.setVisitor(info)
       storage.setVisitor(info)
+    },
+    submitMessage() {
+      if (this.comment.trim() === '') {
+        this.$message({
+          type: 'warning',
+          message: 'Oops 至少得说两句~'
+        })
+        return
+      }
+      this.$emit('submitContent', this.comment.trim(), () => {
+        this.comment = ''
+      })
+    },
+    cancelReply() {
+      this.$emit('changeCurrentReplyMessage', {})
     },
     logout() {
       this.setVisitor({})

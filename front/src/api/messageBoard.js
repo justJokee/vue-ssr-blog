@@ -10,9 +10,9 @@ export default {
       return data
     })
   },
-  // 获取文章详情
-  getArticle(payload) {
-    return http.get('/api/front/article/detail', payload).then(data => {
+  // 存储留言
+  saveMessageBoard(payload) {
+    return http.post('/api/front/messageBoard/save', payload).then(data => {
       return data
     })
   }

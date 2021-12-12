@@ -15,7 +15,8 @@ import {
   Popover,
   Tabs,
   TabPane,
-  Scrollbar
+  Scrollbar,
+  Message
 } from 'element-ui'
 import layout from '@/views/layout/'
 Vue.component('layout', layout)
@@ -35,3 +36,4 @@ Vue.use(Popover)
 Vue.use(Tabs)
 Vue.use(TabPane)
 Vue.use(Scrollbar)
+Vue.prototype.$message = Message
