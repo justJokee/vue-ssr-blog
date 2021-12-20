@@ -3,7 +3,7 @@
   @author: justJokee 
 </doc>
 <template>
-  <div class="header" :style="{ backgroundImage: 'url(' + headerBg + ')' }">
+  <div class="header">
     <div class="header__content">
       <slot>
         <div class="header__default-title">

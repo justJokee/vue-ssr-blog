@@ -11,7 +11,7 @@
       <div class="comments-item__visitor">
         <span class="detail-visitor-name">{{ message.name }}</span>
         <span class="detail-visitor-aite" v-if="message.aite" style="fontWeight:bold">&nbsp;@&nbsp;</span>
-        <span class="detail-visitor-aited" v-if="message.aite">{{ message.aite }}</span>
+        <span class="detail-visitor-aited" v-if="message.aite">{{ message.aite }} :</span>
       </div>
 
       <div class="comments-item__say">{{ message.content }}</div>
@@ -19,7 +19,7 @@
       <div class="comments-item__detail">
         <i class="el-icon-date"></i>
         <span class="detail-visitor-date">{{ message.date | formatDate }}</span>
-        <i class="el-icon-thumb"></i>
+        <i class="el-icon-thumb" @click="addLike(message)"></i>
         <span>{{ message.like }}</span>
         <i class="el-icon-chat-dot-round" @click="changeCurrentReplyMessage(message)"></i>
         <span>{{ message | replycCount }}</span>
@@ -50,6 +50,9 @@ export default {
     }
   },
   methods: {
+    addLike(message) {
+      this.$emit('addLike', message)
+    },
     changeCurrentReplyMessage(message) {
       this.$emit('changeCurrentReplyMessage', message)
     }

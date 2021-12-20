@@ -9,6 +9,7 @@ const confirmToken = require('../middleware/confirmToken')
 router.get('/api/front/messageBoard/gets', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
+  const ip = getIp(req)
   try {
     const total = await db.msgBoard.count({ parentId: null })
     const doc = await db.msgBoard.aggregate([
@@ -23,14 +24,69 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
           as: 'reply'
         }
       },
-      { $sort: { _id: -1 } }
+      { $sort: { _id: -1 } },
+      { $set: { liked: 0 } }
     ])
+    const ids = doc.map(item => item._id.toString())
+    const existed = await db.commentIp.find({ ip, type: 0, like: 1, msgid: { $in: ids } })
+    if (existed.length) {
+      existed.forEach(item => {
+        if (ids.includes(item.msgid.toString())) {
+          doc.find(d => d._id.toString() === item.msgid.toString()).liked = 1
+        }
+      })
+    }
+
     res.json({
       status: 200,
       data: doc,
       total,
       page: parseInt(req.query.page)
     })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+// 赞 +1/-1
+router.patch('/api/front/messageBoard/like', async (req, res) => {
+  try {
+    const ip = getIp(req)
+    const existed = await db.commentIp.find({ ip, type: 0, msgid: req.body._id })
+    // 点赞
+    if (parseInt(req.body.inc) === 1) {
+      // 此ip已经点赞过此条评论
+      if (existed && existed.length && existed[0].like > 0) {
+        res.json({
+          status: 101,
+          info: '您已经点过赞了 ~'
+        })
+      } else {
+        // ip评论关联表存储
+        await db
+          .commentIp({
+            type: 0,
+            msgid: req.body._id,
+            ip: getIp(req),
+            like: 1
+          })
+          .save()
+        // 更新留言表
+        await db.msgBoard.update({ _id: req.body._id }, { $inc: { like: 1 } })
+        res.json({
+          status: 200,
+          data: req.body._id,
+          info: '点赞成功'
+        })
+      }
+    }
+    // 取消赞
+    else if (parseInt(req.body.inc) === -1 && existed.length && existed[0].like === 1) {
+      await db.msgBoard.update({ _id: req.body._id }, { $inc: { like: -1 } })
+      res.json({
+        status: 200,
+        info: '已取消赞'
+      })
+    }
   } catch (e) {
     res.status(500).end()
   }
@@ -88,23 +144,7 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
     res.status(500).end()
   }
 })
-router.patch('/api/addReply', (req, res) => {
-  let reply = {
-    name: req.body.name,
-    imgUrl: req.body.imgUrl,
-    email: req.body.email,
-    content: req.body.content,
-    date: req.body.date,
-    aite: req.body.aite
-  }
-  db.msgBoard.findByIdAndUpdate({ _id: req.body.id }, { $push: { reply: reply } }, { new: true }, (err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json(doc)
-    }
-  })
-})
+
 //后台管理删除二级留言
 router.patch('/api/reduceLeavewords', confirmToken, (req, res) => {
   db.msgBoard.update({ _id: req.body.mainId }, { $pull: { reply: { _id: req.body.secondId } } }, (err, doc) => {

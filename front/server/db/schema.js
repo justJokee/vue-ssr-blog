@@ -77,6 +77,27 @@ const newsSchema = new mongoose.Schema({
   leaveMessageId: mongoose.Schema.Types.ObjectId,
   content: 'string'
 })
+const commentIpSchema = new mongoose.Schema({
+  ip: {
+    type: 'string',
+    required: true
+  },
+  // 0: 留言 1: 文章评论
+  type: {
+    type: 'number',
+    required: true
+  },
+  msgid: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+  like: {
+    type: 'number',
+    required: true
+  },
+  date: 'date'
+})
+
 const counterSchema = new mongoose.Schema({
   _id: 'string',
   seq: 'number'
@@ -89,5 +110,6 @@ module.exports = {
   commentSchema,
   msgBoardSchema,
   newsSchema,
-  counterSchema
+  counterSchema,
+  commentIpSchema
 }

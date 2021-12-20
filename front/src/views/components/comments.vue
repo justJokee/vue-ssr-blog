@@ -5,7 +5,11 @@
 <template>
   <div class="comments">
     <div class="comments__top" v-for="(msg, index) in messages" :key="index">
-      <comments-item :message="msg" @changeCurrentReplyMessage="changeCurrentReplyMessage"></comments-item>
+      <comments-item
+        :message="msg"
+        @changeCurrentReplyMessage="changeCurrentReplyMessage"
+        @addLike="addLike"
+      ></comments-item>
       <submit
         v-if="msg._id === currentReplyMessage._id"
         :currentReplyMessage="currentReplyMessage"
@@ -18,6 +22,7 @@
             :key="'reply_' + _index"
             :message="reply"
             :subType="true"
+            @addLike="addLike"
             @changeCurrentReplyMessage="changeCurrentReplyMessage"
           ></comments-item>
           <submit
@@ -60,6 +65,9 @@ export default {
     },
     changeCurrentReplyMessage(message) {
       this.currentReplyMessage = message
+    },
+    addLike(message) {
+      this.$emit('addLike', message)
     }
   }
 }

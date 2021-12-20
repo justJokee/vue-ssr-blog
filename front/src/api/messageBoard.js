@@ -15,5 +15,11 @@ export default {
     return http.post('/api/front/messageBoard/save', payload).then(data => {
       return data
     })
+  },
+  // 点赞留言
+  likeMessageBoard(payload) {
+    return http.patch('/api/front/messageBoard/like', payload).then(data => {
+      return data
+    })
   }
 }

@@ -13,6 +13,7 @@
     </div>
     <div class="submit__content">
       <div class="submit__input">
+        <span v-if="currentReplyMessage.name" class="reply-name">回复 {{ currentReplyMessage.name }} :</span>
         <el-input
           ref="comment"
           type="textarea"
@@ -34,7 +35,7 @@
         </div>
 
         <div class="submit__btn">
-          <el-button v-if="currentReplyMessage._id" size="medium" :disabled="!visitorInfo._id" @click="cancelReply">
+          <el-button v-if="currentReplyMessage._id" size="medium" @click="cancelReply">
             取消
           </el-button>
           <el-button size="medium" :disabled="!visitorInfo._id" @click="submitMessage">提交</el-button>
@@ -363,6 +364,10 @@ export default {
   }
   &__input {
     width: 100%;
+    .reply-name {
+      display: inline-block;
+      margin-bottom: 4px;
+    }
   }
   &__login {
     padding: 0 30px 0 0;

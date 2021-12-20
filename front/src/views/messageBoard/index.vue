@@ -22,7 +22,7 @@
             <span>{{ total }}条留言</span>
           </div>
           <div class="message-board__list">
-            <comments :messages="messages" @submitReply="submitReply"></comments>
+            <comments :messages="messages" @submitReply="submitReply" @addLike="addLike"></comments>
             <div class="message-board__page">
               <el-pagination
                 :current-page.sync="currentPage"
@@ -112,6 +112,13 @@ export default {
         this.messages = msgRes.data
         this.total = msgRes.total
       }
+    },
+    async addLike(message) {
+      const likeRes = await api.likeMessageBoard({
+        _id: message._id,
+        inc: 1
+      })
+      console.log('点赞的返回===>>>>>>', likeRes)
     },
     currentChange(val) {
       this.getMessageBoard()

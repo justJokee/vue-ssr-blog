@@ -10,6 +10,9 @@ export function errorCode(code) {
     case 100:
       _message('warning', '昵称已存在')
       break
+    case 101:
+      _message('warning', '您已经点过赞了 ~')
+      break
   }
 }
 

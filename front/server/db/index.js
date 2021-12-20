@@ -9,7 +9,8 @@ const {
   commentSchema,
   msgBoardSchema,
   newsSchema,
-  counterSchema
+  counterSchema,
+  commentIpSchema
 } = require('./schema')
 
 mongoose.Promise = global.Promise
@@ -55,7 +56,8 @@ const db = {
   msgBoard: mongoose.model('msgBoard', msgBoardSchema),
   visitor: mongoose.model('visitor', visitorsSchema),
   news: mongoose.model('new', newsSchema),
-  counter: mongoose.model('counter', counterSchema)
+  counter: mongoose.model('counter', counterSchema),
+  commentIp: mongoose.model('commentIp', commentIpSchema)
 }
 
 const initDbUser = () => {
