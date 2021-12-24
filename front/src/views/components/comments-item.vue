@@ -19,8 +19,12 @@
       <div class="comments-item__detail">
         <i class="el-icon-date"></i>
         <span class="detail-visitor-date">{{ message.date | formatDate }}</span>
-        <i class="el-icon-thumb" @click="addLike(message)"></i>
-        <span>{{ message.like }}</span>
+        <i
+          class="el-icon-thumb"
+          @click="addLike(message)"
+          :class="{ 'el-icon-thumb--active': message.liked === 1 }"
+        ></i>
+        <span :class="{ 'el-icon-thumb--active': message.liked === 1 }">{{ message.like }}</span>
         <i class="el-icon-chat-dot-round" @click="changeCurrentReplyMessage(message)"></i>
         <span>{{ message | replycCount }}</span>
       </div>
@@ -116,6 +120,9 @@ export default {
     .el-icon-thumb,
     .el-icon-chat-dot-round {
       cursor: pointer;
+    }
+    .el-icon-thumb--active {
+      color: #409eff;
     }
   }
   &__say {

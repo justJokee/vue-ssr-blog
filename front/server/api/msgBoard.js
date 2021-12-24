@@ -27,12 +27,26 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
       { $sort: { _id: -1 } },
       { $set: { liked: 0 } }
     ])
-    const ids = doc.map(item => item._id.toString())
+    let ids = doc
+      .map(item => {
+        if (item.reply && item.reply.length) {
+          return item.reply.map(erp => erp._id.toString()).concat(item._id.toString())
+        }
+        return item._id.toString()
+      })
+      .flat()
+
     const existed = await db.commentIp.find({ ip, type: 0, like: 1, msgid: { $in: ids } })
+
     if (existed.length) {
-      existed.forEach(item => {
-        if (ids.includes(item.msgid.toString())) {
-          doc.find(d => d._id.toString() === item.msgid.toString()).liked = 1
+      const ipIds = existed.map(ee => ee.msgid.toString())
+      doc.forEach(d => {
+        if (ipIds.includes(d._id.toString())) d.liked = 1
+
+        if (d.reply && d.reply.length) {
+          d.reply.forEach(er => {
+            if (ipIds.includes(er._id.toString())) er.liked = 1
+          })
         }
       })
     }
@@ -61,20 +75,28 @@ router.patch('/api/front/messageBoard/like', async (req, res) => {
           info: '您已经点过赞了 ~'
         })
       } else {
-        // ip评论关联表存储
-        await db
-          .commentIp({
-            type: 0,
-            msgid: req.body._id,
-            ip: getIp(req),
-            like: 1
-          })
-          .save()
+        if (!existed.length) {
+          // ip评论关联表存储
+          await db
+            .commentIp({
+              type: 0,
+              msgid: req.body._id,
+              ip: getIp(req),
+              like: 1
+            })
+            .save()
+        } else await db.commentIp.updateMany({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 1 } })
+
         // 更新留言表
         await db.msgBoard.update({ _id: req.body._id }, { $inc: { like: 1 } })
+        const doc = await db.msgBoard.find({ _id: req.body._id })
         res.json({
           status: 200,
-          data: req.body._id,
+          data: {
+            _id: req.body._id,
+            like: doc[0].like,
+            liked: 1
+          },
           info: '点赞成功'
         })
       }
@@ -82,9 +104,16 @@ router.patch('/api/front/messageBoard/like', async (req, res) => {
     // 取消赞
     else if (parseInt(req.body.inc) === -1 && existed.length && existed[0].like === 1) {
       await db.msgBoard.update({ _id: req.body._id }, { $inc: { like: -1 } })
+      await db.commentIp.update({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 0 } })
+      const doc = await db.msgBoard.find({ _id: req.body._id })
       res.json({
         status: 200,
-        info: '已取消赞'
+        data: {
+          _id: req.body._id,
+          like: doc[0].like,
+          liked: 0
+        },
+        info: '取消的是赞，受伤的是心 ಥ﹏ಥ'
       })
     }
   } catch (e) {

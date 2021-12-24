@@ -114,11 +114,38 @@ export default {
       }
     },
     async addLike(message) {
+      const inc = message.liked ? -1 : 1
       const likeRes = await api.likeMessageBoard({
         _id: message._id,
-        inc: 1
+        inc
       })
-      console.log('点赞的返回===>>>>>>', likeRes)
+      if (likeRes.status === 200) {
+        let finder
+        this.messages.some(msg => {
+          if (msg._id === likeRes.data._id) {
+            finder = msg
+            return true
+          }
+          if (msg.reply && msg.reply.length) {
+            let done = false
+            msg.reply.some(er => {
+              if (er._id === likeRes.data._id) {
+                finder = er
+                done = true
+              }
+            })
+            return done
+          }
+        })
+        if (finder) {
+          finder.like = likeRes.data.like
+          finder.liked = likeRes.data.liked
+        }
+        this.$message({
+          type: 'success',
+          message: likeRes.info
+        })
+      }
     },
     currentChange(val) {
       this.getMessageBoard()
