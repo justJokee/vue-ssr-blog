@@ -51,9 +51,8 @@ router.get('/login/git', (req, res) => {
   res.status(200).end()
 })
 router.get('/login_github', (req, res) => {
-  //请替换为自己的client_id和client_secret
   console.log('已经指向到login-github：：', req.query)
-  let params = {
+  const params = {
     client_id: secret.github_client_id,
     client_secret: secret.github_client_secret,
     code: req.query.code,
@@ -63,48 +62,19 @@ router.get('/login_github', (req, res) => {
   api
     .post('https://github.com/login/oauth/access_token', params)
     .then(fullData => {
-      let arr1 = fullData.split('&')
-      let arr2 = arr1[0].split('=')
-      let token = arr2[1]
-      console.log('获取到了token====>>>>>')
-      console.log(token)
+      const arr1 = fullData.split('&')
+      const arr2 = arr1[0].split('=')
+      const token = arr2[1]
+      console.log('获取到token====>>>>>', token)
       return token
     })
     .then(async token => {
       const octokit = new Octokit({ auth: `${token}` })
       const info = await octokit.request('GET /user')
-      console.log('返回用户信息了====>>>>', info.data)
+      console.log('返回用户信息====>>>>', info.data)
       res.render('gc_back.html', { title: 'github登陆成功', userInfo: JSON.stringify(info.data) })
-      // res.status(200).end()
-
-      return 666
-      api
-        .get('https://api.github.com/user', { access_token: token })
-        .then(user_info => {
-          db.vistor.find({ githubID: user_info.id }, (err, doc) => {
-            if (err) {
-              res.status(500).end()
-            } else {
-              if (!doc.length) {
-                new db.vistor({
-                  name: user_info.login,
-                  imgUrl: user_info.avatar_url,
-                  githubID: user_info.id
-                }).save()
-              }
-              res.cookie('githubId', user_info.id, { maxAge: 1000 * 60 * 60 * 24 })
-              res.status(200).end()
-            }
-          })
-        })
-        .catch(err => {
-          console.log('致命错误1----->>>>', err)
-          res.status(500).end()
-        })
     })
     .catch(err => {
-      console.log('致命错误2----->>>>', err)
-
       res.status(500).end()
     })
 })

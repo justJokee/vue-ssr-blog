@@ -14,17 +14,21 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
     const total = await db.msgBoard.count({ parentId: null })
     const doc = await db.msgBoard.aggregate([
       { $match: { parentId: null } },
+      { $sort: { _id: -1 } },
       { $skip: skip },
       { $limit: limit },
       {
         $lookup: {
           from: db.msgBoard.collection.name,
           let: { pid: '$_id' },
-          pipeline: [{ $match: { $expr: { $eq: ['$parentId', '$$pid'] } } }, { $sort: { _id: -1 } }],
+          pipeline: [
+            { $match: { $expr: { $eq: ['$parentId', '$$pid'] } } },
+            { $sort: { _id: -1 } },
+            { $set: { liked: 0 } }
+          ],
           as: 'reply'
         }
       },
-      { $sort: { _id: -1 } },
       { $set: { liked: 0 } }
     ])
     let ids = doc

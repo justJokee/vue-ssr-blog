@@ -11,5 +11,11 @@ export default {
     return http.get('/api/front/article/detail', payload).then(data => {
       return data
     })
+  },
+  // 获取文章评论
+  getArticleComments(payload) {
+    return http.get('/api/front/comments/get', payload).then(data => {
+      return data
+    })
   }
 }
