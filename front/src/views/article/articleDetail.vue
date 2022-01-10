@@ -40,10 +40,26 @@
         <p>{{ article.abstract }}</p>
       </note>
       <div v-html="article.content" class="article-detail__body"></div>
-      <div :style="{ height: height + 'px' }"></div>
-      <button @click="height = 400">666</button>
+      <div class="article-detail__copyright">
+        <copyright :url="url"></copyright>
+      </div>
+      <div class="article-detail__share">
+        <share :tags="article.tag" :abstract="article.abstract" :title="article.title"></share>
+      </div>
+      <div class="article-detail__prevnext">
+        <prevnext :article="article"></prevnext>
+      </div>
       <div class="article-detail__comment">
-        <div class="comment__title"></div>
+        <div class="comment__title">
+          <i class="el-icon-chat-dot-round"></i>
+          <span>文章评论</span>
+        </div>
+        <div class="comment__submit">
+          <submit @submitContent="submitContent"></submit>
+        </div>
+        <div class="comment__total">
+          <span>{{ total }}条评论</span>
+        </div>
         <div class="comment__list">
           <comments :messages="messages" @submitReply="submitReply" @addLike="addLike"></comments>
         </div>
@@ -67,15 +83,17 @@ import note from '@/components/note/'
 import { generateTree } from '@/utils/generateTree'
 import { getRandomCharacter } from '@/utils/getRandomCharacter'
 import comments from '@/views/components/comments'
-
+import submit from '@/views/components/submit'
+import copyright from './components/copyright'
+import share from './components/share'
+import prevnext from './components/prevnext'
 export default {
   name: 'articleDetail',
-  components: { note, comments },
+  components: { note, comments, submit, copyright, share, prevnext },
   props: {},
   // 动态属性
   data() {
     return {
-      height: 0,
       currentPage: 1,
       pageSize: 10,
       total: 0,
@@ -86,7 +104,10 @@ export default {
   },
   computed: {
     tags() {
-      if (this.article.tag) return this.article.tag.join('&nbsp;&nbsp;')
+      if (this.article.tag) return this.article.tag.join(' ')
+    },
+    url() {
+      return `${process.env.BASE_URL}/app/article/${this.article.articleId}`
     }
   },
   watch: {},
@@ -109,8 +130,9 @@ export default {
       limit: 10,
       articleId: route.params.id
     })
-    if (articleRes.status === 200)
-    { return { article: articleRes.data, messages: commentRes.data, total: commentRes.total } }
+    if (articleRes.status === 200) {
+      return { article: articleRes.data, messages: commentRes.data, total: commentRes.total }
+    }
   },
   methods: {
     ...mapMutations(['setCatalogs', 'setActiveCatalog']),
@@ -149,6 +171,7 @@ export default {
         })
       }
     },
+    submitContent(comment) {},
     async currentChange(val) {
       this.currentPage = val
       const commentRes = await api.getArticleComments({
@@ -238,6 +261,7 @@ export default {
       color: themed('color-title');
     }
   }
+
   &__info {
     @include themeify() {
       color: themed('color-navbar');
@@ -245,6 +269,39 @@ export default {
   }
   .info-2 {
     margin-top: 8px;
+  }
+  &__share {
+    margin-top: 12px;
+  }
+  &__prevnext {
+    margin-top: 28px;
+  }
+  &__comment {
+    margin-top: 32px;
+    .comment__title {
+      padding: 16px 0;
+      font-size: 20px;
+      font-weight: 700;
+      > [class^='el-icon-'] {
+        font-weight: 700;
+      }
+      span {
+        margin-left: 12px;
+      }
+    }
+    .comment__total {
+      color: #4c4948;
+      font-size: 25px;
+      font-weight: bold;
+      margin-top: 28px;
+    }
+    .comment__list {
+      margin-top: 28px;
+    }
+    .comment__page {
+      @include flex-box-center;
+      padding: 16px 0;
+    }
   }
 }
 </style>

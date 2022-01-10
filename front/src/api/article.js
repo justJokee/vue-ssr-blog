@@ -17,5 +17,11 @@ export default {
     return http.get('/api/front/comments/get', payload).then(data => {
       return data
     })
+  },
+  // 获取上一篇文章和下一篇文章
+  getPrevnextArticle(payload) {
+    return http.get('/api/front/article/prevnext', payload).then(data => {
+      return data
+    })
   }
 }

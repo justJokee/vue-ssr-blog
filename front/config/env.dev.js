@@ -4,5 +4,5 @@
 module.exports = {
   NODE_ENV: '"development"',
   STATS: '"development"',
-  BASE_URL: '""'
+  BASE_URL: '"http://localhost:6180"'
 }

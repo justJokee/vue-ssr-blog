@@ -70,25 +70,25 @@ router.get('/api/front/article/detail', unpublishedPermission, async (req, res) 
   }
 })
 // 获得上一篇文章和下一篇文章
-router.get('/api/front/article/preAndNext', (req, res) => {
-  db.article
-    .find({ publish: true, date: { $lt: req.query.date } }, { articleId: 1, title: 1, tag: 1 }, (err, doc1) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        db.article
-          .find({ publish: true, date: { $gt: req.query.date } }, { articleId: 1, title: 1, tag: 1 }, (err, doc2) => {
-            if (err) {
-              res.status(500).end()
-            } else {
-              res.json({ pre: doc1, next: doc2 })
-            }
-          })
-          .limit(1)
+router.get('/api/front/article/prevnext', async (req, res) => {
+  try {
+    const prev = await db.article
+      .find({ publish: 1, date: { $lt: req.query.date } }, { articleId: 1, title: 1, headerPic: 1 })
+      .sort({ _id: -1 })
+      .limit(1) //pre使用倒序查询，否则只会显示第一条数据，因为它是最早的
+    const next = await db.article
+      .find({ publish: 1, date: { $gt: req.query.date } }, { articleId: 1, title: 1, headerPic: 1 })
+      .limit(1)
+    res.json({
+      status: 200,
+      data: {
+        prev: prev.length ? prev[0] : null,
+        next: next.length ? next[0] : null
       }
     })
-    .sort({ _id: -1 })
-    .limit(1) //pre使用倒序查询，否则只会显示第一条数据，因为他是最早的
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 
 // 更新文章的喜欢字段
