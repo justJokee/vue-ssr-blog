@@ -8,9 +8,9 @@
     <div class="navbar-menus">
       <div class="navbar-menu">
         <i class="el-icon-search"></i>
-        <span>搜索</span>
+        <span @click="openSearch">搜索</span>
       </div>
-      <div class="navbar-menu">
+      <div class="navbar-menu" @click="goTo('home')">
         <i class="el-icon-s-home"></i>
         <span>首页</span>
       </div>
@@ -45,28 +45,33 @@
           <el-dropdown-item>黄金糕</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <div class="navbar-menu">
+      <div class="navbar-menu" @click="goTo('messageBoard')">
         <i class="el-icon-chat-dot-round"></i>
-        <span @click="goTo('messageBoard')">留言板</span>
+        <span>留言板</span>
       </div>
       <div class="navbar-menu">
         <i class="el-icon-ship"></i>
         <span>友链</span>
       </div>
     </div>
+    <el-dialog title="搜索" :visible.sync="searchVisible" width="30%" :append-to-body="true" custom-class="search-box">
+      <search></search>
+    </el-dialog>
   </nav>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { getScrollTop } from '@/utils/getScrollTop'
-
+import search from '@/views/components/search'
 export default {
   name: 'navbar',
   props: {},
+  components: { search },
   data() {
     return {
       lastTopPos: 0,
-      rollbackTop: false
+      rollbackTop: false,
+      searchVisible: false
     }
   },
   mounted() {
@@ -93,6 +98,10 @@ export default {
     ...mapMutations(['setRollBack']),
     goTo(name) {
       this.$router.push({ name })
+    },
+    // 文章关键词搜索
+    openSearch() {
+      this.searchVisible = true
     }
   }
 }

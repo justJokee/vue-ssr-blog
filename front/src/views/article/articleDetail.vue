@@ -63,7 +63,7 @@
         <div class="comment__list">
           <comments :messages="messages" @submitReply="submitReply" @addLike="addLike"></comments>
         </div>
-        <div class="comment__page">
+        <div class="comment__page" v-if="total">
           <el-pagination
             :current-page.sync="currentPage"
             :total="total"
@@ -77,7 +77,7 @@
   </div>
 </template>
 <script>
-import { mapMutations } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import api from '@/api/'
 import note from '@/components/note/'
 import { generateTree } from '@/utils/generateTree'
@@ -103,6 +103,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(['visitorInfo']),
     tags() {
       if (this.article.tag) return this.article.tag.join(' ')
     },
@@ -136,7 +137,6 @@ export default {
   },
   methods: {
     ...mapMutations(['setCatalogs', 'setActiveCatalog']),
-    async submitReply(content, currentReplyMessage, cb) {},
     async addLike(message) {
       const inc = message.liked ? -1 : 1
       const likeRes = await api.likeArticleComment({
@@ -171,11 +171,46 @@ export default {
         })
       }
     },
-    submitContent(comment) {},
+    submitContent(content, cb) {
+      this.submit(content, null, cb)
+    },
+    submitReply(content, currentReplyComment, cb) {
+      this.submit(content, currentReplyComment, cb)
+    },
+    async submit(content, currentReplyComment, cb) {
+      let parentId
+      let aite
+      if (currentReplyComment) {
+        if (currentReplyComment.parentId) parentId = currentReplyComment.parentId
+        else parentId = currentReplyComment._id
+        aite = currentReplyComment.name
+      }
+      const res = await api.saveArticleComment({
+        articleId: this.$route.params.id,
+        name: this.visitorInfo.name,
+        imgUrl: this.visitorInfo.imgUrl,
+        email: this.visitorInfo.email,
+        link: this.visitorInfo.link,
+        content: content,
+        parentId,
+        aite
+      })
+      if (res.status === 200) {
+        if (cb) cb()
+        this.$message({
+          type: 'success',
+          message: '评论成功'
+        })
+        this.getArticleComments()
+      }
+    },
     async currentChange(val) {
       this.currentPage = val
+      this.getArticleComments()
+    },
+    async getArticleComments() {
       const commentRes = await api.getArticleComments({
-        page: val,
+        page: this.currentPage,
         limit: this.limit,
         articleId: this.$route.params.id
       })
@@ -269,6 +304,9 @@ export default {
   }
   .info-2 {
     margin-top: 8px;
+  }
+  &__copyright {
+    margin-top: 28px;
   }
   &__share {
     margin-top: 12px;

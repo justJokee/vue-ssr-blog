@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
-const localTime = require('../utils/reviseTime')
 const getIp = require('../utils/getIp')
 const confirmToken = require('../middleware/confirmToken')
+const api = require('../http/')
 
 // 获取文章评论
 router.get('/api/front/comments/get', async (req, res) => {
@@ -62,8 +62,48 @@ router.get('/api/front/comments/get', async (req, res) => {
     res.status(500).end()
   }
 })
-
-// 赞 +1/-1
+//添加文章评论
+router.post('/api/front/comments/save', async (req, res) => {
+  try {
+    // 存储文章评论
+    const commentDoc = await new db.comment({
+      ...req.body,
+      like: 0,
+      date: new Date()
+    }).save()
+    // 更新文章评论总数
+    await db.article.update({ articleId: req.body.articleId }, { $inc: { commentNum: 1 } })
+    res.json({
+      status: 200,
+      data: commentDoc,
+      info: '评论成功'
+    })
+    // 新消息通知
+    if (process.env.NODEW_ENV === 'production') {
+      const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
+      console.log('返回ip信息===>>>>', ipInfo)
+      if (ipInfo.status === '200' && ipInfo.data.length) {
+        const info = ipInfo.data[0]
+        await new db.news({
+          type: 'comment',
+          ip: info.ip,
+          lng: info.adlng,
+          lat: info.adlat,
+          nation: info.nation,
+          province: info.province,
+          city: info.city,
+          district: info.district,
+          commentId: commentDoc._id,
+          content: commentDoc.content,
+          date: new Date()
+        }).save()
+      }
+    }
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+// 文章评论赞 +1/-1
 router.patch('/api/front/comments/like', async (req, res) => {
   try {
     const ip = getIp(req)
@@ -154,30 +194,6 @@ router.delete('/api/removeComments', confirmToken, (req, res) => {
         })
       }
       res.json({ deleteCode: 200 })
-    }
-  })
-})
-//添加文章评论
-router.post('/api/saveComment', (req, res) => {
-  new db.comment(req.body).save((err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json(doc)
-      if (doc.parentId === null) {
-        db.article.update({ articleId: req.body.articleId }, { $inc: { commentNum: 1 } }, (err, doc) => {
-          if (err) {
-            res.status(500).end()
-          }
-        })
-      }
-
-      new db.newMsg({
-        type: 'comment',
-        name: req.body.name,
-        say: req.body.content,
-        content: req.body.name + '在' + localTime(Date.now()) + '评论了你的文章--' + req.body.title
-      }).save()
     }
   })
 })

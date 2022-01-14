@@ -35,6 +35,7 @@
         </template>
       </div>
     </div>
+    <div class="comments__empty" v-if="!messages.length">emm...没人理我</div>
   </div>
 </template>
 <script>
@@ -73,12 +74,23 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+
 .comments {
-  color: #4c4948;
+  @include themeify() {
+    color: themed('color-comments');
+  }
   &__top {
   }
   &__sub {
     padding-left: 50px;
+  }
+  &__empty {
+    padding: 16px;
+    text-align: center;
+    @include themeify() {
+      color: themed('color-ele-holder');
+    }
   }
 }
 </style>

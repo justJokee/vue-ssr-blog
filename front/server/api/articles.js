@@ -122,21 +122,25 @@ router.patch('/api/front/article/love', (req, res) => {
   })
 })
 // 文章搜索
-router.get('/api/front/article/search', unpublishedPermission, (req, res) => {
+router.get('/api/front/article/search', unpublishedPermission, async (req, res) => {
   const limit = 8
   const skip = req.query.page * limit - limit
+
+  await db.article
+    .find({ publish: true, title: { $regex: req.query.key, $options: 'i' } }, { content: 0 }, (err, doc) => {
+      if (err) {
+        res.status(500).end()
+      } else {
+        res.json(doc)
+      }
+    })
+    .sort({ _id: -1 })
+    .skip(skip)
+    .limit(limit)
+  ///
+
+  ////
   if (req.query.according === 'key') {
-    db.article
-      .find({ publish: true, title: { $regex: req.query.key, $options: 'i' } }, { content: 0 }, (err, doc) => {
-        if (err) {
-          res.status(500).end()
-        } else {
-          res.json(doc)
-        }
-      })
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
     //前台时间轴根据时间范围搜索
   } else {
     const start = new Date(parseInt(req.query.start))

@@ -38,6 +38,7 @@ const commentSchema = new mongoose.Schema({
   imgUrl: 'string',
   email: 'string',
   content: 'string',
+  link: 'string',
   like: 'number',
   aite: 'string',
   articleId: 'number',

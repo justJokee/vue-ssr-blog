@@ -11,5 +11,11 @@ export default {
     return http.patch('/api/front/comments/like', payload).then(data => {
       return data
     })
+  },
+  // 发表文章评论 /api/front/comments/save
+  saveArticleComment(payload) {
+    return http.post('/api/front/comments/save', payload).then(data => {
+      return data
+    })
   }
 }
