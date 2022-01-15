@@ -1,4 +1,4 @@
-#新版本更新中
+# 新版本更新中
 # vue-ssr-blog 
 [博客地址 http://www.mapblog.cn](http://www.mapblog.cn "mapblog小站")
 > 这是一个完整的vue个人博客项目，包括前台页面展示和一个后台管理。<br>
