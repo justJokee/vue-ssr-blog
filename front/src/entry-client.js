@@ -2,9 +2,13 @@ import { createApp } from './app'
 import { storage } from '@/utils/storage'
 import R_O_P from 'resize-observer-polyfill'
 import Vue from 'vue'
+import VueLazyload from '@/utils/lazyLoad'
 if (!window.ResizeObserver) {
   window.ResizeObserver = R_O_P
 }
+// eslint-disable-next-line no-undef
+Vue.use(VueLazyload)
+
 Vue.mixin({
   beforeRouteUpdate(to, from, next) {
     const { asyncData } = this.$options

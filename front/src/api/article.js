@@ -23,5 +23,11 @@ export default {
     return http.get('/api/front/article/prevnext', payload).then(data => {
       return data
     })
+  },
+  // 文章搜索
+  searchArticle(payload) {
+    return http.get('/api/front/article/search', payload).then(data => {
+      return data
+    })
   }
 }

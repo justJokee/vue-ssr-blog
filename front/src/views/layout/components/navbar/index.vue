@@ -4,11 +4,11 @@
 </doc>
 <template>
   <nav class="navbar" :class="{ 'navbar-rollup': rollBack, 'navbar-transparent': rollbackTop }">
-    <div class="navbar-name">mapblog</div>
+    <div class="navbar-name">Marco's Blog</div>
     <div class="navbar-menus">
-      <div class="navbar-menu">
+      <div class="navbar-menu" @click="openSearch">
         <i class="el-icon-search"></i>
-        <span @click="openSearch">搜索</span>
+        <span>搜索</span>
       </div>
       <div class="navbar-menu" @click="goTo('home')">
         <i class="el-icon-s-home"></i>
@@ -20,8 +20,19 @@
           导航
           <i class="el-icon-arrow-down"></i>
         </span>
-        <el-dropdown-menu slot="dropdown" class="navbar-menus-dropdown-menu">
-          <el-dropdown-item>黄金糕</el-dropdown-item>
+        <el-dropdown-menu slot="dropdown" class="menu-list">
+          <el-dropdown-item>
+            <i class="el-icon-files"></i>
+            归档
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <i class="el-icon-collection-tag"></i>
+            标签
+          </el-dropdown-item>
+          <el-dropdown-item>
+            <i class="el-icon-folder-opened"></i>
+            分类
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <el-dropdown class="navbar-menu">
@@ -30,7 +41,7 @@
           文档
           <i class="el-icon-arrow-down"></i>
         </span>
-        <el-dropdown-menu slot="dropdown" class="navbar-menus-dropdown-menu">
+        <el-dropdown-menu slot="dropdown" class="menu-list">
           <el-dropdown-item>黄金糕</el-dropdown-item>
           <el-dropdown-item>黄金糕</el-dropdown-item>
         </el-dropdown-menu>
@@ -41,7 +52,7 @@
           娱乐
           <i class="el-icon-arrow-down"></i>
         </span>
-        <el-dropdown-menu slot="dropdown" class="navbar-menus-dropdown-menu">
+        <el-dropdown-menu slot="dropdown" class="menu-list">
           <el-dropdown-item>黄金糕</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
@@ -54,8 +65,15 @@
         <span>友链</span>
       </div>
     </div>
-    <el-dialog title="搜索" :visible.sync="searchVisible" width="30%" :append-to-body="true" custom-class="search-box">
-      <search></search>
+    <el-dialog
+      title="搜索"
+      :visible.sync="searchVisible"
+      width="30%"
+      :append-to-body="true"
+      :lock-scroll="false"
+      custom-class="search-box"
+    >
+      <search @hasJumped="closeSearch"></search>
     </el-dialog>
   </nav>
 </template>
@@ -102,6 +120,9 @@ export default {
     // 文章关键词搜索
     openSearch() {
       this.searchVisible = true
+    },
+    closeSearch() {
+      this.searchVisible = false
     }
   }
 }
@@ -162,7 +183,16 @@ export default {
     transition: all ease 0.38s;
   }
 }
-
+.menu-list {
+  [class^='el-icon-'] {
+    font-weight: 900;
+    margin-right: 4px;
+    font-size: 16px;
+  }
+  .popper__arrow {
+    display: none;
+  }
+}
 .navbar-rollup {
   position: fixed;
   transform: translateY(100%);
@@ -188,11 +218,6 @@ export default {
     @include themeify() {
       color: themed('color-navbar');
     }
-  }
-}
-.navbar-menus-dropdown-menu {
-  .popper__arrow {
-    display: none;
   }
 }
 </style>

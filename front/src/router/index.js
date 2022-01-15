@@ -18,7 +18,11 @@ const messageBoard = () => import('@/views/messageBoard/')
 
 Vue.use(Router)
 Vue.use(Meta)
-
+// 避免重复点击相同路由 报错问题
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 export function createRouter() {
   return new Router({
     mode: 'history',

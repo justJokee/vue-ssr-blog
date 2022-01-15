@@ -26,6 +26,7 @@ const articleSchema = new mongoose.Schema({
   title: 'string',
   abstract: 'string',
   content: 'string',
+  content_plain: 'string',
   publish: 'number',
   tag: 'array',
   commentNum: 'number',
