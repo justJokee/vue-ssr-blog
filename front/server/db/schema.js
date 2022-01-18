@@ -20,8 +20,19 @@ const visitorsSchema = new mongoose.Schema({
   qqOpenId: 'number',
   date: 'date'
 })
+// 文章分类
+const categorySchema = new mongoose.Schema({
+  name: {
+    type: 'string',
+    required: true
+  },
+  total: 'number',
+  createTime: 'date',
+  updateTime: 'date'
+})
 const articleSchema = new mongoose.Schema({
   articleId: 'number',
+  categoryId: mongoose.Schema.Types.ObjectId,
   original: 'number',
   title: 'string',
   abstract: 'string',
@@ -32,7 +43,8 @@ const articleSchema = new mongoose.Schema({
   commentNum: 'number',
   likeNum: 'number',
   pv: 'number',
-  date: 'date'
+  createTime: 'date',
+  updateTime: 'date'
 })
 const commentSchema = new mongoose.Schema({
   name: 'string',
@@ -84,7 +96,7 @@ const commentIpSchema = new mongoose.Schema({
     type: 'string',
     required: true
   },
-  // 0: 留言 1: 文章评论
+  // 0: 留言 1: 文章评论 2: 文章赞
   type: {
     type: 'number',
     required: true
@@ -97,7 +109,8 @@ const commentIpSchema = new mongoose.Schema({
     type: 'number',
     required: true
   },
-  date: 'date'
+  createTime: 'date',
+  updateTime: 'date'
 })
 
 const counterSchema = new mongoose.Schema({
@@ -108,6 +121,7 @@ const counterSchema = new mongoose.Schema({
 module.exports = {
   userSchema,
   visitorsSchema,
+  categorySchema,
   articleSchema,
   commentSchema,
   msgBoardSchema,

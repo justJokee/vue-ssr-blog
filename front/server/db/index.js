@@ -5,6 +5,7 @@ const localTime = require('../utils/reviseTime')
 const {
   userSchema,
   visitorsSchema,
+  categorySchema,
   articleSchema,
   commentSchema,
   msgBoardSchema,
@@ -52,6 +53,7 @@ articleSchema.pre('save', function(next) {
 const db = {
   user: mongoose.model('user', userSchema),
   article: mongoose.model('article', articleSchema),
+  category: mongoose.model('category', categorySchema),
   comment: mongoose.model('comment', commentSchema),
   msgBoard: mongoose.model('msgBoard', msgBoardSchema),
   visitor: mongoose.model('visitor', visitorsSchema),

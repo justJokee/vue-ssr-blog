@@ -10,7 +10,7 @@
         <div class="article-detail__info info-1">
           <span>
             <i class="el-icon-date"></i>
-            发表时间 {{ article.date | formatDate }}
+            发表时间 {{ article.createTime | formatDate }}
           </span>
           <span>&nbsp;|&nbsp;</span>
           <span>

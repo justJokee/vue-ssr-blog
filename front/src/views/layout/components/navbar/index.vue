@@ -53,7 +53,7 @@
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item>黄金糕</el-dropdown-item>
+          <el-dropdown-item>电影</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <div class="navbar-menu" @click="goTo('messageBoard')">

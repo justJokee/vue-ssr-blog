@@ -62,6 +62,25 @@ router.get('/api/front/comments/get', async (req, res) => {
     res.status(500).end()
   }
 })
+// 获取最新的文章评论
+router.get('/api/front/comments/new', async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const skip = req.query.page * limit - limit
+  try {
+    const doc = await db
+      .comment({})
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+    res.json({
+      status: 200,
+      data: doc,
+      info: '获取文章最新评论成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
 //添加文章评论
 router.post('/api/front/comments/save', async (req, res) => {
   try {
@@ -124,10 +143,16 @@ router.patch('/api/front/comments/like', async (req, res) => {
               type: 1,
               msgid: req.body._id,
               ip: getIp(req),
-              like: 1
+              like: 1,
+              createTime: new Date()
             })
             .save()
-        } else await db.commentIp.updateMany({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 1 } })
+        } else {
+          await db.commentIp.updateMany(
+            { ip: getIp(req), msgid: req.body._id },
+            { $set: { like: 1, updateTime: new Date() } }
+          )
+        }
 
         // 更新留言表
         await db.comment.update({ _id: req.body._id }, { $inc: { like: 1 } })
@@ -146,7 +171,7 @@ router.patch('/api/front/comments/like', async (req, res) => {
     // 取消赞
     else if (parseInt(req.body.inc) === -1 && existed.length && existed[0].like === 1) {
       await db.comment.update({ _id: req.body._id }, { $inc: { like: -1 } })
-      await db.commentIp.update({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 0 } })
+      await db.commentIp.update({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 0, updateTime: new Date() } })
       const doc = await db.comment.find({ _id: req.body._id })
       res.json({
         status: 200,
