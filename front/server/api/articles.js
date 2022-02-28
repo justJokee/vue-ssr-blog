@@ -75,11 +75,11 @@ router.get('/api/front/article/detail', unpublishedPermission, async (req, res) 
 router.get('/api/front/article/prevnext', async (req, res) => {
   try {
     const prev = await db.article
-      .find({ publish: 1, date: { $lt: req.query.date } }, { articleId: 1, title: 1, headerPic: 1 })
+      .find({ publish: 1, createTime: { $lt: req.query.createTime } }, { articleId: 1, title: 1, headerPic: 1 })
       .sort({ _id: -1 })
       .limit(1) //pre使用倒序查询，否则只会显示第一条数据，因为它是最早的
     const next = await db.article
-      .find({ publish: 1, date: { $gt: req.query.date } }, { articleId: 1, title: 1, headerPic: 1 })
+      .find({ publish: 1, createTime: { $gt: req.query.createTime } }, { articleId: 1, title: 1, headerPic: 1 })
       .limit(1)
     res.json({
       status: 200,
@@ -254,7 +254,7 @@ router.get('/api/front/article/hot', (req, res) => {
     .limit(5)
 })
 
-/***********后台管理文章： 改动 删除 修改**************/
+/***********后台管理文章： 改动 删除 修改 TODO:待重构**************/
 
 // 修改文章
 router.patch('/api/admin/article/update', confirmToken, (req, res) => {

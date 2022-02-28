@@ -49,7 +49,7 @@ export default {
   methods: {
     async getPrevnextArticle() {
       const prevnextRes = await this.$api.getPrevnextArticle({
-        date: this.article.date
+        createTime: this.article.createTime
       })
       if (prevnextRes.status === 200) {
         console.log('p-next=====', prevnextRes)

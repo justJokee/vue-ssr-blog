@@ -4,25 +4,12 @@
   </div>
 </template>
 <script>
-import tab from '@/components/tab/tab'
-import gateWay from '@/components/base/gateWay'
-import fileOnPlace from '@/components/base/fileOnPlace'
-import about from '@/components/base/about'
-import hot from '@/components/base/hot'
-import foot from '@/components/base/foot'
 import { mapState, mapMutations } from 'vuex'
 import { getScrollTop } from '@/utils/getScrollTop'
 import { getElementTop } from '@/utils/getElementTop'
 
 export default {
-  components: {
-    tab,
-    gateWay,
-    fileOnPlace,
-    about,
-    hot,
-    foot
-  },
+  components: {},
   data() {
     return {
       location: [],
