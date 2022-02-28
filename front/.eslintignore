@@ -1,4 +1,5 @@
 
 config/*
 src/assets
+src/utils/lazyLoad.js
 node_modules

@@ -29,7 +29,10 @@ module.exports = {
     "AMap": true,
     "AMapUI": true,
     "processEnv": true,
-    "_": true
+    "_": true,
+    "Prism": true,
+    "QRCode": true,
+    "QC": true
   },
   // add your custom rules here
   //it is base on https://github.com/vuejs/eslint-config-vue
@@ -305,7 +308,7 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     //大括号内是否允许不必要的空格
     'object-curly-spacing': [2, 'always', {
-      objectsInObjects: false
+      objectsInObjects: true
     }],
     // 指定数组的元素之间要以空格隔开(,后面)， never参数：[ 之后和 ] 之前不能带空格，always参数：[ 之后和 ] 之前必须带空格
     'array-bracket-spacing': [2, 'never']

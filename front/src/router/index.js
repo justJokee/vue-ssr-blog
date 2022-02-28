@@ -1,85 +1,50 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Meta from "vue-meta"
-import loginGithub from "@/components/base/loginGithub"
-const home = resolve => require(["@/components/home/home"],resolve)
-const article = resolve => require(["@/components/article/articleRoot"],resolve)
-const life = resolve => require(["@/components/life/life"],resolve)
-const msgboard = resolve => require(["@/components/messageBoard/msgboard"],resolve)
-const miss = resolve => require(["@/components/base/miss"],resolve)
-const articleShow = resolve => require(["@/components/article/articleShow"],resolve)
-const techincal = resolve => require(["@/components/article/techincal"],resolve)
-const search = resolve => require(["@/components/search/search"],resolve)
-const timeLine = resolve => require(["@/components/timeLine/timeLine"],resolve)
- 
+import Meta from 'vue-meta'
+const miss = () => import('@/components/base/miss')
+const home = () => import('@/views/home/')
+const articleDetail = () => import('@/views/article/articleDetail')
+const messageBoard = () => import('@/views/messageBoard/')
+
 Vue.use(Router)
 Vue.use(Meta)
-
-export function createRouter(){
-    return new Router({
-        mode: "history",
-        routes: [
-            {
-                path: "*",
-                name: "miss",
-                component: miss
-            },
-            {
-                path: "/",
-                redirect: "/home"
-            },
-            {
-                path: "/home",
-                component: home,
-                name: "home"
-            },
-            {
-                path: "/article",
-                name: "article",
-                component: article
-            },
-              // article的子路由
-            {
-                path: "/article/:articleList",
-                name: "techincal",
-                component: techincal
-            },
-            {
-                path: "/article/:articleList/:id",
-                name: "articleShow",
-                component: articleShow
-            },
-            {
-                path: "/life",
-                name: "life",
-                component: life
-            },
-            {
-                path: "/life/:id",
-                name: "lifeShow",
-                component: articleShow
-            },
-            {
-                path: "/msgboard",
-                name: "msgboard",
-                component: msgboard
-            },
-            {
-                path: "/search/:searchKey",
-                name: "search",
-                component: search
-            },
-            {
-                path: "/timeLine/:time",
-                name: "timeLine",
-                component: timeLine
-            },
-            {
-                path: "/login_github",
-                name: "loginGithub",
-                component: loginGithub
-            }
-        ]
-    })
+// 避免重复点击相同路由 报错问题
+const originalPush = Router.prototype.push
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
 }
-
+export function createRouter() {
+  return new Router({
+    mode: 'history',
+    routes: [
+      {
+        path: '*',
+        name: 'miss',
+        component: miss
+      },
+      {
+        path: '/',
+        name: 'home',
+        component: home
+      },
+      {
+        path: '/app/article/:id',
+        name: 'articleDetail',
+        component: articleDetail
+      },
+      {
+        path: '/app/messageBoard',
+        name: 'messageBoard',
+        component: messageBoard
+      }
+    ],
+    scrollBehavior(to, from, savedPosition) {
+      if (to.hash) return false
+      if (savedPosition) {
+        return savedPosition
+      } else {
+        return { x: 0, y: 0 }
+      }
+    }
+  })
+}

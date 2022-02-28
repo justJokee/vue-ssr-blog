@@ -1,40 +1,34 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+// eslint-disable-next-line no-unused-vars
+import loadEle from '@/utils/loadEle'
 import App from './App.vue'
+import moment from 'moment'
+import api from '@/api/'
 import { createRouter } from './router'
-import { createStore } from "./store"
+import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
-Vue.filter("reviseTime",function(value){
-	let localTime = new Date(value),
-	 	year = localTime.getFullYear(),
-	 	month = localTime.getMonth()+1,
-	 	day = localTime.getDate(),
-	 	hours = localTime.getHours(),
-	 	minutes = localTime.getMinutes(),
-		// seconds = localTime.getSeconds(),
-		finTime
-		for(let i = 0;i < 10;i++){
-			if(i === minutes){
-				minutes = "0" + minutes
-			}
-		}
-	finTime = year + "-" + month + "-" + day + " " + hours + ":" + minutes 
-			// + ":" +seconds
-	return finTime
-})
+
+import mergeAsyncData from '@/mixins/mergeAsyncData'
+
 // Vue.config.productionTip = false
-
+Vue.filter('formatDate', val => {
+  return moment(val).format('YYYY-MM-DD HH:mm')
+})
+Vue.mixin(mergeAsyncData)
+Vue.prototype.$moment = moment
+Vue.prototype.$api = api
 /* eslint-disable no-new */
-export function createApp(){
-	const router = createRouter()
-	const store = createStore()
-	sync(store,router)
-	const app = new Vue({
-	  	router,
-	  	store,
-	  	render: h => h(App)
-	})
-	return { app,router, store}
-}
+export function createApp() {
+  const router = createRouter()
+  const store = createStore()
+  sync(store, router)
+  const app = new Vue({
+    router,
+    store,
+    render: h => h(App)
+  })
 
+  return { app, router, store }
+}
