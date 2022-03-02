@@ -224,13 +224,25 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
 })
 // 文章归档
 router.get('/api/front/article/archives', async (req, res) => {
+  // const limit = parseInt(req.query.limit) || 10
+  // const skip = req.query.page * limit - limit
   try {
-    const doc = db.article.aggregate([
+    const doc = await db.article.aggregate([
       { $match: {} },
       { $sort: { _id: -1 } },
-      { $project: { time: { $dateToString: { format: '%Y-%m', date: '$date' } }, pv: 1 } },
-      { $group: { _id: '$time', total: { $sum: 1 } } },
-      { $project: { time: '$_id', _id: 0, total: 1 } }
+      // { $skip: skip },
+      // { $limit: limit },
+      {
+        $project: {
+          year: { $dateToString: { format: '%Y', date: '$createTime' } },
+          month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
+          title: 1,
+          createTime: 1,
+          articleId: 1
+        }
+      },
+      { $group: { _id: '$year', total: { $sum: 1 }, months: { $push: '$$ROOT' } } },
+      { $project: { year: '$_id', _id: 0, total: 1, months: 1 } }
     ])
     res.json({
       status: 200,
