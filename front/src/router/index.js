@@ -5,6 +5,10 @@ const miss = () => import('@/components/base/miss')
 const home = () => import('@/views/home/')
 const articleDetail = () => import('@/views/article/articleDetail')
 const messageBoard = () => import('@/views/messageBoard/')
+const archives = () => import('@/views/archives/')
+const tags = () => import('@/views/tags/')
+const articleFilter = () => import('@/views/article-filter/')
+const category = () => import('@/views/category/')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -36,6 +40,26 @@ export function createRouter() {
         path: '/app/messageBoard',
         name: 'messageBoard',
         component: messageBoard
+      },
+      {
+        path: '/app/archives',
+        name: 'archives',
+        component: archives
+      },
+      {
+        path: '/app/tags',
+        name: 'tags',
+        component: tags
+      },
+      {
+        path: '/app/category',
+        name: 'category',
+        component: category
+      },
+      {
+        path: '/app/articles/:type/:param',
+        name: 'articleFilter',
+        component: articleFilter
       }
     ],
     scrollBehavior(to, from, savedPosition) {

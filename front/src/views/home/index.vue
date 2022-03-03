@@ -18,35 +18,8 @@
         </div>
       </div>
       <div class="home-article__body" slot="custom-body">
-        <el-card class="home-article__item" v-for="(article, index) in articles" :key="index">
-          <div class="home-article__item-content">
-            <div class="home-article__item-pic">
-              <img :src="article.headerPic" alt="" />
-            </div>
-            <div class="home-article__item-info">
-              <div>
-                <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
-              </div>
-              <div class="home-article__item-detail">
-                <span>
-                  <i class="el-icon-date"></i>
-                  发表时间 {{ article.createTime | formatDate }}
-                </span>
-                <span>&nbsp;|&nbsp;</span>
-                <span>
-                  <i class="el-icon-chat-dot-round"></i>
-                  评论数 {{ article.commentNum }}
-                </span>
-                <span>&nbsp;|&nbsp;</span>
-                <span>
-                  <i class="el-icon-star-off"></i>
-                  点赞 {{ article.likeNum }}
-                </span>
-              </div>
-              <div class="home-article__item-abstract">{{ article.abstract }}</div>
-            </div>
-          </div>
-        </el-card>
+        <article-iterator :articles="articles"></article-iterator>
+
         <div class="home-article__page">
           <el-pagination
             :total="total"
@@ -64,11 +37,14 @@
 // 导入工具/组件
 import scrollTo from '@/utils/scrollTo'
 import api from '@/api/'
+import articleIterator from '@/views/components/article-iterator'
 export default {
   // 组件名称
   name: 'home',
   // 子组件
-  components: {},
+  components: {
+    articleIterator
+  },
   props: {},
   data() {
     return {
@@ -225,63 +201,6 @@ export default {
   &__page {
     padding: 16px 0;
     @include flex-box-center;
-  }
-  &__item {
-    height: 280px;
-    > .el-card__body {
-      width: 100%;
-      height: 100%;
-      padding: 0;
-    }
-    &-pic {
-      width: 45%;
-      height: 100%;
-      flex: 0 0 auto;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-    &-info {
-      width: 55%;
-      padding: 20px 30px;
-      flex: 0 0 auto;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    &-detail {
-      @include themeify() {
-        color: themed('color-home-article-detail');
-      }
-      font-size: 12px;
-      padding: 12px 0;
-    }
-    &-abstract {
-      line-height: 2;
-    }
-  }
-  &__item-content {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    a {
-      font-size: 24px;
-      line-height: 1.5;
-      transition: all ease-in-out 0.25s;
-    }
-    a:hover {
-      @include themeify() {
-        color: themed('color-ele-primary');
-      }
-    }
-  }
-  &__item:not(:first-child) {
-    margin-top: 20px;
-  }
-  &__item:nth-child(even) .home-article__item-pic {
-    order: 2;
   }
 }
 @keyframes dance {

@@ -11,7 +11,7 @@ router.get('/api/front/category/get', async (req, res) => {
   try {
     const doc = await db.category.find({}).sort({ _id: -1 })
     res.json({
-      status: 0,
+      status: 200,
       data: doc,
       info: '获取文档分类成功'
     })

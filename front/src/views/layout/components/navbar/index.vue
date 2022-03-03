@@ -21,31 +21,31 @@
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item>
+          <el-dropdown-item @click.native="goTo('archives')">
             <i class="el-icon-files"></i>
             归档
           </el-dropdown-item>
-          <el-dropdown-item>
+          <el-dropdown-item @click.native="goTo('tags')">
             <i class="el-icon-collection-tag"></i>
             标签
           </el-dropdown-item>
-          <el-dropdown-item>
+          <el-dropdown-item @click.native="goTo('category')">
             <i class="el-icon-folder-opened"></i>
             分类
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-      <el-dropdown class="navbar-menu">
+      <!-- <el-dropdown class="navbar-menu">
         <span class="navbar-menu-title">
           <i class="el-icon-notebook-2"></i>
           文档
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item>黄金糕</el-dropdown-item>
-          <el-dropdown-item>黄金糕</el-dropdown-item>
+          <el-dropdown-item></el-dropdown-item>
+          <el-dropdown-item></el-dropdown-item>
         </el-dropdown-menu>
-      </el-dropdown>
+      </el-dropdown> -->
       <el-dropdown class="navbar-menu">
         <span class="navbar-menu-title">
           <i class="el-icon-camera"></i>
@@ -53,7 +53,10 @@
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item>电影</el-dropdown-item>
+          <el-dropdown-item>
+            <i class="el-icon-video-camera-solid"></i>
+            电影
+          </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
       <div class="navbar-menu" @click="goTo('messageBoard')">
