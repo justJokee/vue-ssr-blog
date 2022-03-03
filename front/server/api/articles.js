@@ -10,10 +10,11 @@ const api = require('../http/')
 const confirmToken = require('../middleware/confirmToken')
 const unpublishedPermission = require('../middleware/unpublishedPermission')
 
-// 获取文章列表 / 按分类筛选文章
+// 获取文章列表 / 按分类 / 按标签 筛选文章
 router.get('/api/front/article/gets', unpublishedPermission, async (req, res) => {
   const params = { publish: req.query.publish }
   if (req.query.categoryId) params.categoryId = req.query.categoryId
+  if (req.query.tag) params.tag = { $in: [req.query.tag] }
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
   const project = req.query.content == '0' ? { content: 0 } : {}
@@ -224,17 +225,35 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
 })
 // 文章归档
 router.get('/api/front/article/archives', async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const skip = req.query.page * limit - limit
+
   try {
-    const doc = db.article.aggregate([
+    const doc = await db.article.aggregate([
       { $match: {} },
       { $sort: { _id: -1 } },
-      { $project: { time: { $dateToString: { format: '%Y-%m', date: '$date' } }, pv: 1 } },
-      { $group: { _id: '$time', total: { $sum: 1 } } },
-      { $project: { time: '$_id', _id: 0, total: 1 } }
+      { $skip: skip },
+      { $limit: limit },
+      {
+        $project: {
+          year: { $dateToString: { format: '%Y', date: '$createTime' } },
+          month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
+          title: 1,
+          createTime: 1,
+          articleId: 1,
+          headerPic: 1
+        }
+      },
+      { $group: { _id: '$year', total: { $sum: 1 }, months: { $push: '$$ROOT' } } },
+      { $project: { year: '$_id', _id: 0, total: 1, months: 1 } },
+      { $sort: { year: -1 } }
     ])
+    const total = await db.article.count({ publish: 1 })
+
     res.json({
       status: 200,
       data: doc,
+      total,
       info: '归档查询成功'
     })
   } catch (e) {

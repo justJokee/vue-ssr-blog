@@ -8,7 +8,7 @@ const db = require('../db/')
 // 获取文档标签统计数量
 router.get('/api/front/tags/count', async (req, res) => {
   try {
-    const tags = db.articles.aggregate([
+    const tags = await db.article.aggregate([
       { $unwind: '$tag' },
       { $group: { _id: '$tag', total: { $sum: 1 } } },
       { $project: { tag: '$_id', _id: 0, total: 1 } }

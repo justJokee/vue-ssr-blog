@@ -10,6 +10,8 @@ const copyData = require('./copyData')
 const news = require('./news')
 const reviseKey = require('./reviseKey')
 const donload = require('./donload')
+const category = require('./category')
+
 // const confirmToken = require('../middleware/confirmToken')
 
 module.exports = app => {
@@ -26,4 +28,5 @@ module.exports = app => {
   app.use(news)
   app.use(reviseKey)
   app.use(donload)
+  app.use(category)
 }

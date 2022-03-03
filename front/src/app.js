@@ -11,7 +11,6 @@ import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
 
 import mergeAsyncData from '@/mixins/mergeAsyncData'
-
 // Vue.config.productionTip = false
 Vue.filter('formatDate', val => {
   return moment(val).format('YYYY-MM-DD HH:mm')

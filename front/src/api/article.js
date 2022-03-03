@@ -29,5 +29,11 @@ export default {
     return http.get('/api/front/article/search', payload).then(data => {
       return data
     })
+  },
+  // 文章归档
+  getArchives(payload) {
+    return http.get('/api/front/article/archives', payload).then(data => {
+      return data
+    })
   }
 }
