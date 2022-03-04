@@ -8,13 +8,14 @@ const api = require('../http/')
 // 获取文章评论
 router.get('/api/front/comments/get', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
-  const skip = req.query.page * limit - limit
+  const skip = (req.query.page || 1) * limit - limit
   const ip = getIp(req)
+  const articleFilter = Reflect.has(req.query, 'articleId') ? { articleId: parseInt(req.query.articleId) } : {}
   try {
-    const total = await db.comment.count({ articleId: parseInt(req.query.articleId), parentId: null })
+    const total = await db.comment.count({ ...articleFilter, parentId: null })
     const doc = await db.comment.aggregate([
       { $match: { parentId: null } },
-      { $match: { articleId: parseInt(req.query.articleId) } },
+      { $match: { ...articleFilter } },
       { $sort: { _id: -1 } },
       { $skip: skip },
       { $limit: limit },
@@ -59,6 +60,7 @@ router.get('/api/front/comments/get', async (req, res) => {
       page: parseInt(req.query.page)
     })
   } catch (e) {
+    console.log('ccomments-------------', e)
     res.status(500).end()
   }
 })

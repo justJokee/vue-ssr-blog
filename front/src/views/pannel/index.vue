@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="pannel">
-    <introduction></introduction>
+    <pannel-introduction></pannel-introduction>
     <div
       class="pannel__sticky"
       :class="{
@@ -14,20 +14,38 @@
       }"
       :style="{ width: stickyOffsetWidth }"
     >
-      <catalog></catalog>
+      <pannel-catalog class="pannel__item"></pannel-catalog>
+      <pannel-articles class="pannel__item"></pannel-articles>
+      <pannel-comments class="pannel__item"></pannel-comments>
+      <pannel-category class="pannel__item"></pannel-category>
+      <pannel-tags class="pannel__item"></pannel-tags>
+      <pannel-archives class="pannel__item"></pannel-archives>
     </div>
   </div>
 </template>
 <script>
 import { mapState } from 'vuex'
-import introduction from './components/introduction'
-import catalog from './components/catalog'
+import pannelIntroduction from './components/pannel-introduction'
+import pannelCatalog from './components/pannel-catalog'
+import pannelArticles from './components/pannel-articles'
+import pannelComments from './components/pannel-comments'
+import pannelCategory from './components/pannel-category'
+import PannelTags from './components/pannel-tags.vue'
+import pannelArchives from './components/pannel-archives'
 import { getScrollTop } from '@/utils/getScrollTop'
 import { getElementTop } from '@/utils/getElementTop'
 import debounce from 'lodash/debounce'
 export default {
   name: 'pannel',
-  components: { introduction, catalog },
+  components: {
+    pannelIntroduction,
+    pannelCatalog,
+    pannelArticles,
+    pannelComments,
+    pannelCategory,
+    PannelTags,
+    pannelArchives
+  },
   props: {},
   data() {
     return {
@@ -96,6 +114,9 @@ export default {
   height: 100%;
   &__sticky {
     transition: all ease 0.38s;
+  }
+  &__item {
+    margin-top: 16px;
   }
 }
 .pannel--sticky-top {

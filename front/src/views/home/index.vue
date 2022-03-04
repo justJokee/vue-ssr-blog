@@ -71,7 +71,8 @@ export default {
   async asyncData() {
     const articleRes = await api.getArticles({
       publish: 1,
-      page: 1
+      page: 1,
+      content: 0
     })
     if (articleRes.status === 200) return { articles: articleRes.data, total: articleRes.total }
   },
@@ -80,7 +81,8 @@ export default {
       const articleRes = await api.getArticles({
         publish: 1,
         limit: 1,
-        page: val
+        page: val,
+        content: 0
       })
       if (articleRes.status === 200) {
         this.total = articleRes.total

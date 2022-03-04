@@ -1,9 +1,9 @@
 <doc>
-  @desc:   布局组件
+  @desc:   看板 - 文章目录树
   @author: justJokee 
 </doc>
 <template>
-  <div class="catalog">
+  <div class="pannel-catalog">
     <el-card>
       <tree-folder :catalogs="catalogs"></tree-folder>
     </el-card>
@@ -14,7 +14,7 @@ import { mapState } from 'vuex'
 import treeFolder from './tree-folder.vue'
 
 export default {
-  name: 'catalog',
+  name: 'pannelCatalog',
   props: {},
   components: {
     treeFolder
@@ -31,7 +31,7 @@ export default {
 }
 </script>
 <style lang="scss">
-.catalog {
+.pannel-catalog {
   .el-card__body {
     > ol {
       padding: 0;

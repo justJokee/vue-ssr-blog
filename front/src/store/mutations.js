@@ -2,6 +2,21 @@ export default {
   setCatalogs(state, catalogs) {
     state.catalogs = catalogs
   },
+  setArchives(state, archives) {
+    state.archives = archives
+  },
+  setCategory(state, category) {
+    state.category = category
+  },
+  setTags(state, tags) {
+    state.tags = tags
+  },
+  setNewComments(state, newComments) {
+    state.newComments = newComments
+  },
+  setNewArticles(state, newArticles) {
+    state.newArticles = newArticles
+  },
   setActiveCatalog(state, id) {
     state.activeCatalog = id
   },
