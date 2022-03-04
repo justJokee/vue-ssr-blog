@@ -17,7 +17,6 @@
             <div class="archives__content">
               <div class="content-left">
                 <router-link :to="'/app/article/' + article.articleId">
-                  <div></div>
                   <img v-lazy="article.headerPic" alt="" />
                 </router-link>
               </div>
@@ -110,6 +109,10 @@ export default {
         width: 100%;
         height: 100%;
         object-fit: cover;
+      }
+      img[src=''],
+      img:not([src]) {
+        opacity: 0;
       }
     }
     .content-right {

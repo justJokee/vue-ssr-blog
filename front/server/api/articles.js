@@ -17,7 +17,7 @@ router.get('/api/front/article/gets', unpublishedPermission, async (req, res) =>
   if (req.query.tag) params.tag = { $in: [req.query.tag] }
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
-  const project = req.query.content == '0' ? { content: 0 } : {}
+  const project = req.query.content == '0' ? { content: 0, content_plain: 0 } : {}
   if (req.query.tag) params.tag = req.query.tag
   try {
     const total = await db.article.count(params)
@@ -226,8 +226,21 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
 // 文章归档
 router.get('/api/front/article/archives', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
-  const skip = req.query.page * limit - limit
-
+  const skip = (req.query.page || 1) * limit - limit
+  // 按年统计
+  let group = [
+    { $group: { _id: '$year', total: { $sum: 1 }, months: { $push: '$$ROOT' } } },
+    { $project: { year: '$_id', _id: 0, total: 1, months: 1 } },
+    { $sort: { year: -1 } }
+  ]
+  // 按月统计
+  if (req.query.countType === 'month') {
+    group = [
+      { $group: { _id: '$month', total: { $sum: 1 } } },
+      { $project: { month: '$_id', _id: 0, total: 1 } },
+      { $sort: { month: -1 } }
+    ]
+  }
   try {
     const doc = await db.article.aggregate([
       { $match: {} },
@@ -244,9 +257,7 @@ router.get('/api/front/article/archives', async (req, res) => {
           headerPic: 1
         }
       },
-      { $group: { _id: '$year', total: { $sum: 1 }, months: { $push: '$$ROOT' } } },
-      { $project: { year: '$_id', _id: 0, total: 1, months: 1 } },
-      { $sort: { year: -1 } }
+      ...group
     ])
     const total = await db.article.count({ publish: 1 })
 

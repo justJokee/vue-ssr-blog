@@ -1,15 +1,15 @@
 <doc>
-  @desc:   布局组件
+  @desc:   看板 - 本站简介
   @author: justJokee 
 </doc>
 <template>
-  <div class="introduction">
+  <div class="pannel-introduction">
     <el-card>网站简介</el-card>
   </div>
 </template>
 <script>
 export default {
-  name: 'introduction',
+  name: 'pannelIntroduction',
   props: {},
   data() {
     return {}
@@ -18,7 +18,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.introduction {
-  border: 1px solid red;
+.pannel-introduction {
 }
 </style>

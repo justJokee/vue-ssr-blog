@@ -11,7 +11,18 @@ export function createStore() {
       rollBack: false,
       // 访客信息
       visitorInfo: {},
-      catalogs: []
+      // 文章目录树
+      catalogs: [],
+      // 文章归档 按月统计
+      archives: [],
+      // 文章分类
+      category: [],
+      // 文章标签
+      tags: [],
+      // 最新评论
+      newComments: [],
+      // 最新文章
+      newArticles: []
     },
     mutations,
     actions
