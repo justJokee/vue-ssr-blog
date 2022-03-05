@@ -4,7 +4,7 @@
 </doc>
 <template>
   <ol class="tree-folder">
-    <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index">
+    <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index" @click="jumpAnchor(catalog)">
       <div class="tree-folder__content" :class="{ 'tree-folder__content--active': catalog.tempId === activeCatalog }">
         <div class="tree-folder__order">
           <span v-if="catalog.level_tree">{{ curIndex + 1 + '.' + (index + 1) }}</span>
@@ -43,15 +43,35 @@ export default {
   computed: {
     ...mapState(['activeCatalog'])
   },
-  methods: {}
+  methods: {
+    jumpAnchor(catalog) {
+      const a = document.createElement('a')
+      a.href = `${location.href.replace(location.hash, '')}#${catalog.tempId}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+    }
+  }
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
 .tree-folder {
+  padding-left: 12px;
   &__content {
-    padding: 4px;
+    transition: all ease 0.38s;
+    cursor: pointer;
+    padding: 6px;
     &--active {
-      background: red;
+      color: #fff;
+      @include themeify() {
+        background: themed('color-catalog-active');
+      }
+    }
+  }
+  &__content:hover {
+    @include themeify() {
+      color: themed('color-catalog-active');
     }
   }
   &__order {

@@ -5,7 +5,13 @@
 <template>
   <div class="pannel-catalog">
     <el-card>
-      <tree-folder :catalogs="catalogs"></tree-folder>
+      <div class="pannel__item-title">
+        <i class="el-icon-folder-opened"></i>
+        <span>目录</span>
+      </div>
+      <div class="pannel__item-body">
+        <tree-folder :catalogs="catalogs"></tree-folder>
+      </div>
     </el-card>
   </div>
 </template>
@@ -31,14 +37,15 @@ export default {
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+@import '~@/views/pannel/style/mixins';
 .pannel-catalog {
-  .el-card__body {
+  @include pannel-frame;
+
+  .pannel__item-body {
     > ol {
       padding: 0;
     }
-  }
-  ol {
-    padding-left: 12px;
   }
 }
 </style>

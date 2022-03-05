@@ -5,11 +5,11 @@
 <template>
   <div class="archives">
     <layout _title="归档">
-      <div class="archives__year" v-for="(year, index) in archives" :key="index">
-        <div class="year-text">{{ year.year }}</div>
+      <div class="archives__year" v-for="(range, index) in archives" :key="index">
+        <div class="year-text">{{ range.year || range.month }}</div>
         <el-timeline>
           <el-timeline-item
-            v-for="(article, mi) in year.months"
+            v-for="(article, mi) in range.months"
             :key="'art_' + mi"
             type="primary"
             :hide-timestamp="true"
@@ -39,7 +39,7 @@
         <el-pagination
           :total="total"
           layout="prev, pager, next"
-          :page-size="pageSize"
+          :page-size="limit"
           @current-change="currentChange"
         ></el-pagination>
       </div>
@@ -48,22 +48,39 @@
 </template>
 <script>
 import api from '@/api/'
+
+async function getArchiveRes(route, page = 1, limit = 10) {
+  const params = {
+    limit,
+    page
+  }
+  if (route.query.filter && /(\d+)-(\d+)/.test(route.query.filter)) {
+    params.filter = 1
+    params.month = route.query.filter
+  }
+
+  const archiveRes = await api.getArchives(params)
+  return archiveRes
+}
+
 export default {
   name: 'archives',
   data() {
     return {
       currentPage: 1,
-      pageSize: 20,
+      limit: 20,
       total: 0,
       archives: []
     }
   },
-  async asyncData() {
-    const archiveRes = await api.getArchives({
-      limit: 20,
-      page: 1
-    })
+  async asyncData({ route }) {
+    const archiveRes = await getArchiveRes(route)
     if (archiveRes.status === 200) return { archives: archiveRes.data, total: archiveRes.total }
+  },
+  watch: {
+    $route(to, from) {
+      this.getArchiveRes()
+    }
   },
   methods: {
     currentChange(val) {
@@ -71,10 +88,7 @@ export default {
       this.getArchiveRes()
     },
     async getArchiveRes() {
-      const archiveRes = await api.getArchives({
-        limit: this.pageSize,
-        page: this.currentPage
-      })
+      const archiveRes = await getArchiveRes(this.$route, this.currentPage, this.limit)
       if (archiveRes.status === 200) {
         this.archives = archiveRes.data
         this.total = archiveRes.total
