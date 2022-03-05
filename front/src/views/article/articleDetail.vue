@@ -35,7 +35,6 @@
           </span>
         </div>
       </div>
-      <a href="#2.2">点击跳转</a>
       <note>
         <p>{{ article.abstract }}</p>
       </note>
@@ -50,6 +49,7 @@
         <prevnext :article="article"></prevnext>
       </div>
       <div class="article-detail__comment">
+        <a id="a_cm"></a>
         <div class="comment__title">
           <i class="el-icon-chat-dot-round"></i>
           <span>文章评论</span>
@@ -87,6 +87,14 @@ import submit from '@/views/components/submit'
 import copyright from './components/copyright'
 import share from './components/share'
 import prevnext from './components/prevnext'
+
+function jumpAnchor(route) {
+  if (route.query.anchor === 'a_cm') {
+    const el = document.querySelector('#a_cm')
+    el.scrollIntoView()
+  }
+}
+
 export default {
   name: 'articleDetail',
   components: { note, comments, submit, copyright, share, prevnext },
@@ -118,10 +126,11 @@ export default {
       Prism.highlightAll()
     })
     this.collectTitles()
+
     window.addEventListener('scroll', this.handleScroll, false)
   },
   updated() {},
-  async asyncData({ route }) {
+  async asyncData({ route, isServer }) {
     const articleRes = await api.getArticle({
       publish: 1,
       articleId: route.params.id
@@ -132,6 +141,7 @@ export default {
       articleId: route.params.id
     })
     if (articleRes.status === 200) {
+      if (!isServer) setTimeout(() => jumpAnchor(route), 0)
       return { article: articleRes.data, messages: commentRes.data, total: commentRes.total }
     }
   },

@@ -14,12 +14,15 @@
       }"
       :style="{ width: stickyOffsetWidth }"
     >
-      <pannel-catalog class="pannel__item"></pannel-catalog>
+      <template v-for="(pannel, index) in enums">
+        <component class="pannel__item" :is="pannel" :key="index"></component>
+      </template>
+      <!-- <pannel-catalog class="pannel__item"></pannel-catalog>
       <pannel-articles class="pannel__item"></pannel-articles>
       <pannel-comments class="pannel__item"></pannel-comments>
-      <pannel-category class="pannel__item"></pannel-category>
       <pannel-tags class="pannel__item"></pannel-tags>
-      <pannel-archives class="pannel__item"></pannel-archives>
+      <pannel-category class="pannel__item"></pannel-category>
+      <pannel-archives class="pannel__item"></pannel-archives> -->
     </div>
   </div>
 </template>
@@ -46,6 +49,12 @@ export default {
     PannelTags,
     pannelArchives
   },
+  inject: {
+    pannels: {
+      from: 'pannels',
+      default: () => ({})
+    }
+  },
   props: {},
   data() {
     return {
@@ -59,11 +68,39 @@ export default {
     }
   },
   mounted() {
+    console.log(this.$router)
     this.initStickybehavior()
     // TODO: RESIZE事件更新stickyOffsetWidth
   },
   computed: {
-    ...mapState(['rollBack'])
+    ...mapState(['rollBack']),
+    enums() {
+      // 路由进行自定义看板、顺序
+      const def = [
+        'pannel-catalog',
+        'pannel-articles',
+        'pannel-comments',
+        'pannel-tags',
+        'pannel-category',
+        'pannel-archives'
+      ]
+      if (this.pannels) {
+        if (this.pannels.includes && Array.isArray(this.pannels.includes)) return this.pannels.includes
+        if (this.pannels.excludes) {
+          this.pannels.excludes.forEach(item => {
+            if (def.includes(item)) {
+              const index = def.indexOf(item)
+              if (index !== -1) def.splice(index, 1)
+            }
+          })
+        }
+      }
+      if (this.$router.currentRoute.name !== 'articleDetail') {
+        const index = def.indexOf('pannel-catalog')
+        if (index !== -1) def.splice(index, 1)
+      }
+      return def
+    }
   },
   methods: {
     initStickybehavior() {
@@ -72,8 +109,9 @@ export default {
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
       const observer = new ResizeObserver((mu, ob) => {
-        console.log('dom被更新了===>>>>>>')
+        console.log('dom观测触发===>>>>>>')
         this.pannelOffsetHeight = pannelNode.offsetHeight
+        this.stickyOffsetHeight = stickNode.offsetHeight
       })
       observer.observe(pannelNode, { attributes: true, childList: false, subtree: false })
       this.$nextTick(() => {
@@ -85,6 +123,7 @@ export default {
       })
     },
     stickyHandler(e) {
+      if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) return
       const scrollTop = getScrollTop()
       const distance = this.rollBack ? 70 : 20
       if (this.stickyOffsetTop - scrollTop <= distance) {
@@ -93,6 +132,7 @@ export default {
         // 当页面回滚，sticky容器将固定与top：70px位置，正常向下滚动，位于top：20px位置
         // 避免像素跳转，产生闪烁问题
         const threshold = this.rollBack ? 70 : 20
+
         if (this.pannelOffsetHeight + this.pannelOffsetTop - scrollTop - threshold <= this.stickyOffsetHeight) {
           this.sticky = false
           this.stickyBottom = true

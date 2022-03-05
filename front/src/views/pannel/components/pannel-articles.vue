@@ -7,7 +7,7 @@
     <el-card>
       <div class="pannel__item-content">
         <div class="pannel__item-title">
-          <i class="el-icon el-icon-s-order"></i>
+          <i class="el-icon-document"></i>
           <span>最新文章</span>
         </div>
         <div class="pannel__item-body">
@@ -48,49 +48,9 @@ export default {
 </script>
 <style lang="scss">
 @import '~@/style/index.scss';
+@import '~@/views/pannel/style/mixins';
 
 .pannel-articles {
-  .pannel__item-content {
-  }
-  .pannel__item-title {
-  }
-  .pannel__item-body {
-    .body-item {
-      display: flex;
-      padding: 8px 0;
-    }
-    .body-pic {
-      flex: 0 0 auto;
-      width: 60px;
-      height: 60px;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-    .body-info {
-      margin-left: 12px;
-      &__title a {
-        transition: all 0.38s ease-in-out;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-      &__title:hover a,
-      &__title:hover {
-        @include themeify() {
-          color: themed('color-ele-primary');
-        }
-      }
-      &__date {
-        @include themeify() {
-          color: themed('color-home-article-detail');
-        }
-        padding: 8px 0;
-      }
-    }
-  }
+  @include articles-comments;
 }
 </style>

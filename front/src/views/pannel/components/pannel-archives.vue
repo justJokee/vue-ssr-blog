@@ -4,7 +4,20 @@
 </doc>
 <template>
   <div class="pannel-archives">
-    <el-card>网站简介</el-card>
+    <el-card>
+      <div class="pannel__item-title">
+        <i class="el-icon-takeaway-box"></i>
+        <span>归档</span>
+      </div>
+      <div class="pannel__item-body">
+        <ul>
+          <li v-for="(archive, index) in archives" :key="index" @click="filterArchives(archive)">
+            <span>{{ archive.month }}</span>
+            <span>{{ archive.total }}</span>
+          </li>
+        </ul>
+      </div>
+    </el-card>
   </div>
 </template>
 <script>
@@ -15,13 +28,42 @@ export default {
   data() {
     return {}
   },
-  compouted: {
+  computed: {
     ...mapState(['archives'])
   },
-  methods: {}
+  methods: {
+    filterArchives(archive) {
+      this.$router.push({
+        name: 'archives',
+        query: {
+          filter: archive.month
+        }
+      })
+    }
+  }
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+@import '~@/views/pannel/style/mixins';
+
 .pannel-archives {
+  @include pannel-frame;
+  .pannel__item-body {
+    li {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      cursor: pointer;
+      transition: all ease 0.38s;
+    }
+    li:hover {
+      padding: 8px 12px;
+      @include themeify() {
+        background: themed('color-list-hover');
+      }
+    }
+  }
 }
 </style>

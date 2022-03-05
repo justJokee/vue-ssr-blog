@@ -18,7 +18,8 @@ export default context => {
             if (Component.asyncData) {
               const res = await Component.asyncData({
                 store,
-                route: router.currentRoute
+                route: router.currentRoute,
+                isServer: true
               })
               return { res, Component }
             }

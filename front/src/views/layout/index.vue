@@ -25,7 +25,6 @@
         </div>
         <div v-if="pannelShow" class="layout__body-pannel">
           <pannel></pannel>
-          <div style="border-top: 1px solid red;width:150%"></div>
         </div>
       </div>
     </main>

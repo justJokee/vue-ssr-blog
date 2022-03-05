@@ -241,25 +241,49 @@ router.get('/api/front/article/archives', async (req, res) => {
       { $sort: { month: -1 } }
     ]
   }
+
   try {
-    const doc = await db.article.aggregate([
-      { $match: {} },
-      { $sort: { _id: -1 } },
-      { $skip: skip },
-      { $limit: limit },
-      {
-        $project: {
-          year: { $dateToString: { format: '%Y', date: '$createTime' } },
-          month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
-          title: 1,
-          createTime: 1,
-          articleId: 1,
-          headerPic: 1
-        }
-      },
-      ...group
-    ])
-    const total = await db.article.count({ publish: 1 })
+    let doc = []
+    let total = 0
+    // 按月筛选
+    if (req.query.filter) {
+      const pipe = [
+        {
+          $project: {
+            month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
+            title: 1,
+            createTime: 1,
+            articleId: 1,
+            headerPic: 1
+          }
+        },
+        { $match: { month: req.query.month } }
+      ]
+      doc = await db.article.aggregate([...pipe, { $sort: { _id: -1 } }, { $skip: skip }, { $limit: limit }])
+      // 兼容前端数据结构
+      doc = [{ month: req.query.month, months: doc }]
+      const totalRes = await db.article.aggregate([...pipe, { $count: 'total' }])
+      total = totalRes[0].total
+    } else {
+      doc = await db.article.aggregate([
+        { $match: {} },
+        { $sort: { _id: -1 } },
+        { $skip: skip },
+        { $limit: limit },
+        {
+          $project: {
+            year: { $dateToString: { format: '%Y', date: '$createTime' } },
+            month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
+            title: 1,
+            createTime: 1,
+            articleId: 1,
+            headerPic: 1
+          }
+        },
+        ...group
+      ])
+      total = await db.article.count({ publish: 1 })
+    }
 
     res.json({
       status: 200,

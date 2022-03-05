@@ -1,0 +1,67 @@
+@mixin pannel-frame {
+  .pannel__item-title {
+    font-size: 16px;
+
+    > [class*='el-icon-'] {
+      font-size: 18px;
+      margin-right: 12px;
+    }
+  }
+  .pannel__item-body {
+    margin-top: 10px;
+  }
+}
+
+@mixin articles-comments {
+  @include pannel-frame;
+  .pannel__item-body {
+    .body-item {
+      display: flex;
+      padding: 8px 0;
+    }
+    .body-pic {
+      flex: 0 0 auto;
+      width: 60px;
+      height: 60px;
+      overflow: hidden;
+      img {
+        transition: all ease 0.38s;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      img:hover {
+        transform: scale(1.2);
+      }
+    }
+    .body-info {
+      margin-left: 12px;
+      &__title a {
+        transition: all 0.38s ease-in-out;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      &__title:hover a,
+      &__title:hover {
+        @include themeify() {
+          color: themed('color-ele-primary');
+        }
+      }
+      &__name {
+        @include themeify() {
+          color: themed('color-home-article-detail');
+        }
+        font-size: 12px;
+      }
+      &__date {
+        @include themeify() {
+          color: themed('color-home-article-detail');
+        }
+        font-size: 12px;
+        padding: 4px 0;
+      }
+    }
+  }
+}
