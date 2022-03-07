@@ -11,6 +11,7 @@ const news = require('./news')
 const reviseKey = require('./reviseKey')
 const donload = require('./donload')
 const category = require('./category')
+const movies = require('./movies')
 
 // const confirmToken = require('../middleware/confirmToken')
 
@@ -29,4 +30,5 @@ module.exports = app => {
   app.use(reviseKey)
   app.use(donload)
   app.use(category)
+  app.use(movies)
 }

@@ -2,6 +2,7 @@
 node_modules
 /dist/*
 server/db/secret.js
+server/files/movies
 package-lock.json
 
 # Log files

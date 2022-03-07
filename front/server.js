@@ -10,6 +10,7 @@ const ejs = require('ejs')
 const route = require('./server/api/')
 const compression = require('compression')
 const { createBundleRenderer } = require('vue-server-renderer')
+const { startSchedule } = require('./server/utils/schedule')
 const template = fs.readFileSync('./src/index.template.html', 'utf-8')
 const isProd = process.env.NODE_ENV === 'production'
 const server = express()
@@ -18,7 +19,8 @@ server.use(logger('dev')) //日志记录中间件，将请求信息打印在控�
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(cookieParser())
-
+// 开启定时任务
+startSchedule()
 //引入ejs模板引擎
 server.set('views', [path.join(__dirname, 'dist'), path.join(__dirname, 'static')])
 server.engine('.html', ejs.__express)
