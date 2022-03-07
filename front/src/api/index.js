@@ -4,6 +4,7 @@ import comments from './comments'
 import messageBoard from './messageBoard'
 import category from './category'
 import tags from './tags'
+import entertainment from './entertainment'
 
 export default {
   ...article,
@@ -11,5 +12,6 @@ export default {
   ...comments,
   ...messageBoard,
   ...category,
-  ...tags
+  ...tags,
+  ...entertainment
 }

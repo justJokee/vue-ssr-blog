@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="pannel">
-    <pannel-introduction></pannel-introduction>
+    <pannel-introduction :style="{ width: stickyOffsetWidth }"></pannel-introduction>
     <div
       class="pannel__sticky"
       :class="{
@@ -17,12 +17,6 @@
       <template v-for="(pannel, index) in enums">
         <component class="pannel__item" :is="pannel" :key="index"></component>
       </template>
-      <!-- <pannel-catalog class="pannel__item"></pannel-catalog>
-      <pannel-articles class="pannel__item"></pannel-articles>
-      <pannel-comments class="pannel__item"></pannel-comments>
-      <pannel-tags class="pannel__item"></pannel-tags>
-      <pannel-category class="pannel__item"></pannel-category>
-      <pannel-archives class="pannel__item"></pannel-archives> -->
     </div>
   </div>
 </template>

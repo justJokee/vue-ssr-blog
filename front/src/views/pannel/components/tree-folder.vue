@@ -19,6 +19,7 @@
         :curIndex="index"
       ></tree-folder>
     </li>
+    <div class="tree-folder__empty" v-if="!catalogs.length">暂未匹配到目录</div>
   </ol>
 </template>
 <script>
@@ -77,6 +78,13 @@ export default {
   &__order {
     display: inline-block;
     margin-right: 8px;
+  }
+  &__empty {
+    font-size: 12px;
+    text-align: center;
+    @include themeify() {
+      color: themed('color-ele-holder');
+    }
   }
 }
 </style>

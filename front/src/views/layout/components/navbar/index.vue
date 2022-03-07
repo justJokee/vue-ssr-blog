@@ -53,7 +53,7 @@
           <i class="el-icon-arrow-down"></i>
         </span>
         <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item>
+          <el-dropdown-item @click.native="goTo('movies')">
             <i class="el-icon-video-camera-solid"></i>
             电影
           </el-dropdown-item>

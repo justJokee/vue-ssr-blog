@@ -9,6 +9,7 @@ const archives = () => import('@/views/archives/')
 const tags = () => import('@/views/tags/')
 const articleFilter = () => import('@/views/article-filter/')
 const category = () => import('@/views/category/')
+const movies = () => import('@/views/movies/')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -60,6 +61,11 @@ export function createRouter() {
         path: '/app/articles/:type/:param',
         name: 'articleFilter',
         component: articleFilter
+      },
+      {
+        path: '/app/movies',
+        name: 'movies',
+        component: movies
       }
     ],
     scrollBehavior(to, from, savedPosition) {
