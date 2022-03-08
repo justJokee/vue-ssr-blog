@@ -63,7 +63,7 @@
         <i class="el-icon-chat-dot-round"></i>
         <span>留言板</span>
       </div>
-      <div class="navbar-menu">
+      <div class="navbar-menu" @click="friendLink">
         <i class="el-icon-ship"></i>
         <span>友链</span>
       </div>
@@ -126,6 +126,11 @@ export default {
     },
     closeSearch() {
       this.searchVisible = false
+    },
+    friendLink() {
+      this.$message({
+        message: '拼命开发中😭'
+      })
     }
   }
 }

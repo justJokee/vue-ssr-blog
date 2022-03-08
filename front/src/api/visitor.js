@@ -7,7 +7,12 @@ import http from '@/http/'
 export default {
   // 存储访客信息
   saveVisitor(payload) {
-    return http.post('/api/front/saveVisitor', payload).then(data => {
+    return http.post('/api/front/visitor/save', payload).then(data => {
+      return data
+    })
+  },
+  isExistedVisitor(payload) {
+    return http.post('/api/front/visitor/existed', payload).then(data => {
       return data
     })
   }
