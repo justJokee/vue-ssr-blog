@@ -58,7 +58,8 @@ export default {
       stickyOffsetTop: 0,
       pannelOffsetHeight: 0,
       stickyOffsetWidth: 'auto',
-      stickyOffsetHeight: 0
+      stickyOffsetHeight: 0,
+      observer: null
     }
   },
   mounted() {
@@ -102,12 +103,12 @@ export default {
       window.addEventListener('resize', this.resizeHandler, false)
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
-      const observer = new ResizeObserver((mu, ob) => {
-        console.log('dom观测触发===>>>>>>')
+      this.observer = new ResizeObserver((mu, ob) => {
         this.pannelOffsetHeight = pannelNode.offsetHeight
         this.stickyOffsetHeight = stickNode.offsetHeight
       })
-      observer.observe(pannelNode, { attributes: true, childList: false, subtree: false })
+      this.observer.observe(pannelNode, { attributes: true, childList: false, subtree: false })
+      this.observer.observe(stickNode, { attributes: true, childList: false, subtree: false })
       this.$nextTick(() => {
         this.stickyOffsetTop = getElementTop(stickNode)
         this.pannelOffsetTop = getElementTop(pannelNode)
@@ -120,6 +121,7 @@ export default {
       if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) return
       const scrollTop = getScrollTop()
       const distance = this.rollBack ? 70 : 20
+
       if (this.stickyOffsetTop - scrollTop <= distance) {
         this.sticky = true
         this.stickyBottom = false
@@ -135,21 +137,34 @@ export default {
         this.sticky = false
       }
     },
-    resizeHandler: debounce(e => {
-      const stickNode = document.querySelector('.pannel__sticky')
-      this.stickyOffsetWidth = stickNode.offsetWidth + 'px'
+    resizeHandler: debounce(function(e) {
+      console.log('resize触发====》》》》》')
+      const pannelNode = document.querySelector('.pannel')
+      const layoutBody = document.querySelector('.layout__body-content')
+      this.stickyOffsetWidth = pannelNode.offsetWidth + 'px'
+      const maxWidth = window.getComputedStyle(layoutBody)['max-width']
+      // 切换至手机尺寸后，将sticky相关状态全部置空
+      if (maxWidth === '768px') {
+        this.sticky = false
+        this.stickyBottom = false
+      }
     }, 200)
+  },
+  destroyed() {
+    this.observer.disconnect()
   }
 }
 </script>
 <style lang="scss">
+@import '~@/style/index.scss';
+
 .pannel {
   position: relative;
   height: 100%;
   &__sticky {
     transition: all ease 0.38s;
   }
-  &__item {
+  &__item:not(:first-child) {
     margin-top: 16px;
   }
 }
@@ -163,5 +178,14 @@ export default {
 }
 .pannel--sticky-rollback {
   top: 70px;
+}
+@include respond-to(xs) {
+  .pannel {
+    margin-top: 16px;
+  }
+  .pannel__sticky {
+    position: relative !important;
+    top: 0 !important;
+  }
 }
 </style>

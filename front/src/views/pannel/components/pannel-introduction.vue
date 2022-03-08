@@ -22,6 +22,8 @@ export default {
 @import '~@/views/pannel/style/mixins';
 
 .pannel-introduction {
+  transition: all ease 0.38s;
+  margin-bottom: 16px;
   @include pannel-frame;
 }
 </style>

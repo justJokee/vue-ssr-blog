@@ -161,6 +161,7 @@ export default {
   methods: {
     ...mapMutations(['setVisitor']),
     openGithub() {
+      // TODO: 环境变量 BASE_URL
       window.open(
         'http://localhost:6180/login/git',
         '_blank',
@@ -235,31 +236,54 @@ export default {
 
       QC.Login({}, (info, opts) => {
         // 获取opeId accessToken
-        QC.Login.getMe((openId, accessToken) => {
-          // 存储
-          this.tempInfo = {
+        QC.Login.getMe(async (openId, accessToken) => {
+          // 查看QQ用户是否被存储了
+          const res = await this.$api.isExistedVisitor({
             name: info.nickname,
             imgUrl: info.figureurl_2,
-            type: 1,
-            qqOpenId: openId
+            qqOpenId: openId,
+            type: 1
+          })
+
+          if (res.status === 200) {
+            if (res.data._saved) {
+              this.setVisitorInfo(res.data.info)
+              this.customVisible = false
+            } else {
+              // 存储
+              this.tempInfo = {
+                name: info.nickname,
+                imgUrl: info.figureurl_2,
+                type: 1,
+                qqOpenId: openId
+              }
+              this.customVisible = false
+              this.perfectVisible = true
+            }
           }
-          this.customVisible = false
-          this.perfectVisible = true
         })
       })
     },
     handleGithubCb(e) {
       if (e.data.type === 'github') {
-        console.log('github登陆成功=====>>>>', e.data.data)
-        const info = e.data.data
-        this.tempInfo = {
-          name: info.login,
-          imgUrl: info.avatar_url,
-          type: 2,
-          githubId: info.id
+        console.log('github登陆成功=====>>>>', e.data.data, 'isSaved::::', e.data.data._saved)
+        // 此用户已登陆过
+        if (e.data.data._saved) {
+          delete e.data.data._saved
+          // 初始化访客信息
+          this.setVisitorInfo(e.data.data)
+          this.customVisible = false
+        } else {
+          const info = e.data.data
+          this.tempInfo = {
+            name: info.login,
+            imgUrl: info.avatar_url,
+            type: 2,
+            githubId: info.id
+          }
+          this.customVisible = false
+          this.perfectVisible = true
         }
-        this.customVisible = false
-        this.perfectVisible = true
       }
     },
     setVisitorInfo(info) {
