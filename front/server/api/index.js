@@ -12,10 +12,11 @@ const reviseKey = require('./reviseKey')
 const donload = require('./donload')
 const category = require('./category')
 const movies = require('./movies')
+const qiniu = require('./qiniu')
 
 // const confirmToken = require('../middleware/confirmToken')
 
-module.exports = app => {
+module.exports = (app) => {
   // app.use(confirmToken)
   app.use(articles)
   app.use(tags)
@@ -31,4 +32,5 @@ module.exports = app => {
   app.use(donload)
   app.use(category)
   app.use(movies)
+  app.use(qiniu)
 }

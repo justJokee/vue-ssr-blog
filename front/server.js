@@ -14,7 +14,7 @@ const { startSchedule } = require('./server/utils/schedule')
 const template = fs.readFileSync('./src/index.template.html', 'utf-8')
 const isProd = process.env.NODE_ENV === 'production'
 const server = express()
-const resolve = file => path.resolve(__dirname, file)
+const resolve = (file) => path.resolve(__dirname, file)
 server.use(logger('dev')) //日志记录中间件，将请求信息打印在控制台
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
@@ -66,7 +66,7 @@ readyPromise.then(() => {
   server.use(express.static(path.join(__dirname, 'static'))) //设置静态文件夹
   server.use(
     '/api/ueditor/UE',
-    ueditor(path.join(__dirname, 'static'), function(req, res, next) {
+    ueditor(path.join(__dirname, 'static'), function (req, res) {
       //客户端上传文件设置
       let imgDir = '/img/upload'
       let ActionType = req.query.action
@@ -118,7 +118,7 @@ readyPromise.then(() => {
   server.get(['/admin', '/admin/*', '/login'], (req, res) => {
     res.render('admin.html', { title: '登录' })
   })
-  server.get('*', function(req, res) {
+  server.get('*', function (req, res) {
     res.render('404.html', {
       title: 'No Found'
     })

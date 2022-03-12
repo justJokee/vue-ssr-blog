@@ -5,6 +5,7 @@ import messageBoard from './messageBoard'
 import category from './category'
 import tags from './tags'
 import entertainment from './entertainment'
+import qiniu from './qiniu'
 
 export default {
   ...article,
@@ -13,5 +14,6 @@ export default {
   ...messageBoard,
   ...category,
   ...tags,
-  ...entertainment
+  ...entertainment,
+  ...qiniu
 }
