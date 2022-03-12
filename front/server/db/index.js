@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const md5 = require('js-md5')
-const dbInfo = require('./secret')
+const { db: dbInfo } = require('./secret')
 const localTime = require('../utils/reviseTime')
 const {
   userSchema,
@@ -20,7 +20,7 @@ mongoose.Promise = global.Promise
 mongoose.connection.openUri(`mongodb://${dbInfo.user}:${dbInfo.pwd}@localhost:27017/${dbInfo.db}`)
 
 //实现自增序列
-articleSchema.pre('save', function(next) {
+articleSchema.pre('save', (next) => {
   let _this = this
   db.counter.find({}, (err, doc) => {
     if (err) {
@@ -37,7 +37,7 @@ articleSchema.pre('save', function(next) {
               seq: 1
             }
           },
-          function(error, counter) {
+          (error, counter) => {
             if (error) {
               return next(error)
             } else {
