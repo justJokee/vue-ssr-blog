@@ -16,7 +16,7 @@ Vue.use(Meta)
 // 避免重复点击相同路由 报错问题
 const originalPush = Router.prototype.push
 Router.prototype.push = function push(location) {
-  return originalPush.call(this, location).catch(err => err)
+  return originalPush.call(this, location).catch((err) => err)
 }
 export function createRouter() {
   return new Router({
@@ -69,7 +69,7 @@ export function createRouter() {
       }
     ],
     scrollBehavior(to, from, savedPosition) {
-      if (to.hash) return false
+      if (to.hash || to.query.anchor) return false
       if (savedPosition) {
         return savedPosition
       } else {

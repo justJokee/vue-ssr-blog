@@ -38,7 +38,7 @@ async function HMR(vm) {
   ) {
     const matched = vm.$router.getMatchedComponents()
     await Promise.all(
-      matched.map(async Component => {
+      matched.map(async (Component) => {
         if (Component.asyncData) {
           const res = await Component.asyncData({ store: vm.$store, route: vm.$route })
           Object.assign(vm.$data, res)

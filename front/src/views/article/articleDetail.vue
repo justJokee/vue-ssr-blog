@@ -114,18 +114,26 @@ export default {
     ...mapState(['visitorInfo']),
     tags() {
       if (this.article.tag) return this.article.tag.join(' ')
+      return ''
     },
     url() {
       return `${process.env.BASE_URL}/app/article/${this.article.articleId}`
     }
   },
-  watch: {},
+  watch: {
+    $route(to, from) {
+      if (to.params.id !== from.params.id) {
+        this.$nextTick(() => {
+          this.collectTitles()
+        })
+      }
+    }
+  },
   filters: {},
   mounted() {
-    this.$nextTick(function() {
+    this.$nextTick(function () {
       Prism.highlightAll()
     })
-    this.collectTitles()
 
     window.addEventListener('scroll', this.handleScroll, false)
   },
@@ -155,14 +163,14 @@ export default {
       })
       if (likeRes.status === 200) {
         let finder
-        this.messages.some(msg => {
+        this.messages.some((msg) => {
           if (msg._id === likeRes.data._id) {
             finder = msg
             return true
           }
           if (msg.reply && msg.reply.length) {
             let done = false
-            msg.reply.some(er => {
+            msg.reply.some((er) => {
               if (er._id === likeRes.data._id) {
                 finder = er
                 done = true
@@ -230,12 +238,12 @@ export default {
       }
     },
     collectTitles() {
-      const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map(et => '.article-detail__body ' + et).join(',')
+      const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((et) => '.article-detail__body ' + et).join(',')
       const nodeList = document.querySelectorAll(selectors)
       if (!nodeList) return
       console.log(nodeList)
 
-      const flatTree = Array.from(nodeList).map(node => {
+      const flatTree = Array.from(nodeList).map((node) => {
         const a = document.createElement('a')
         const tempId = getRandomCharacter(4)
         const firstChild = node.firstChild
@@ -265,13 +273,14 @@ export default {
         dom.removeAttribute('name')
         dom.setAttribute('name', catalog.order)
         if (catalog.children && catalog.children.length) {
-          this.addTreeLevel(catalog.children, level + 1, index + 1)
+          this.addTreeLevel(catalog.children, level + 1, catalog.order)
         }
       })
     },
 
-    handleScroll(e) {
-      this.flatTree.some(item => {
+    handleScroll() {
+      if (!this.flatTree) return
+      this.flatTree.some((item) => {
         const node = document.getElementById(item.tempId)
         if (node.getBoundingClientRect().y < 5) {
           this.setActiveCatalog(item.tempId)

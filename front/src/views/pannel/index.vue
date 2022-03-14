@@ -14,9 +14,7 @@
       }"
       :style="{ width: stickyOffsetWidth }"
     >
-      <template v-for="(pannel, index) in enums">
-        <component class="pannel__item" :is="pannel" :key="index"></component>
-      </template>
+      <component v-for="(pannel, index) in enums" class="pannel__item" :is="pannel" :key="index"></component>
     </div>
   </div>
 </template>
@@ -63,9 +61,16 @@ export default {
     }
   },
   mounted() {
-    console.log(this.$router)
     this.initStickybehavior()
-    // TODO: RESIZE事件更新stickyOffsetWidth
+  },
+  watch: {
+    $route(to, from) {
+      //  锚点跳转防止routeUpdate
+      if (JSON.stringify(to.params) !== JSON.stringify(from.params)) {
+        this.removeEffect()
+        this.initStickybehavior()
+      }
+    }
   },
   computed: {
     ...mapState(['rollBack']),
@@ -82,7 +87,7 @@ export default {
       if (this.pannels) {
         if (this.pannels.includes && Array.isArray(this.pannels.includes)) return this.pannels.includes
         if (this.pannels.excludes) {
-          this.pannels.excludes.forEach(item => {
+          this.pannels.excludes.forEach((item) => {
             if (def.includes(item)) {
               const index = def.indexOf(item)
               if (index !== -1) def.splice(index, 1)
@@ -103,7 +108,7 @@ export default {
       window.addEventListener('resize', this.resizeHandler, false)
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
-      this.observer = new ResizeObserver((mu, ob) => {
+      this.observer = new ResizeObserver(() => {
         this.pannelOffsetHeight = pannelNode.offsetHeight
         this.stickyOffsetHeight = stickNode.offsetHeight
       })
@@ -117,7 +122,7 @@ export default {
         this.pannelOffsetHeight = pannelNode.offsetHeight
       })
     },
-    stickyHandler(e) {
+    stickyHandler() {
       if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) return
       const scrollTop = getScrollTop()
       const distance = this.rollBack ? 70 : 20
@@ -137,7 +142,7 @@ export default {
         this.sticky = false
       }
     },
-    resizeHandler: debounce(function(e) {
+    resizeHandler: debounce(function () {
       console.log('resize触发====》》》》》')
       const pannelNode = document.querySelector('.pannel')
       const layoutBody = document.querySelector('.layout__body-content')
@@ -148,10 +153,18 @@ export default {
         this.sticky = false
         this.stickyBottom = false
       }
-    }, 200)
+    }, 200),
+    removeEffect() {
+      this.sticky = false
+      this.stickyBottom = false
+      this.observer.disconnect()
+      window.removeEventListener('scroll', this.stickyHandler, false)
+      window.removeEventListener('resize', this.resizeHandler, false)
+    }
   },
+
   destroyed() {
-    this.observer.disconnect()
+    this.removeEffect()
   }
 }
 </script>

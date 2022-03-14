@@ -22,7 +22,8 @@ router.get('/api/front/qiniu/getToken', async (req, res) => {
       status: 200,
       data: {
         token: uploadToken
-      }
+      },
+      info: '获取七牛云token成功'
     })
   } catch (e) {
     res.status(500).end()

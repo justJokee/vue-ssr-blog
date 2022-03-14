@@ -13,23 +13,26 @@ Vue.use(VueLazyload, {
 })
 
 Vue.mixin({
-  // beforeRouteUpdate(to, from, next) {
-  //   const { asyncData } = this.$options
-  //   if (asyncData) {
-  //     asyncData({
-  //       store: this.$store,
-  //       route: to
-  //     })
-  //       .then(next)
-  //       .catch(next)
-  //   } else {
-  //     next()
-  //   }
-  // }
+  beforeRouteUpdate(to, from, next) {
+    const { asyncData } = this.$options
+    if (asyncData) {
+      asyncData({
+        store: this.$store,
+        route: to
+      })
+        .then((res) => {
+          Object.assign(this.$data, res)
+          next()
+        })
+        .catch(next)
+    } else {
+      next()
+    }
+  }
 })
 
 const { app, router, store } = createApp()
-Prism.plugins.toolbar.registerButton('macostyle', function(env) {
+Prism.plugins.toolbar.registerButton('macostyle', function () {
   const content = document.createElement('div')
   content.setAttribute('class', 'toolbar-item__content')
   content.innerHTML = '<span class="toolbar-item__icon"></span>'
@@ -57,7 +60,7 @@ router.onReady(() => {
     try {
       // 这里如果有加载指示器(loading indicator)，就触发
       await Promise.all(
-        activated.map(async Component => {
+        activated.map(async (Component) => {
           if (Component.asyncData) {
             const res = await Component.asyncData({ store, route: to })
             Component.__COMPONENT_ASYNCDATA__ = res

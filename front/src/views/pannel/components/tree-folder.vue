@@ -7,8 +7,10 @@
     <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index" @click="jumpAnchor(catalog)">
       <div class="tree-folder__content" :class="{ 'tree-folder__content--active': catalog.tempId === activeCatalog }">
         <div class="tree-folder__order">
-          <span v-if="catalog.level_tree">{{ curIndex + 1 + '.' + (index + 1) }}</span>
-          <span v-else>{{ index + 1 }}.</span>
+          <!-- <span v-if="catalog.level_tree">{{ curIndex + 1 + '.' + (index + 1) }}</span>
+          <span v-else>{{ index + 1 }}.</span> -->
+          <span v-if="(catalog.order + '').includes('.')">{{ catalog.order }}</span>
+          <span v-else>{{ catalog.order }}.</span>
         </div>
         <span>{{ catalog.name }}</span>
       </div>
