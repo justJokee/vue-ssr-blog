@@ -1,5 +1,6 @@
 /**
  * @desc 访客信息处理
+ * @author justJokee
  */
 
 const express = require('express')
@@ -7,7 +8,7 @@ const { Octokit } = require('@octokit/core')
 const api = require('../http/server-api')
 const router = express.Router()
 const db = require('../db/')
-const secret = require('../db/secret')
+const { db: secret } = require('../db/secret')
 
 // 存储访客信息
 router.post('/api/front/visitor/save', async (req, res) => {
@@ -81,13 +82,13 @@ router.get('/login_github', (req, res) => {
     }
     api
       .post('https://github.com/login/oauth/access_token', JSON.parse(JSON.stringify(params)))
-      .then(fullData => {
+      .then((fullData) => {
         const arr1 = fullData.split('&')
         const arr2 = arr1[0].split('=')
         const token = arr2[1]
         return token
       })
-      .then(async token => {
+      .then(async (token) => {
         let userInfo = {}
         const octokit = new Octokit({ auth: `${token}` })
         const info = await octokit.request('GET /user')

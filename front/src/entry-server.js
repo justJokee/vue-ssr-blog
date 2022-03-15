@@ -1,6 +1,6 @@
 import { createApp } from './app'
 
-export default context => {
+export default (context) => {
   const { app, router, store } = createApp()
   const meta = app.$meta()
   return new Promise((resolve, reject) => {
@@ -14,7 +14,7 @@ export default context => {
       // 对所有匹配的路由组件调用 `asyncData()`
       try {
         const componentRes = await Promise.all(
-          matchedComponents.map(async Component => {
+          matchedComponents.map(async (Component) => {
             if (Component.asyncData) {
               const res = await Component.asyncData({
                 store,
@@ -25,13 +25,13 @@ export default context => {
             }
           })
         )
-        const __COMPONENT_ASYNCDATA__ = componentRes.map(eRes => {
+        const __COMPONENT_ASYNCDATA__ = componentRes.map((eRes) => {
           if (eRes) {
             const { res, Component } = eRes
             // 将路由组件的 asyncData 返回值挂载到组件实例的构造项上
             // 用于 data & asyncData 的合并策略
             Component.__COMPONENT_ASYNCDATA__ = res
-            return res
+            return res || {}
           }
         })
 

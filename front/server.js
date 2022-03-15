@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const LRU = require('lru-cache')
+const lruCache = require('lru-cache')
 const fs = require('fs')
 const cookieParser = require('cookie-parser')
 const bodyParser = require('body-parser')
@@ -12,10 +12,14 @@ const compression = require('compression')
 const { createBundleRenderer } = require('vue-server-renderer')
 const { startSchedule } = require('./server/utils/schedule')
 const template = fs.readFileSync('./src/index.template.html', 'utf-8')
+const ratelimit = require('./server/middleware/ratelimit')
 const isProd = process.env.NODE_ENV === 'production'
 const server = express()
 const resolve = (file) => path.resolve(__dirname, file)
-server.use(logger('dev')) //日志记录中间件，将请求信息打印在控制台
+// 开启流控
+server.use('/api', ratelimit)
+// 日志记录中间件
+server.use(logger('dev'))
 server.use(bodyParser.json())
 server.use(bodyParser.urlencoded({ extended: true }))
 server.use(cookieParser())
@@ -26,15 +30,18 @@ server.set('views', [path.join(__dirname, 'dist'), path.join(__dirname, 'static'
 server.engine('.html', ejs.__express)
 server.set('view engine', 'ejs')
 route(server)
+
+const LRU = new lruCache({
+  max: 1000,
+  ttl: 1000 * 60 * 15
+})
+
 function createRenderer(bundle, options) {
   return createBundleRenderer(
     bundle,
     Object.assign(options, {
       template: template,
-      cache: LRU({
-        max: 1000,
-        maxAge: 1000 * 60 * 15
-      }),
+      cache: LRU,
       basedir: resolve('./dist'),
       runInNewContext: false
     })

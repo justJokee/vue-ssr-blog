@@ -13,6 +13,9 @@ export function errorCode(code) {
     case 101:
       _message('warning', '您已经点过赞了 ~')
       break
+    case 429:
+      _message('warning', '访问次数超限，请稍后再试 ~')
+      break
   }
 }
 

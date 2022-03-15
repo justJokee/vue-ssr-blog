@@ -63,7 +63,7 @@ router.onReady(() => {
         activated.map(async (Component) => {
           if (Component.asyncData) {
             const res = await Component.asyncData({ store, route: to })
-            Component.__COMPONENT_ASYNCDATA__ = res
+            Component.__COMPONENT_ASYNCDATA__ = res || {}
           }
         })
       )
