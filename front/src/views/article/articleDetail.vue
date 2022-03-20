@@ -134,7 +134,7 @@ export default {
     this.$nextTick(function () {
       Prism.highlightAll()
     })
-
+    this.collectTitles()
     window.addEventListener('scroll', this.handleScroll, false)
   },
   updated() {},

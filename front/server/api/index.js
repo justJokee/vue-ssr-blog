@@ -13,11 +13,14 @@ const donload = require('./donload')
 const category = require('./category')
 const movies = require('./movies')
 const qiniu = require('./qiniu')
+const viewer = require('./viewer')
+const count = require('./count')
 
 // const confirmToken = require('../middleware/confirmToken')
 
 module.exports = (app) => {
   // app.use(confirmToken)
+  app.use(viewer)
   app.use(articles)
   app.use(tags)
   app.use(getCount)
@@ -33,4 +36,5 @@ module.exports = (app) => {
   app.use(category)
   app.use(movies)
   app.use(qiniu)
+  app.use(count)
 }

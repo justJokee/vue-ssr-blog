@@ -21,11 +21,7 @@ router.get('/api/front/article/gets', unpublishedPermission, async (req, res) =>
   if (req.query.tag) params.tag = req.query.tag
   try {
     const total = await db.article.count(params)
-    const articles = await db.article
-      .find(params, project)
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
+    const articles = await db.article.find(params, project).sort({ _id: -1 }).skip(skip).limit(limit)
     res.json({
       status: 200,
       data: articles,
@@ -39,9 +35,11 @@ router.get('/api/front/article/gets', unpublishedPermission, async (req, res) =>
 
 // 获取文章详细信息
 router.get('/api/front/article/detail', unpublishedPermission, async (req, res) => {
-  const { publish, articleId } = req.query
+  const { publish, articleId, excludeContent } = req.query
+  const project = excludeContent ? { content: 0, content_plain: 0 } : {}
   try {
-    const detail = await db.article.find({ publish, articleId })
+    const detail = await db.article.find({ publish, articleId }, project)
+
     res.json({
       status: 200,
       data: detail[0] || {}
@@ -182,7 +180,7 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
       .limit(limit)
     if (searchDoc.length) {
       const keyword = req.query.keyword
-      searchDoc.forEach(doc => {
+      searchDoc.forEach((doc) => {
         // title高亮关键词
         doc.title = doc.title.replace(new RegExp(keyword, 'gi'), `<span class='search-keyword'>${keyword}</span>`)
         // content截取首次出现关键词的片段，并高亮关键词
@@ -351,12 +349,12 @@ router.post('/api/admin/article/save', confirmToken, (req, res) => {
 // 删除文章
 router.delete('/api/admin/article/del', confirmToken, (req, res) => {
   //$in是为了批量删除，出入的articleId是数组
-  db.article.remove({ articleId: { $in: req.query.articleId } }, err => {
+  db.article.remove({ articleId: { $in: req.query.articleId } }, (err) => {
     if (err) {
       res.status(500).end()
     } else {
       res.json({ deleteCode: 200 })
-      db.comment.remove({ articleId: { $in: req.query.articleId } }, err => {
+      db.comment.remove({ articleId: { $in: req.query.articleId } }, (err) => {
         if (err) {
           console.log(err)
         }

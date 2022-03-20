@@ -9,6 +9,13 @@ const userSchema = new mongoose.Schema({
   lastLogin: 'string',
   salt: 'string'
 })
+const viewerSchema = new mongoose.Schema({
+  ip: 'string',
+  count: 'number',
+  browser: 'string',
+  system: 'string',
+  date: 'date'
+})
 const visitorsSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
@@ -38,6 +45,7 @@ const articleSchema = new mongoose.Schema({
   abstract: 'string',
   content: 'string',
   content_plain: 'string',
+  headerPic: 'string',
   publish: 'number',
   tag: 'array',
   commentNum: 'number',
@@ -127,5 +135,6 @@ module.exports = {
   msgBoardSchema,
   newsSchema,
   counterSchema,
-  commentIpSchema
+  commentIpSchema,
+  viewerSchema
 }
