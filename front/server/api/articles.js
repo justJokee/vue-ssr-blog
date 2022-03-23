@@ -36,7 +36,7 @@ router.get('/api/front/article/gets', unpublishedPermission, async (req, res) =>
 // 获取文章详细信息
 router.get('/api/front/article/detail', unpublishedPermission, async (req, res) => {
   const { publish, articleId, excludeContent } = req.query
-  const project = excludeContent ? { content: 0, content_plain: 0 } : {}
+  const project = excludeContent ? { content: 0, content_plain: 0 } : { content_plain: 0 }
   try {
     const detail = await db.article.find({ publish, articleId }, project)
 
@@ -46,7 +46,7 @@ router.get('/api/front/article/detail', unpublishedPermission, async (req, res) 
     })
 
     // 获取访客信息
-    if (process.env.NODEW_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       // 更新pv
       await db.article.update({ articleId }, { $inc: { pv: 1 } })
       const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
@@ -308,45 +308,55 @@ router.get('/api/front/article/hot', (req, res) => {
 
 /***********后台管理文章： 改动 删除 修改 TODO:待重构**************/
 
-// 修改文章
-router.patch('/api/admin/article/update', confirmToken, (req, res) => {
-  const { publish, original, title, abstract, tag, content } = req.body
-  db.article.update(
-    { articleId: req.body.articleId },
-    { publish, original, title, abstract, tag, content },
-    (err, doc) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        res.json({ code: 200 })
+// 存储文档
+router.post('/api/admin/article/save', confirmToken, async (req, res) => {
+  try {
+    const doc = await new db.article({
+      ...req.body,
+      content: '',
+      content_plain: '',
+      publish: 0,
+      commentNum: 0,
+      likeNum: 0,
+      pv: 0,
+      createTime: new Date(),
+      updateTime: new Date()
+    }).save()
+
+    res.json({
+      status: 200,
+      data: doc,
+      info: '文档存储成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 编辑文档
+router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
+  let content_plain = ''
+  try {
+    // 删除富文本中的标签等，保留静态文本字段
+    if (req.body.content) content_plain = req.body.content.replace(/<.*?>|\n|&nbsp;/g, '')
+    await db.article.update(
+      { articleId: req.body.articleId },
+      {
+        ...req.body,
+        content_plain,
+        updateTime: new Date()
       }
-    }
-  )
+    )
+    res.json({
+      status: 200,
+      info: '文档编辑成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
-// 存储文章
-router.post('/api/admin/article/save', confirmToken, (req, res) => {
-  const { original, title, abstract, content, tag, publish, date } = req.body
-  new db.article({
-    articleId: 0,
-    original,
-    title,
-    abstract,
-    content,
-    tag,
-    publish,
-    date: date,
-    commentNum: 0,
-    likeNum: 0,
-    pv: 0
-  }).save((err, doc) => {
-    if (err) {
-      res.json({ code: 500 })
-    } else {
-      res.json({ code: 200 })
-    }
-  })
-})
-// 删除文章
+
+// 删除文档
 router.delete('/api/admin/article/del', confirmToken, (req, res) => {
   //$in是为了批量删除，出入的articleId是数组
   db.article.remove({ articleId: { $in: req.query.articleId } }, (err) => {

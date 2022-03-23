@@ -20,37 +20,31 @@ mongoose.Promise = global.Promise
 // mongoose.connection.openUri("mongodb://username:password@localhost:27017/blog")
 mongoose.connection.openUri(`mongodb://${dbInfo.user}:${dbInfo.pwd}@localhost:27017/${dbInfo.db}`)
 
-//实现自增序列
-articleSchema.pre('save', (next) => {
-  let _this = this
-  db.counter.find({}, (err, doc) => {
-    if (err) {
-      console.error(err)
+// 实现articleId自增序列
+articleSchema.pre('save', async function (next) {
+  const that = this
+  try {
+    const counterDoc = await db.counter.find({})
+    if (!counterDoc.length) {
+      await new db.counter({ _id: 'entityId', seq: 2 }).save()
+      that.articleId = 1
     } else {
-      if (!doc.length) {
-        new db.counter({ _id: 'entityId', seq: 1 }).save()
-        next()
-      } else {
-        db.counter.findByIdAndUpdate(
-          { _id: 'entityId' },
-          {
-            $inc: {
-              seq: 1
-            }
-          },
-          (error, counter) => {
-            if (error) {
-              return next(error)
-            } else {
-              _this.articleId = counter.seq
-              next()
-            }
+      const curCountDoc = await db.counter.findByIdAndUpdate(
+        { _id: 'entityId' },
+        {
+          $inc: {
+            seq: 1
           }
-        )
-      }
+        }
+      )
+      that.articleId = curCountDoc.seq
     }
-  })
+    next()
+  } catch (e) {
+    next(e)
+  }
 })
+
 const db = {
   user: mongoose.model('user', userSchema),
   article: mongoose.model('article', articleSchema),

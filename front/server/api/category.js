@@ -9,7 +9,7 @@ const db = require('../db/')
 // 获取分类列表
 router.get('/api/front/category/get', async (req, res) => {
   try {
-    const doc = await db.category.find({}).sort({ _id: -1 })
+    const doc = await db.category.find({}).sort({ _id: 1 })
     res.json({
       status: 200,
       data: doc,

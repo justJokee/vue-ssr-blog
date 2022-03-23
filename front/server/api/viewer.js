@@ -14,34 +14,35 @@ const getOS = require('../utils/getOS')
 // 统计访客数量、信息(按前端刷新次数计算)
 router.get(['/', '/app/*'], async (req, res, next) => {
   try {
-    const ip = getIp(req)
-    const browser = getBrowser(req.headers['user-agent'])
-    const system = getOS(req.headers['user-agent'])
-    await new db.viewer({
-      ip,
-      count: 1,
-      browser: browser,
-      system: system,
-      date: new Date()
-    }).save()
+    if (process.env.NODEW_ENV === 'production') {
+      const ip = getIp(req)
+      const browser = getBrowser(req.headers['user-agent'])
+      const system = getOS(req.headers['user-agent'])
+      await new db.viewer({
+        ip,
+        count: 1,
+        browser: browser,
+        system: system,
+        date: new Date()
+      }).save()
+    }
     next()
   } catch (e) {
     next()
   }
 })
 // 按天返回某一段时间范围内的访客数量
-router.get('/api/front/viewer/history', async (req, res) => {
+router.get('/api/admin/viewer/history', async (req, res) => {
   try {
-    const doc = db.viewer.aggragate([
+    const doc = await db.viewer.aggregate([
       {
         $match: {
           date: {
-            $gte: new Date(req.start),
-            $lte: new Date(req.end)
+            $gte: new Date(parseInt(req.query.start)),
+            $lte: new Date(parseInt(req.query.end))
           }
         }
       },
-      { $sort: { _id: -1 } },
       {
         $project: {
           date: { $dateToString: { format: '%Y-%m-%d', date: '$date' } }
@@ -59,7 +60,8 @@ router.get('/api/front/viewer/history', async (req, res) => {
           value: '$total',
           _id: 0
         }
-      }
+      },
+      { $sort: { date: 1 } }
     ])
     res.json({
       status: 200,
@@ -71,9 +73,9 @@ router.get('/api/front/viewer/history', async (req, res) => {
   }
 })
 // 查询访客设备信息
-router.get('/api/front/viewer/device/get', async (req, res) => {
+router.get('/api/front/viewer/getDevice', async (req, res) => {
   try {
-    const browser = db.viewer.aggragate([
+    const browser = await db.viewer.aggregate([
       {
         $group: {
           _id: '$browser',
@@ -82,13 +84,13 @@ router.get('/api/front/viewer/device/get', async (req, res) => {
       },
       {
         $project: {
-          browser: '$_id',
+          name: '$_id',
           value: '$total',
           _id: 0
         }
       }
     ])
-    const system = db.viewer.aggragate([
+    const system = await db.viewer.aggregate([
       {
         $group: {
           _id: '$system',
@@ -97,28 +99,28 @@ router.get('/api/front/viewer/device/get', async (req, res) => {
       },
       {
         $project: {
-          system: '$_id',
+          name: '$_id',
           value: '$total',
           _id: 0
         }
       }
     ])
-    const total = db.viewer.find({}).count()
 
     res.json({
       status: 200,
-      data: { browser, system, total },
+      data: { browser, system },
       info: '访客设备信息统计成功'
     })
   } catch (e) {
+    console.log('对方水电费', e)
     res.status(500).end()
   }
 })
 // 查询访客总数
-router.get('/api/front/viewer/count', async (req, res) => {
+router.get('/api/front/admin/count', async (req, res) => {
   try {
-    const total = db.viewer.find({}).count()
-    const doc = db.viewer.find({}).sort({ _id: -1 }).limit(1)
+    const total = await db.viewer.find({}).count()
+    const doc = await db.viewer.find({}).sort({ _id: -1 }).limit(1)
     res.json({
       status: 200,
       data: { total, latest: doc[0] },
