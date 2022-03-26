@@ -62,7 +62,7 @@ export default {
       messages: []
     }
   },
-  async asyncData({ route }) {
+  async asyncData() {
     const msgRes = await api.getMessageBoard({
       page: 1
     })
@@ -121,14 +121,14 @@ export default {
       })
       if (likeRes.status === 200) {
         let finder
-        this.messages.some(msg => {
+        this.messages.some((msg) => {
           if (msg._id === likeRes.data._id) {
             finder = msg
             return true
           }
           if (msg.reply && msg.reply.length) {
             let done = false
-            msg.reply.some(er => {
+            msg.reply.some((er) => {
               if (er._id === likeRes.data._id) {
                 finder = er
                 done = true
@@ -147,7 +147,7 @@ export default {
         })
       }
     },
-    currentChange(val) {
+    currentChange() {
       this.getMessageBoard()
     }
   }

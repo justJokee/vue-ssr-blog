@@ -12,7 +12,8 @@ const unpublishedPermission = require('../middleware/unpublishedPermission')
 
 // 获取文章列表 / 按分类 / 按标签 筛选文章
 router.get('/api/front/article/gets', unpublishedPermission, async (req, res) => {
-  const params = { publish: req.query.publish }
+  const params = {}
+  if (req.query.publish) params.publish = req.query.publish
   if (req.query.categoryId) params.categoryId = req.query.categoryId
   if (req.query.tag) params.tag = { $in: [req.query.tag] }
   const limit = parseInt(req.query.limit) || 10
@@ -34,11 +35,13 @@ router.get('/api/front/article/gets', unpublishedPermission, async (req, res) =>
 })
 
 // 获取文章详细信息
-router.get('/api/front/article/detail', unpublishedPermission, async (req, res) => {
-  const { publish, articleId, excludeContent } = req.query
-  const project = excludeContent ? { content: 0, content_plain: 0 } : { content_plain: 0 }
+router.get('/api/front/article/detail', async (req, res) => {
+  const { articleId, excludeContent } = req.query
+  const project = excludeContent
+    ? { content: 0, content_plain: 0, content_draft: 0 }
+    : { content_plain: 0, content_draft: 0 }
   try {
-    const detail = await db.article.find({ publish, articleId }, project)
+    const detail = await db.article.find({ publish: 1, articleId }, project)
 
     res.json({
       status: 200,
@@ -173,7 +176,7 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
             { content_plain: { $regex: req.query.keyword, $options: 'i' } }
           ]
         },
-        { content: 0 }
+        { content: 0, content_plain: 0, content_draft: 0 }
       )
       .sort({ _id: -1 })
       .skip(skip)
@@ -201,25 +204,6 @@ router.get('/api/front/article/search', unpublishedPermission, async (req, res) 
   } catch (e) {
     res.status(500).end()
   }
-
-  ////
-  // if (req.query.according === 'key') {
-  //   //前台时间轴根据时间范围搜索
-  // } else {
-  //   const start = new Date(parseInt(req.query.start))
-  //   const end = new Date(parseInt(req.query.end))
-  //   db.article
-  //     .find({ publish: req.query.publish, date: { $gte: start, $lte: end } }, { content: 0 }, (err, doc) => {
-  //       if (err) {
-  //         res.status(500).end()
-  //       } else {
-  //         res.json(doc)
-  //       }
-  //     })
-  //     .sort({ _id: -1 })
-  //     .skip(skip)
-  //     .limit(limit)
-  // }
 })
 // 文章归档
 router.get('/api/front/article/archives', async (req, res) => {
@@ -308,6 +292,23 @@ router.get('/api/front/article/hot', (req, res) => {
 
 /***********后台管理文章： 改动 删除 修改 TODO:待重构**************/
 
+// 获取文章详细信息
+router.get('/api/admin/article/getDraft', unpublishedPermission, async (req, res) => {
+  const { articleId, excludeContent } = req.query
+  const project = excludeContent ? { content: 0, content_plain: 0, content_draft: 0 } : { content_plain: 0 }
+  try {
+    const detail = await db.article.find({ articleId }, project)
+    const doc = detail[0].toObject()
+    doc.content = doc.content_draft
+    delete doc.content_draft
+    res.json({
+      status: 200,
+      data: doc || {}
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
 // 存储文档
 router.post('/api/admin/article/save', confirmToken, async (req, res) => {
   try {
@@ -315,10 +316,12 @@ router.post('/api/admin/article/save', confirmToken, async (req, res) => {
       ...req.body,
       content: '',
       content_plain: '',
+      content_draft: '',
       publish: 0,
       commentNum: 0,
       likeNum: 0,
       pv: 0,
+      editing: 0,
       createTime: new Date(),
       updateTime: new Date()
     }).save()
@@ -335,20 +338,37 @@ router.post('/api/admin/article/save', confirmToken, async (req, res) => {
 
 // 编辑文档
 router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
-  let content_plain = ''
+  const updates = {}
   try {
-    // 删除富文本中的标签等，保留静态文本字段
-    if (req.body.content) content_plain = req.body.content.replace(/<.*?>|\n|&nbsp;/g, '')
+    if (Reflect.get(req.body, 'content')) {
+      // 删除富文本中的标签等，保留静态文本字段
+      updates.content_plain = req.body.content.replace(/<.*?>|\n|&nbsp;/g, '')
+      // 默认存储为草稿
+      updates.content_draft = req.body.content
+      // 重要！一定要删除！
+      delete req.body.content
+
+      // 文档 发布/更新 content 与 content_draft保持一致同步
+      if (req.body.editing === '0') {
+        updates.content = updates.content_draft
+      }
+    }
+
     await db.article.update(
       { articleId: req.body.articleId },
       {
         ...req.body,
-        content_plain,
+        ...updates,
         updateTime: new Date()
       }
     )
+    const doc = await db.article.find(
+      { articleId: req.body.articleId },
+      { content: 0, content_plain: 0, content_draft: 0 }
+    )
     res.json({
       status: 200,
+      data: doc[0],
       info: '文档编辑成功'
     })
   } catch (e) {
@@ -357,20 +377,47 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
 })
 
 // 删除文档
-router.delete('/api/admin/article/del', confirmToken, (req, res) => {
-  //$in是为了批量删除，出入的articleId是数组
-  db.article.remove({ articleId: { $in: req.query.articleId } }, (err) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json({ deleteCode: 200 })
-      db.comment.remove({ articleId: { $in: req.query.articleId } }, (err) => {
-        if (err) {
-          console.log(err)
-        }
-      })
-    }
-  })
+router.delete('/api/admin/article/del', confirmToken, async (req, res) => {
+  try {
+    const params = typeof req.query.id === 'string' ? { _id: req.query.id } : { _id: { $in: req.query.id } }
+    // $in 批量删除
+    await db.article.remove(params)
+    res.json({
+      status: 200,
+      info: '删除成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 
+// 筛选文章
+router.get('/api/admin/article/search', confirmToken, async (req, res) => {
+  const limit = 8
+  const skip = req.query.page * limit - limit
+  try {
+    const searchDoc = await db.article
+      .find(
+        {
+          ...req.query,
+          $or: [
+            { title: { $regex: req.query.keyword, $options: 'i' } },
+            { content_plain: { $regex: req.query.keyword, $options: 'i' } }
+          ]
+        },
+        { content: 0, content_plain: 0, content_draft: 0 }
+      )
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+
+    res.json({
+      status: 200,
+      data: searchDoc,
+      info: '搜索成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
 module.exports = router

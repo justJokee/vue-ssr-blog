@@ -32,9 +32,9 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
       { $set: { liked: 0 } }
     ])
     let ids = doc
-      .map(item => {
+      .map((item) => {
         if (item.reply && item.reply.length) {
-          return item.reply.map(erp => erp._id.toString()).concat(item._id.toString())
+          return item.reply.map((erp) => erp._id.toString()).concat(item._id.toString())
         }
         return item._id.toString()
       })
@@ -43,12 +43,12 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
     const existed = await db.commentIp.find({ ip, type: 0, like: 1, msgid: { $in: ids } })
 
     if (existed.length) {
-      const ipIds = existed.map(ee => ee.msgid.toString())
-      doc.forEach(d => {
+      const ipIds = existed.map((ee) => ee.msgid.toString())
+      doc.forEach((d) => {
         if (ipIds.includes(d._id.toString())) d.liked = 1
 
         if (d.reply && d.reply.length) {
-          d.reply.forEach(er => {
+          d.reply.forEach((er) => {
             if (ipIds.includes(er._id.toString())) er.liked = 1
           })
         }
@@ -145,8 +145,15 @@ router.get('/api/getAdminBoard', confirmToken, (req, res) => {
 // 留言存储
 router.post('/api/front/messageBoard/save', async (req, res) => {
   try {
+    const { name, imgUrl, email, link, content, parentId, aite } = req.body
     const doc = await new db.msgBoard({
-      ...req.body,
+      name,
+      imgUrl,
+      email,
+      link,
+      content,
+      parentId,
+      aite,
       like: 0
     }).save()
     res.json({
@@ -180,7 +187,7 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
 
 //后台管理删除二级留言
 router.patch('/api/reduceLeavewords', confirmToken, (req, res) => {
-  db.msgBoard.update({ _id: req.body.mainId }, { $pull: { reply: { _id: req.body.secondId } } }, (err, doc) => {
+  db.msgBoard.update({ _id: req.body.mainId }, { $pull: { reply: { _id: req.body.secondId } } }, (err) => {
     if (err) {
       res.status(500).end()
     } else {
@@ -190,7 +197,7 @@ router.patch('/api/reduceLeavewords', confirmToken, (req, res) => {
 })
 router.delete('/api/removeLeavewords', confirmToken, (req, res) => {
   //因为用到批量删除，所以删除项的_id均放到数组中
-  db.msgBoard.remove({ _id: { $in: req.query.id } }, err => {
+  db.msgBoard.remove({ _id: { $in: req.query.id } }, (err) => {
     if (err) {
       res.status(500).end()
     } else {

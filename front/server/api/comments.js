@@ -34,20 +34,20 @@ router.get('/api/front/comments/get', async (req, res) => {
       { $set: { liked: 0 } }
     ])
     let ids = doc
-      .map(item => {
+      .map((item) => {
         if (item.reply && item.reply.length) {
-          return item.reply.map(erp => erp._id.toString()).concat(item._id.toString())
+          return item.reply.map((erp) => erp._id.toString()).concat(item._id.toString())
         }
         return item._id.toString()
       })
       .flat()
     const existed = await db.commentIp.find({ ip, type: 1, like: 1, msgid: { $in: ids } })
     if (existed.length) {
-      const ipIds = existed.map(ee => ee.msgid.toString())
-      doc.forEach(d => {
+      const ipIds = existed.map((ee) => ee.msgid.toString())
+      doc.forEach((d) => {
         if (ipIds.includes(d._id.toString())) d.liked = 1
         if (d.reply && d.reply.length) {
-          d.reply.forEach(er => {
+          d.reply.forEach((er) => {
             if (ipIds.includes(er._id.toString())) er.liked = 1
           })
         }
@@ -69,11 +69,7 @@ router.get('/api/front/comments/new', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
   try {
-    const doc = await db
-      .comment({})
-      .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
+    const doc = await db.comment({}).sort({ _id: -1 }).skip(skip).limit(limit)
     res.json({
       status: 200,
       data: doc,
@@ -86,9 +82,17 @@ router.get('/api/front/comments/new', async (req, res) => {
 //添加文章评论
 router.post('/api/front/comments/save', async (req, res) => {
   try {
+    const { articleId, name, imgUrl, email, link, content, parentId, aite } = req.body
     // 存储文章评论
     const commentDoc = await new db.comment({
-      ...req.body,
+      articleId,
+      name,
+      imgUrl,
+      email,
+      link,
+      content,
+      parentId,
+      aite,
       like: 0,
       date: new Date()
     }).save()
@@ -208,13 +212,13 @@ router.get('/api/getAdminComments', confirmToken, (req, res) => {
 })
 //后台管理删除评论 TODO:  前端进行吧区分一二级的逻辑去掉
 router.delete('/api/removeComments', confirmToken, (req, res) => {
-  db.comment.remove({ _id: { $in: req.query.id } }, err => {
+  db.comment.remove({ _id: { $in: req.query.id } }, (err) => {
     if (err) {
       res.status(500).end()
     } else {
       //删除一级评论，联动文章评论数
       if (req.query.level === 1) {
-        db.article.update({ articleId: req.query.articleId }, { $inc: { commentNum: -1 } }, (err, doc) => {
+        db.article.update({ articleId: req.query.articleId }, { $inc: { commentNum: -1 } }, (err) => {
           if (err) {
             res.status(500)
           }

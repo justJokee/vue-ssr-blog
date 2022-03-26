@@ -44,9 +44,16 @@ const articleSchema = new mongoose.Schema({
   title: 'string',
   abstract: 'string',
   content: 'string',
+  // 当前最新编辑内容，当文档发布后，与content保持严格一致
+  content_draft: 'string',
   content_plain: 'string',
   headerPic: 'string',
+  // 是否发布 0：未发布 1：发布
+  // 新建文档初始值为 0
+  // 文档编辑阶段 可保存，可发布/更新；
   publish: 'number',
+  // 是否存在未经发布的编辑内容 0：不存在（即已发布） 1：存在最新编辑内容
+  editing: 'number',
   tag: 'array',
   commentNum: 'number',
   likeNum: 'number',
