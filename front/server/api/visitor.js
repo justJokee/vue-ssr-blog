@@ -8,7 +8,7 @@ const { Octokit } = require('@octokit/core')
 const api = require('../http/server-api')
 const router = express.Router()
 const db = require('../db/')
-const { db: secret } = require('../db/secret')
+const { githubSecret } = require('../db/secret')
 
 // 存储访客信息
 router.post('/api/front/visitor/save', async (req, res) => {
@@ -67,15 +67,15 @@ router.post('/api/front/visitor/existed', async (req, res) => {
 
 router.get('/login/git', (req, res) => {
   //请替换为自己的client_id
-  let path = `https://github.com/login/oauth/authorize?client_id=${secret.github_client_id}&scope=['user']&redirect_uri=http://localhost:6180/login_github`
+  let path = `https://github.com/login/oauth/authorize?client_id=${githubSecret.githubId}&scope=['user']&redirect_uri=http://localhost:6180/login_github`
   res.redirect(path)
   res.status(200).end()
 })
 router.get('/login_github', (req, res) => {
   try {
     const params = {
-      client_id: secret.github_client_id,
-      client_secret: secret.github_client_secret,
+      client_id: githubSecret.clientId,
+      client_secret: githubSecret.secret,
       code: req.query.code,
       scope: ['user'],
       redirect_uri: 'http://localhost:6180/login_github'

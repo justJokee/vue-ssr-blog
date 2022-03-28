@@ -9,8 +9,10 @@
     </div>
     <div class="comments-item__content">
       <div class="comments-item__visitor">
-        <span class="detail-visitor-name">{{ message.name }}</span>
-        <span class="detail-visitor-aite" v-if="message.aite" style="fontWeight:bold">&nbsp;@&nbsp;</span>
+        <span class="detail-visitor-name" :class="{ 'detail-visitor-name--bold': message.admin }">
+          {{ message.name }}
+        </span>
+        <span class="detail-visitor-aite" v-if="message.aite" style="fontweight: bold">&nbsp;@&nbsp;</span>
         <span class="detail-visitor-aited" v-if="message.aite">{{ message.aite }} :</span>
       </div>
 
@@ -91,6 +93,10 @@ export default {
   &__visitor {
     height: 50px;
     .detail-visitor-name {
+    }
+    .detail-visitor-name--bold {
+      color: #eaa156;
+      font-weight: 700;
     }
     .detail-visitor-aite {
     }

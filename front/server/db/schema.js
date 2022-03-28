@@ -1,13 +1,15 @@
 /**
- * @desc schema
+ * @desc DB schema
+ * @author justJokee
  */
 const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
-  user: 'string',
+  account: 'string',
   password: 'string',
-  lastLogin: 'string',
-  salt: 'string'
+  salt: 'string',
+  avatar: 'string',
+  lastLoginTime: Date
 })
 const viewerSchema = new mongoose.Schema({
   ip: 'string',
@@ -72,6 +74,8 @@ const commentSchema = new mongoose.Schema({
   articleId: 'number',
   title: 'string',
   date: 'date',
+  // 是否管理员
+  admin: 'number',
   parentId: mongoose.Schema.Types.ObjectId
 })
 const msgBoardSchema = new mongoose.Schema({
@@ -83,6 +87,8 @@ const msgBoardSchema = new mongoose.Schema({
   like: 'number',
   aite: 'string',
   parentId: mongoose.Schema.Types.ObjectId,
+  // 是否管理员
+  admin: 'number',
   date: 'date'
 })
 const newsSchema = new mongoose.Schema({
@@ -100,6 +106,8 @@ const newsSchema = new mongoose.Schema({
   city: 'string',
   // 区域
   district: 'string',
+  // 是否已读
+  read: 'number',
   // 存储 _id
   articleId: mongoose.Schema.Types.ObjectId,
   commentId: mongoose.Schema.Types.ObjectId,

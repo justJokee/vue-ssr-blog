@@ -1,53 +1,63 @@
+/**
+ * @desc 登录鉴权
+ * @author justJokee
+ */
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
 const md5 = require('md5')
-const confirmToken = require('../middleware/confirmToken')
 const db = require('../db/')
-const secret = require('../secret')
-const localTime = require('../utils/reviseTime')
-const createToken = (id, name) => {
+const { userSecret } = require('../db/secret')
+
+const createToken = (id, account) => {
+  const secret = `${userSecret.pwd}.${userSecret.salt}`
   return jwt.sign(
     {
       id: id,
-      user: name
+      account: account
     },
-    secret.jwtSecret,
-    { expiresIn: '10h' }
+    secret,
+    { expiresIn: '4h' }
   )
 }
-router.post('/api/login', (req, res) => {
-  db.user.find({ user: req.body.user }, (err, doc) => {
-    if (err) {
-      res.status(500).end()
-    } else if (doc.length) {
-      if (doc[0].password === md5(req.body.password + doc[0].salt)) {
-        let token = createToken(doc._id, doc[0].user)
-        let lastTime = doc[0].lastLogin
-        let currTime = localTime(Date.now())
-        db.user.update({ user: req.body.user }, { lastLogin: currTime }, (err, doc) => {
-          if (err) {
-            console.log(err)
-          }
-        })
-        res.json({
-          code: 200,
-          id: doc[0]._id,
-          name: doc[0].user,
-          lastLogin: lastTime,
-          token: token
-        })
-      } else {
-        res.json({ code: 401 })
-      }
-    } else {
-      res.json({ code: 401 })
+// 登录验证
+router.post('/api/login', async (req, res) => {
+  try {
+    const user = await db.user.find({ account: req.body.account })
+    // 用户名不存在，返回401
+    if (!user.length) {
+      res.json({
+        status: 401,
+        info: '用户名或密码不正确'
+      })
+      return
     }
-  })
-})
-//路由闯入编辑器页面进行token验证
-router.get('/api/confirmToken', confirmToken, (req, res) => {
-  res.status(200).end()
+    const pwd = user[0].password
+    console.log('body-----', req.body, md5(req.body.password))
+    if (md5(req.body.password) === pwd) {
+      const token = createToken(user[0]._id, user[0].account)
+      res.json({
+        status: 200,
+        data: {
+          token,
+          account: user[0].account,
+          avatar: user[0].avatar,
+          lastLoginTime: user[0].lastLoginTime
+        },
+        info: '登陆成功'
+      })
+      // 更新登录时间
+      await db.user.update({ user: req.body.user }, { lastLoginTime: new Date() })
+    } else {
+      res.json({
+        status: 401,
+        info: '用户名或密码不正确'
+      })
+    }
+  } catch (e) {
+    console.log('致命错误--->>>', e)
+    res.status(500).end()
+  }
 })
 
 module.exports = router

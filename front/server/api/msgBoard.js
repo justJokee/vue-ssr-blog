@@ -1,3 +1,8 @@
+/**
+ * @desc 留言板管理
+ * @author justJokee
+ */
+
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
@@ -12,6 +17,7 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
   const ip = getIp(req)
   try {
     const total = await db.msgBoard.count({ parentId: null })
+    const totalAll = await db.msgBoard.count({})
     const doc = await db.msgBoard.aggregate([
       { $match: { parentId: null } },
       { $sort: { _id: -1 } },
@@ -33,7 +39,11 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
     ])
     let ids = doc
       .map((item) => {
+        item.replyTotal = 0
+
         if (item.reply && item.reply.length) {
+          // 一级留言统计挂载的总回复数，不管是不是回复自己
+          item.replyTotal = item.reply.length
           return item.reply.map((erp) => erp._id.toString()).concat(item._id.toString())
         }
         return item._id.toString()
@@ -46,8 +56,10 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
       const ipIds = existed.map((ee) => ee.msgid.toString())
       doc.forEach((d) => {
         if (ipIds.includes(d._id.toString())) d.liked = 1
-
+        d.replyTotal = 0
         if (d.reply && d.reply.length) {
+          // 一级评论统计挂载的总回复数，不管是不是回复自己
+          d.replyTotal = d.reply.length
           d.reply.forEach((er) => {
             if (ipIds.includes(er._id.toString())) er.liked = 1
           })
@@ -59,6 +71,7 @@ router.get('/api/front/messageBoard/gets', async (req, res) => {
       status: 200,
       data: doc,
       total,
+      totalAll,
       page: parseInt(req.query.page)
     })
   } catch (e) {
@@ -160,9 +173,8 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
       status: 200,
       data: doc
     })
-    if (process.env.NODEW_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
-      console.log('返回ip信息===>>>>', ipInfo)
       if (ipInfo.status === '200' && ipInfo.data.length) {
         const info = ipInfo.data[0]
         await new db.news({
@@ -176,6 +188,7 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
           district: info.district,
           leaveMessageId: doc._id,
           content: doc.content,
+          read: 0,
           date: new Date()
         }).save()
       }
@@ -185,24 +198,85 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
   }
 })
 
-//后台管理删除二级留言
-router.patch('/api/reduceLeavewords', confirmToken, (req, res) => {
-  db.msgBoard.update({ _id: req.body.mainId }, { $pull: { reply: { _id: req.body.secondId } } }, (err) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json({ deleteCode: 200 })
-    }
-  })
+/***********后台管理留言**************/
+
+// 筛选留言
+router.get('/api/admin/messageBoard/search', confirmToken, async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const skip = req.query.page * limit - limit
+  delete req.query.page
+  delete req.query.limit
+  let regex = {}
+  if (req.query.keyword) {
+    regex.$or = [
+      { name: { $regex: req.query.keyword, $options: 'i' } },
+      { content: { $regex: req.query.keyword, $options: 'i' } }
+    ]
+    delete req.query.keyword
+  }
+  try {
+    const doc = await db.msgBoard
+      .find({
+        ...req.query,
+        ...regex
+      })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+
+    const total = await db.msgBoard.count({ ...req.query, ...regex })
+
+    res.json({
+      status: 200,
+      data: doc,
+      total,
+      info: '搜索留言成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
-router.delete('/api/removeLeavewords', confirmToken, (req, res) => {
-  //因为用到批量删除，所以删除项的_id均放到数组中
-  db.msgBoard.remove({ _id: { $in: req.query.id } }, (err) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      res.json({ deleteCode: 200 })
-    }
-  })
+
+// 添加留言
+router.post('/api/admin/messageBoard/save', confirmToken, async (req, res) => {
+  try {
+    let { name, imgUrl, email, link, content, parentId, aite } = req.body
+    if (!parentId) parentId = null
+    // 存储文章评论
+    const commentDoc = await new db.msgBoard({
+      name,
+      imgUrl,
+      email,
+      link,
+      content,
+      parentId,
+      aite,
+      like: 0,
+      admin: 1,
+      date: new Date()
+    }).save()
+
+    res.json({
+      status: 200,
+      data: commentDoc,
+      info: '管理员留言成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 删除留言
+router.delete('/api/admin/messageBoard/del', confirmToken, async (req, res) => {
+  try {
+    const params = typeof req.query.id === 'string' ? { _id: req.query.id } : { _id: { $in: req.query.id } }
+    await db.msgBoard.remove(params)
+    res.json({
+      status: 200,
+      info: '删除留言成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 module.exports = router

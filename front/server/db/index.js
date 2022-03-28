@@ -1,7 +1,11 @@
+/**
+ * @desc 数据库连接相关入口
+ * @author justjokee
+ */
+
 const mongoose = require('mongoose')
 const md5 = require('js-md5')
-const { db: dbInfo } = require('./secret')
-const localTime = require('../utils/reviseTime')
+const { db: dbSecret, userSecret } = require('./secret')
 const {
   userSchema,
   visitorsSchema,
@@ -14,11 +18,6 @@ const {
   commentIpSchema,
   viewerSchema
 } = require('./schema')
-
-mongoose.Promise = global.Promise
-//请自行更改用户名和密码
-// mongoose.connection.openUri("mongodb://username:password@localhost:27017/blog")
-mongoose.connection.openUri(`mongodb://${dbInfo.user}:${dbInfo.pwd}@localhost:27017/${dbInfo.db}`)
 
 // 实现articleId自增序列
 articleSchema.pre('save', async function (next) {
@@ -58,28 +57,30 @@ const db = {
   viewer: mongoose.model('viewer', viewerSchema)
 }
 
-const initDbUser = () => {
-  db.user.find({}, (err, doc) => {
-    if (err) {
-      console.error(err)
-    } else {
-      if (!doc.length) {
-        let salt = Math.ceil(Math.random() * 10000)
-        let currTime = localTime(Date.now())
-        new db.user({
-          user: 'admin',
-          password: md5('12345' + salt),
-          salt: salt,
-          lastLogin: currTime
-        }).save()
-      } else {
-        console.log('Userinit has done')
-      }
-    }
-  })
+// 初次启动服务后创建用户
+const initUser = async () => {
+  const user = await db.user.find({})
+
+  if (!user.length) {
+    const { account, pwd, salt, avatar } = userSecret
+    await new db.user({
+      account,
+      password: md5(pwd),
+      salt: salt,
+      avatar,
+      lastLoginTime: new Date()
+    }).save()
+    console.log()
+    console.log('you have created account now!')
+    console.log()
+  }
 }
+
+// 建立连接
+mongoose.Promise = global.Promise
+mongoose.connection.openUri(`mongodb://${dbSecret.user}:${dbSecret.pwd}@localhost:27017/${dbSecret.db}`)
 mongoose.connection.once('open', () => {
-  initDbUser()
+  initUser()
 })
 
 module.exports = db

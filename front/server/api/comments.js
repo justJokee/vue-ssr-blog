@@ -1,3 +1,8 @@
+/**
+ * @desc 文章评论管理
+ * @author justJokee
+ */
+
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
@@ -13,6 +18,7 @@ router.get('/api/front/comments/get', async (req, res) => {
   const articleFilter = Reflect.has(req.query, 'articleId') ? { articleId: parseInt(req.query.articleId) } : {}
   try {
     const total = await db.comment.count({ ...articleFilter, parentId: null })
+    const totalAll = await db.comment.count({ ...articleFilter })
     const doc = await db.comment.aggregate([
       { $match: { parentId: null } },
       { $match: { ...articleFilter } },
@@ -35,12 +41,16 @@ router.get('/api/front/comments/get', async (req, res) => {
     ])
     let ids = doc
       .map((item) => {
+        item.replyTotal = 0
         if (item.reply && item.reply.length) {
+          // 一级评论统计挂载的总回复数，不管是不是回复自己
+          item.replyTotal = item.reply.length
           return item.reply.map((erp) => erp._id.toString()).concat(item._id.toString())
         }
         return item._id.toString()
       })
       .flat()
+    // 查询访问ip是否点赞过即将获取的评论
     const existed = await db.commentIp.find({ ip, type: 1, like: 1, msgid: { $in: ids } })
     if (existed.length) {
       const ipIds = existed.map((ee) => ee.msgid.toString())
@@ -57,10 +67,10 @@ router.get('/api/front/comments/get', async (req, res) => {
       status: 200,
       data: doc,
       total,
+      totalAll,
       page: parseInt(req.query.page)
     })
   } catch (e) {
-    console.log('ccomments-------------', e)
     res.status(500).end()
   }
 })
@@ -104,9 +114,8 @@ router.post('/api/front/comments/save', async (req, res) => {
       info: '评论成功'
     })
     // 新消息通知
-    if (process.env.NODEW_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
-      console.log('返回ip信息===>>>>', ipInfo)
       if (ipInfo.status === '200' && ipInfo.data.length) {
         const info = ipInfo.data[0]
         await new db.news({
@@ -120,6 +129,7 @@ router.post('/api/front/comments/save', async (req, res) => {
           district: info.district,
           commentId: commentDoc._id,
           content: commentDoc.content,
+          read: 0,
           date: new Date()
         }).save()
       }
@@ -194,39 +204,96 @@ router.patch('/api/front/comments/like', async (req, res) => {
   }
 })
 
-//后台管理获取所有文章评论
-router.get('/api/getAdminComments', confirmToken, (req, res) => {
-  const limit = 10
+/***********后台管理文章评论**************/
+
+// 筛选评论
+router.get('/api/admin/comments/search', confirmToken, async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
-  db.comment
-    .find({}, (err, doc) => {
-      if (err) {
-        res.status(500).end()
-      } else {
-        res.json(doc)
-      }
+  delete req.query.page
+  delete req.query.limit
+  let regex = {}
+  if (req.query.keyword) {
+    regex.$or = [
+      { name: { $regex: req.query.keyword, $options: 'i' } },
+      { content: { $regex: req.query.keyword, $options: 'i' } }
+    ]
+    delete req.query.keyword
+  }
+  try {
+    const doc = await db.comment
+      .find({
+        ...req.query,
+        ...regex
+      })
+      .sort({ _id: -1 })
+      .skip(skip)
+      .limit(limit)
+
+    const total = await db.comment.count({ ...req.query, ...regex })
+
+    res.json({
+      status: 200,
+      data: doc,
+      total,
+      info: '搜索评论成功'
     })
-    .sort({ _id: -1 })
-    .skip(skip)
-    .limit(limit)
-})
-//后台管理删除评论 TODO:  前端进行吧区分一二级的逻辑去掉
-router.delete('/api/removeComments', confirmToken, (req, res) => {
-  db.comment.remove({ _id: { $in: req.query.id } }, (err) => {
-    if (err) {
-      res.status(500).end()
-    } else {
-      //删除一级评论，联动文章评论数
-      if (req.query.level === 1) {
-        db.article.update({ articleId: req.query.articleId }, { $inc: { commentNum: -1 } }, (err) => {
-          if (err) {
-            res.status(500)
-          }
-        })
-      }
-      res.json({ deleteCode: 200 })
-    }
-  })
+  } catch (e) {
+    res.status(500).end()
+  }
 })
 
+// 添加文章评论
+router.post('/api/admin/comments/save', confirmToken, async (req, res) => {
+  try {
+    let { articleId, name, imgUrl, email, link, content, parentId, aite } = req.body
+    if (!parentId) parentId = null
+    // 存储文章评论
+    const commentDoc = await new db.comment({
+      articleId,
+      name,
+      imgUrl,
+      email,
+      link,
+      content,
+      parentId,
+      aite,
+      like: 0,
+      admin: 1,
+      date: new Date()
+    }).save()
+    // 更新文章评论总数
+    await db.article.update({ articleId: req.body.articleId }, { $inc: { commentNum: 1 } })
+    res.json({
+      status: 200,
+      data: commentDoc,
+      info: '管理员回复成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 删除文章评论
+router.delete('/api/admin/comments/del', confirmToken, async (req, res) => {
+  try {
+    const params = typeof req.query.id === 'string' ? { _id: req.query.id } : { _id: { $in: req.query.id } }
+
+    await db.comment.remove(params)
+    if (typeof req.query.articleId === 'object') {
+      req.query.articleId.forEach(async (item) => {
+        await db.article.update({ articleId: item }, { $inc: { commentNum: -1 } })
+      })
+    } else {
+      await db.article.update({ articleId: req.query.articleId }, { $inc: { commentNum: -1 } })
+    }
+
+    res.json({
+      status: 200,
+      info: '删除评论成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
 module.exports = router

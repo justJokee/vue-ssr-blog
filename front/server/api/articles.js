@@ -1,5 +1,6 @@
 /**
- * @desc 文章相关
+ * @desc 文档
+ * @author justJokee
  */
 
 const express = require('express')
@@ -380,11 +381,10 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
 router.delete('/api/admin/article/del', confirmToken, async (req, res) => {
   try {
     const params = typeof req.query.id === 'string' ? { _id: req.query.id } : { _id: { $in: req.query.id } }
-    // $in 批量删除
     await db.article.remove(params)
     res.json({
       status: 200,
-      info: '删除成功'
+      info: '删除文档成功'
     })
   } catch (e) {
     res.status(500).end()
@@ -393,17 +393,24 @@ router.delete('/api/admin/article/del', confirmToken, async (req, res) => {
 
 // 筛选文章
 router.get('/api/admin/article/search', confirmToken, async (req, res) => {
-  const limit = 8
+  const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
+  delete req.query.page
+  delete req.query.limit
+  let regex = {}
+  if (req.query.keyword) {
+    regex.$or = [
+      { title: { $regex: req.query.keyword, $options: 'i' } },
+      { content_plain: { $regex: req.query.keyword, $options: 'i' } }
+    ]
+    delete req.query.keyword
+  }
   try {
-    const searchDoc = await db.article
+    const doc = await db.article
       .find(
         {
           ...req.query,
-          $or: [
-            { title: { $regex: req.query.keyword, $options: 'i' } },
-            { content_plain: { $regex: req.query.keyword, $options: 'i' } }
-          ]
+          ...regex
         },
         { content: 0, content_plain: 0, content_draft: 0 }
       )
@@ -411,9 +418,12 @@ router.get('/api/admin/article/search', confirmToken, async (req, res) => {
       .skip(skip)
       .limit(limit)
 
+    const total = await db.article.count({ ...req.query, ...regex })
+
     res.json({
       status: 200,
-      data: searchDoc,
+      data: doc,
+      total,
       info: '搜索成功'
     })
   } catch (e) {
