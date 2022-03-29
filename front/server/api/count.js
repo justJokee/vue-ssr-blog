@@ -1,13 +1,14 @@
 /**
  * @desc 统计类
+ * @author justJokee
  */
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
-// const confirmToken = require('../middleware/confirmToken')
+const confirmToken = require('../middleware/confirmToken')
 
-// 获取分类列表
-router.get('/api/admin/count', async (req, res) => {
+// 管理端首页统计项
+router.get('/api/admin/count', confirmToken, async (req, res) => {
   try {
     const article = await db.article.find({}).count()
     const comment = await db.comment.find({}).count()

@@ -6,7 +6,6 @@
 const express = require('express')
 const router = express.Router()
 const db = require('../db/')
-// const confirmToken = require('../middleware/confirmToken')
 
 // 获取分类列表
 router.get('/api/front/category/get', async (req, res) => {

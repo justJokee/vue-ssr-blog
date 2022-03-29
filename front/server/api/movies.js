@@ -1,13 +1,13 @@
 /**
  * @desc 豆瓣电影
+ * @author justJokee
  */
 const express = require('express')
 const router = express.Router()
 const path = require('path')
 const fs = require('fs-extra')
-// const confirmToken = require('../middleware/confirmToken')
 
-// 获取分类列表
+// 获取电影列表
 router.get('/api/front/douban/get', async (req, res) => {
   try {
     const page = req.query.page || 1
@@ -32,7 +32,6 @@ router.get('/api/front/douban/get', async (req, res) => {
       })
     }
   } catch (e) {
-    console.log('指令错误--->>>', e)
     res.status(500).end()
   }
 })

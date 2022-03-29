@@ -5,12 +5,11 @@
 const express = require('express')
 const router = express.Router()
 const jwt = require('jsonwebtoken')
-const md5 = require('md5')
 const db = require('../db/')
 const { userSecret } = require('../db/secret')
 
 const createToken = (id, account) => {
-  const secret = `${userSecret.pwd}.${userSecret.salt}`
+  const secret = `${userSecret.salt}`
   return jwt.sign(
     {
       id: id,
@@ -21,25 +20,25 @@ const createToken = (id, account) => {
   )
 }
 // 登录验证
-router.post('/api/login', async (req, res) => {
+router.post('/api/admin/login', async (req, res) => {
   try {
     const user = await db.user.find({ account: req.body.account })
     // 用户名不存在，返回401
     if (!user.length) {
       res.json({
-        status: 401,
+        status: 402,
         info: '用户名或密码不正确'
       })
       return
     }
     const pwd = user[0].password
-    console.log('body-----', req.body, md5(req.body.password))
-    if (md5(req.body.password) === pwd) {
+    if (req.body.password === pwd) {
       const token = createToken(user[0]._id, user[0].account)
       res.json({
         status: 200,
         data: {
           token,
+          uid: user[0]._id,
           account: user[0].account,
           avatar: user[0].avatar,
           lastLoginTime: user[0].lastLoginTime
@@ -50,7 +49,7 @@ router.post('/api/login', async (req, res) => {
       await db.user.update({ user: req.body.user }, { lastLoginTime: new Date() })
     } else {
       res.json({
-        status: 401,
+        status: 402,
         info: '用户名或密码不正确'
       })
     }

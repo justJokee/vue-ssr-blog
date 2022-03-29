@@ -1,5 +1,6 @@
 /**
  * @desc 文章标签
+ * @author justJokee
  */
 const express = require('express')
 const router = express.Router()
@@ -9,6 +10,7 @@ const db = require('../db/')
 router.get('/api/front/tags/count', async (req, res) => {
   try {
     const tags = await db.article.aggregate([
+      { $match: { publish: 1 } },
       { $unwind: '$tag' },
       { $group: { _id: '$tag', total: { $sum: 1 } } },
       { $project: { tag: '$_id', _id: 0, total: 1 } }

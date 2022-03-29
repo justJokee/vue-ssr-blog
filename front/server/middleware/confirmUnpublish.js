@@ -6,19 +6,17 @@
  * @returns
  * @author justJokee
  */
-const jwt = require('jsonwebtoken')
-const { userSecret } = require('../db/secret')
-const unpublishedPermission = (req, res, next) => {
+const verify = require('../utils/verify')
+const confirmUnpublish = (req, res, next) => {
   if (req.publish === '0') {
     if (!req.headers.authorization) {
-      res.json({ code: 401, info: '无访问权限' })
+      res.json({ status: 401, info: '无访问权限或token已过期' })
     } else {
       const token = req.headers.authorization
-      const secret = `${userSecret.pwd}.${userSecret.salt}`
 
-      jwt.verify(token, secret, (err) => {
+      verify(token, (err) => {
         if (err) {
-          res.json({ code: 401, info: '无访问权限' })
+          res.json({ status: 401, info: '无访问权限或token已过期' })
         } else {
           next()
         }
@@ -26,4 +24,4 @@ const unpublishedPermission = (req, res, next) => {
     }
   } else next()
 }
-module.exports = unpublishedPermission
+module.exports = confirmUnpublish

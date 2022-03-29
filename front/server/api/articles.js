@@ -9,10 +9,10 @@ const db = require('../db/')
 const getIp = require('../utils/getIp')
 const api = require('../http/')
 const confirmToken = require('../middleware/confirmToken')
-const unpublishedPermission = require('../middleware/unpublishedPermission')
+const confirmUnpublish = require('../middleware/confirmUnpublish')
 
 // 获取文章列表 / 按分类 / 按标签 筛选文章
-router.get('/api/front/article/gets', unpublishedPermission, async (req, res) => {
+router.get('/api/front/article/gets', confirmUnpublish, async (req, res) => {
   const params = {}
   if (req.query.publish) params.publish = req.query.publish
   if (req.query.categoryId) params.categoryId = req.query.categoryId
@@ -164,7 +164,7 @@ router.patch('/api/front/article/like', async (req, res) => {
 })
 
 // 文章搜索
-router.get('/api/front/article/search', unpublishedPermission, async (req, res) => {
+router.get('/api/front/article/search', confirmUnpublish, async (req, res) => {
   const limit = 8
   const skip = req.query.page * limit - limit
   try {
@@ -231,6 +231,7 @@ router.get('/api/front/article/archives', async (req, res) => {
     // 按月筛选
     if (req.query.filter) {
       const pipe = [
+        { $match: { publish: 1 } },
         {
           $project: {
             month: { $dateToString: { format: '%Y-%m', date: '$createTime' } },
@@ -249,7 +250,7 @@ router.get('/api/front/article/archives', async (req, res) => {
       total = totalRes[0].total
     } else {
       doc = await db.article.aggregate([
-        { $match: {} },
+        { $match: { publish: 1 } },
         { $sort: { _id: -1 } },
         { $skip: skip },
         { $limit: limit },
@@ -294,7 +295,7 @@ router.get('/api/front/article/hot', (req, res) => {
 /***********后台管理文章： 改动 删除 修改 TODO:待重构**************/
 
 // 获取文章详细信息
-router.get('/api/admin/article/getDraft', unpublishedPermission, async (req, res) => {
+router.get('/api/admin/article/getDraft', confirmToken, async (req, res) => {
   const { articleId, excludeContent } = req.query
   const project = excludeContent ? { content: 0, content_plain: 0, content_draft: 0 } : { content_plain: 0 }
   try {
@@ -337,7 +338,7 @@ router.post('/api/admin/article/save', confirmToken, async (req, res) => {
   }
 })
 
-// 编辑文档
+// 编辑文档（保存、更新/发布）
 router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
   const updates = {}
   try {
@@ -354,7 +355,12 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
         updates.content = updates.content_draft
       }
     }
-
+    // 数据存储前获取原始发布状态
+    const oldDoc = await db.article.find(
+      { articleId: req.body.articleId },
+      { content: 0, content_plain: 0, content_draft: 0 }
+    )
+    const oldPublish = oldDoc[0].publish
     await db.article.update(
       { articleId: req.body.articleId },
       {
@@ -367,6 +373,12 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
       { articleId: req.body.articleId },
       { content: 0, content_plain: 0, content_draft: 0 }
     )
+    // 状态不一致说明发布状态已变更，更新分类表的统计字段
+    if (oldPublish != doc[0].publish) {
+      const inc = doc[0].publish ? 1 : -1
+      await db.category.update({ _id: doc[0].categoryId }, { $inc: { total: inc } })
+    }
+
     res.json({
       status: 200,
       data: doc[0],
@@ -381,7 +393,17 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
 router.delete('/api/admin/article/del', confirmToken, async (req, res) => {
   try {
     const params = typeof req.query.id === 'string' ? { _id: req.query.id } : { _id: { $in: req.query.id } }
+    // 维护分类表
+    const articlesDoc = await db.article.find(params)
+    if (articlesDoc.length) {
+      articlesDoc.forEach(async (doc) => {
+        if (doc.publish) {
+          await db.category.update({ _id: doc.categoryId }, { $inc: { total: -1 } })
+        }
+      })
+    }
     await db.article.remove(params)
+
     res.json({
       status: 200,
       info: '删除文档成功'

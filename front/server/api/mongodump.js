@@ -6,7 +6,7 @@ const fs = require('fs')
 const path = require('path')
 const confirmToken = require('../middleware/confirmToken')
 const deleteF = require('../utils/deleteF')
-router.get('/api/copyData', confirmToken, (req, res) => {
+router.get('/api/admin/mongodump', confirmToken, (req, res) => {
   //下次备份前删除旧的备份文件
   deleteF.file(path.join(__dirname, '../db/copyDownload'))
   deleteF.folder(path.join(__dirname, '../db/dbData/blog'))
