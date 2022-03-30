@@ -99,6 +99,21 @@ export default {
   name: 'articleDetail',
   components: { note, comments, submit, copyright, share, prevnext },
   props: {},
+  metaInfo() {
+    return {
+      title: `${this.article.title}  - Marco's Blog vue ssr blog mapblog`,
+      meta: [
+        {
+          name: 'description',
+          content: this.article.abstract
+        },
+        {
+          name: 'keywords',
+          content: this.article.tag?.join(',')
+        }
+      ]
+    }
+  },
   // 动态属性
   data() {
     return {

@@ -22,6 +22,7 @@
 
         <div class="home-article__page">
           <el-pagination
+            v-if="articles.length"
             :total="total"
             layout="prev, pager, next"
             :page-size="pageSize"
@@ -96,8 +97,8 @@ export default {
     },
     async startPlay() {
       const dictums = this.dictums.flat()
-      const tasks = dictums.map((dictum, index) => {
-        return this.createTask(async resolve => {
+      const tasks = dictums.map((dictum) => {
+        return this.createTask(async (resolve) => {
           let i = 0
           this.timer = setInterval(async () => {
             this.dictumInfo = dictum.substring(0, i + 1)
@@ -124,17 +125,17 @@ export default {
           }, 250)
         })
       })
-      await tasks.reduce((pre, next, index, arr) => pre.then(ret => next(ret)), Promise.resolve())
+      await tasks.reduce((pre, next) => pre.then((ret) => next(ret)), Promise.resolve())
       this.startPlay()
     },
     createTask(cb) {
       return () =>
-        new Promise(resolve => {
+        new Promise((resolve) => {
           cb(resolve)
         })
     },
     sleep(delay = 500) {
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(resolve, delay)
       })
     }

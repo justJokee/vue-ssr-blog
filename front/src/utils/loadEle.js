@@ -18,7 +18,9 @@ import {
   Scrollbar,
   Message,
   Timeline,
-  TimelineItem
+  TimelineItem,
+  RadioGroup,
+  RadioButton
 } from 'element-ui'
 import layout from '@/views/layout/'
 Vue.component('layout', layout)
@@ -40,4 +42,6 @@ Vue.use(TabPane)
 Vue.use(Scrollbar)
 Vue.use(Timeline)
 Vue.use(TimelineItem)
+Vue.use(RadioGroup)
+Vue.use(RadioButton)
 Vue.prototype.$message = Message

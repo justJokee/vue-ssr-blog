@@ -7,7 +7,7 @@ router.patch('/api/admin/pwd/reset', confirmToken, async (req, res) => {
   const user = await db.user.find({ _id: req.body.uid })
   if (user.length) {
     // 旧密码不正确
-    if (req.oldPassword !== user[0].password) {
+    if (req.body.oldPassword !== user[0].password) {
       res.json({
         status: 101,
         info: '旧密码不正确'

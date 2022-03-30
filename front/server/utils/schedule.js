@@ -18,13 +18,14 @@ let cache = {
   getMovieDo: []
 }
 const douban = new DoubanSpider({
-  uid: 'tan-mu'
+  // uid: 'tan-mu'
+  uid: '173712770'
 })
 
 function startSchedule() {
   // 每天凌晨1点进行爬取
-  schedule.scheduleJob('0 0 1 * * *', async () => {
-    // schedule.scheduleJob('0 50 18 * * *', async () => {
+  // schedule.scheduleJob('0 0 1 * * *', async () => {
+  schedule.scheduleJob('0 14 18 * * *', async () => {
     console.log('定时任务触发------>>>>>>>')
     getMovies()
   })
@@ -42,9 +43,9 @@ async function handleMovies(method) {
     const res = await douban[method]()
     cache[method].push(res.data)
     console.log('第1页爬取成功====>>>>>')
+    fs.writeFileSync(`${moviesPath[method]}/pageTotal.txt`, res.page.totalPage + '', 'utf8')
     if (res.page.totalPage > 1) {
       // 保存总页码数
-      fs.writeFileSync(`${moviesPath[method]}/pageTotal.txt`, res.page.totalPage + '', 'utf8')
 
       for (let i = 2; i <= res.page.totalPage; i++) {
         // for (let i = 2; i <= 3; i++) {
@@ -60,6 +61,8 @@ async function handleMovies(method) {
       fs.ensureDirSync(moviesPath[method])
       fs.writeFileSync(`${moviesPath[method]}/${index + 1}.json`, JSON.stringify(doc), 'utf8')
     })
+    // 释放空间
+    cache[method] = []
   } catch (e) {
     console.log('爬虫解析错误---->>>>', e)
     cache = {
@@ -70,6 +73,6 @@ async function handleMovies(method) {
   }
 }
 async function sleep(ms = 1000 * 30) {
-  await new Promise(resolve => setTimeout(resolve, ms))
+  await new Promise((resolve) => setTimeout(resolve, ms))
 }
 exports.startSchedule = startSchedule

@@ -4,7 +4,17 @@
 </doc>
 <template>
   <div class="movies">
-    <layout _title="影视记录">
+    <layout _title="影视记录" cover="/img/article/cover.jpg">
+      <note>
+        <p>每一帧，都是热爱</p>
+      </note>
+      <div class="movies__type">
+        <el-radio-group size="small" v-model="type" @change="handleChangeType">
+          <el-radio-button label="collect">看过</el-radio-button>
+          <el-radio-button label="wish">想看</el-radio-button>
+          <el-radio-button label="do">在看</el-radio-button>
+        </el-radio-group>
+      </div>
       <div class="movies__content">
         <div class="content-item" v-for="(movie, index) in movies" :key="index">
           <div class="item-pic">
@@ -14,7 +24,7 @@
           </div>
           <div class="item-info">
             <div class="item-info__title">
-              <a :href="'/app/article/'">
+              <a :href="movie.href" target="_blank">
                 {{ movie.title.name }}
               </a>
             </div>
@@ -27,9 +37,11 @@
             <div class="item-info__date">标记时间：{{ movie.rating.date }}</div>
           </div>
         </div>
+        <div class="movies__empty" v-if="!movies.length">暂无数据</div>
       </div>
       <div class="movies__page">
         <el-pagination
+          v-if="movies.length"
           :page-count="pageTotal"
           layout="prev, pager, next"
           :page-size="pageSize"
@@ -42,26 +54,47 @@
 <script>
 import api from '@/api/'
 import rating from '@/components/rating/'
+import note from '@/components/note/'
+
 export default {
   name: 'movies',
   props: {},
-  components: { rating },
+  components: { rating, note },
   data() {
     return {
       pageTotal: 1,
       pageSize: 15,
+      currentPage: 1,
       type: 'collect',
       movies: []
     }
   },
   async asyncData() {
-    const moviesRes = await api.getMovies({ type: 'wish' })
+    const moviesRes = await api.getMovies({ type: this.type, page: 1 })
     if (moviesRes.status === 200) return { movies: moviesRes.data, pageTotal: moviesRes.pageTotal }
   },
   mounted() {},
   computed: {},
   methods: {
-    currentChange(val) {}
+    currentChange(val) {
+      this.currentPage = val
+      this.getMovies()
+    },
+    // 更改类型
+    handleChangeType() {
+      this.currentPage = 1
+      this.getMovies()
+    },
+    async getMovies() {
+      const { status, data, pageTotal } = await this.$api.getMovies({
+        type: this.type,
+        page: this.currentPage
+      })
+      if (status === 200) {
+        this.movies = data
+        this.pageTotal = pageTotal
+      }
+    }
   }
 }
 </script>
@@ -70,9 +103,13 @@ export default {
 @import '~@/views/pannel/style/mixins';
 
 .movies {
+  &__type {
+    text-align: center;
+    padding: 16px 0;
+  }
   .content-item {
     display: flex;
-    padding: 16px 0;
+    padding: 22px 0;
     border-bottom: 1px dashed rgb(202, 197, 197);
   }
 
@@ -119,6 +156,14 @@ export default {
   &__page {
     margin-top: 28px;
     text-align: center;
+  }
+  &__empty {
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+    @include themeify() {
+      color: themed('color-ele-holder');
+    }
   }
 }
 </style>
