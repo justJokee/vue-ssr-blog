@@ -66,6 +66,7 @@ router.get('/api/front/article/detail', async (req, res) => {
           city: info.city,
           district: info.district,
           articleId: detail[0]._id,
+          read: 0,
           date: new Date()
         }).save()
       }

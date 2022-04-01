@@ -35,9 +35,7 @@
         </div>
 
         <div class="submit__btn">
-          <el-button v-if="currentReplyMessage._id" size="medium" @click="cancelReply">
-            取消
-          </el-button>
+          <el-button v-if="currentReplyMessage._id" size="medium" @click="cancelReply">取消</el-button>
           <el-button size="medium" :disabled="!visitorInfo._id" @click="submitMessage">提交</el-button>
         </div>
       </div>
@@ -102,7 +100,6 @@
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { storage } from '@/utils/storage'
-import note from '@/components/note/'
 import emoji from '@/components/emoji'
 
 export default {
@@ -116,7 +113,6 @@ export default {
     }
   },
   components: {
-    note,
     emoji
   },
   data() {
@@ -162,21 +158,24 @@ export default {
     ...mapMutations(['setVisitor']),
     openGithub() {
       // TODO: 环境变量 BASE_URL
-      window.open(
-        'http://localhost:6180/login/git',
-        '_blank',
-        'height=600,width=800,toolbar=no, menubar=no, scrollbars=no'
-      )
+      const BASE_URL = process.env.BASE_URL
+      window.open(`${BASE_URL}/login/git`, '_blank', 'height=600,width=800,toolbar=no, menubar=no, scrollbars=no')
     },
     openQQ() {
-      this.qq_win = window.open(
-        'https://graph.qq.com/oauth2.0/authorize?client_id=101454722&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
-        'oauth2Login_10000',
-        'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
-      )
+      this.$message('warning', '咱也不知道为啥就是审核不过！！！')
+      return
+      // this.qq_win = window.open(
+      //   'https://graph.qq.com/oauth2.0/authorize?client_id=&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
+      //   'oauth2Login_10000',
+      //   'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
+      // )
+      // QC.Login.showPopup({
+      //   appId: '101454722',
+      //   redirectURI: 'https://mapblog.cn/qc_back.html'
+      // })
     },
     register() {
-      this.$refs.customForm.validate(async valid => {
+      this.$refs.customForm.validate(async (valid) => {
         if (valid) {
           const res = await this.$api.saveVisitor({
             ...this.customInfo,
@@ -197,7 +196,7 @@ export default {
       })
     },
     submitPerfect() {
-      this.$refs.perfectForm.validate(async valid => {
+      this.$refs.perfectForm.validate(async (valid) => {
         if (valid) {
           const res = await this.$api.saveVisitor({
             ...this.tempInfo,
@@ -235,8 +234,9 @@ export default {
        */
 
       QC.Login({}, (info, opts) => {
+        console.log('QQ Callback--->>>>>', info, opts)
         // 获取opeId accessToken
-        QC.Login.getMe(async (openId, accessToken) => {
+        QC.Login.getMe(async (openId) => {
           // 查看QQ用户是否被存储了
           const res = await this.$api.isExistedVisitor({
             name: info.nickname,

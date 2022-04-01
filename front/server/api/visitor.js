@@ -66,19 +66,22 @@ router.post('/api/front/visitor/existed', async (req, res) => {
 // github登录
 
 router.get('/login/git', (req, res) => {
+  const baseUrl = process.env.NODE_ENV === 'production' ? 'https://mapblog.cn' : 'http://localhost:6180'
   //请替换为自己的client_id
-  let path = `https://github.com/login/oauth/authorize?client_id=${githubSecret.githubId}&scope=['user']&redirect_uri=http://localhost:6180/login_github`
+  let path = `https://github.com/login/oauth/authorize?client_id=${githubSecret.clientId}&scope=['user']&redirect_uri=${baseUrl}/login_github`
   res.redirect(path)
   res.status(200).end()
 })
 router.get('/login_github', (req, res) => {
   try {
+    const baseUrl = process.env.NODE_ENV === 'production' ? 'https://mapblog.cn' : 'http://localhost:6180'
+
     const params = {
       client_id: githubSecret.clientId,
       client_secret: githubSecret.secret,
       code: req.query.code,
       scope: ['user'],
-      redirect_uri: 'http://localhost:6180/login_github'
+      redirect_uri: `${baseUrl}/login_github`
     }
     api
       .post('https://github.com/login/oauth/access_token', JSON.parse(JSON.stringify(params)))

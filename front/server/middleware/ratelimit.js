@@ -17,6 +17,9 @@ const LRU = new lruCache({
 })
 
 module.exports = function ratelimit(req, res, next) {
+  res.header('Access-Control-Allow-Origin', 'admin.mapblog.cn')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS')
   const ip = getIp(req)
   const url = `${req.baseUrl}${req.url}`
   const key = `${ip}:${url}`
