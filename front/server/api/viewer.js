@@ -13,7 +13,7 @@ const getOS = require('../utils/getOS')
 // 统计访客数量、信息(按前端刷新次数计算)
 router.get(['/', '/app/*'], async (req, res, next) => {
   try {
-    if (process.env.NODEW_ENV === 'production') {
+    if (process.env.NODE_ENV === 'production') {
       const ip = getIp(req)
       const browser = getBrowser(req.headers['user-agent'])
       const system = getOS(req.headers['user-agent'])

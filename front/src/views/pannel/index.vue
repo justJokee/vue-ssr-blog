@@ -111,6 +111,8 @@ export default {
       this.observer = new ResizeObserver(() => {
         this.pannelOffsetHeight = pannelNode.offsetHeight
         this.stickyOffsetHeight = stickNode.offsetHeight
+        // 尺寸变化后，主动触发一次计算，避免手动滚动页面时才进行重新布局
+        this.stickyHandler()
       })
       this.observer.observe(pannelNode, { attributes: true, childList: false, subtree: false })
       this.observer.observe(stickNode, { attributes: true, childList: false, subtree: false })
@@ -123,7 +125,12 @@ export default {
       })
     },
     stickyHandler() {
-      if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) return
+      if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) {
+        // 此时应该清空状态
+        this.sticky = false
+        this.stickyBottom = false
+        return
+      }
       const scrollTop = getScrollTop()
       const distance = this.rollBack ? 70 : 20
 
