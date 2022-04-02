@@ -38,10 +38,7 @@
       margin-left: 12px;
       &__title a {
         transition: all 0.38s ease-in-out;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
+        @include clamp(2);
       }
       &__title:hover a,
       &__title:hover {

@@ -24,6 +24,15 @@
           <div class="search__empty" v-if="showEmptyResult">Oops~ 暂未找到关键词为”{{ keyword }}“的文章</div>
         </div>
       </el-scrollbar>
+      <div class="search__page">
+        <el-pagination
+          v-if="articles.length < total"
+          :total="total"
+          layout="prev, pager, next"
+          :page-size="pageSize"
+          @current-change="currentChange"
+        ></el-pagination>
+      </div>
     </div>
   </div>
 </template>
@@ -37,6 +46,9 @@ export default {
     return {
       keyword: '',
       searched: false,
+      total: 0,
+      pageSize: 10,
+      currentPage: 1,
       articles: []
     }
   },
@@ -63,12 +75,19 @@ export default {
         return
       }
       const searchRes = await this.$api.searchArticle({
-        keyword: this.keyword.trim()
+        keyword: this.keyword.trim(),
+        page: this.currentPage,
+        limit: this.pageSize
       })
       if (searchRes.status === 200) {
         this.articles = searchRes.data
         this.searched = true
+        this.total = searchRes.total
       }
+    },
+    currentChange(val) {
+      this.currentPage = val
+      this.search()
     },
     goto(article) {
       this.$emit('hasJumped')
@@ -82,6 +101,10 @@ export default {
 
 .search {
   &__body {
+  }
+  &__page {
+    margin-top: 10px;
+    text-align: center;
   }
   &__input {
     .el-input__inner {
@@ -157,6 +180,7 @@ export default {
 }
 .search-box {
   border-radius: 8px;
+  min-width: 340px;
   .el-dialog__body {
     padding-top: 0;
   }

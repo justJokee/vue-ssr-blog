@@ -142,10 +142,7 @@ export default {
       }
     }
     &__intro {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      @include clamp(3);
       color: rgb(100, 99, 99);
     }
     &__rating {

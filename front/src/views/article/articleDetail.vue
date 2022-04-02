@@ -326,8 +326,14 @@ export default {
     color: #4c4948;
   }
   &__title {
+    line-height: 1.5;
+    padding: 0 12px;
+    text-align: center;
     @include themeify() {
       color: themed('color-title');
+    }
+    @include respond-to(xs) {
+      font-size: 18px;
     }
   }
 

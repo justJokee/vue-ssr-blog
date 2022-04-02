@@ -40,9 +40,9 @@
         </div>
       </div>
     </div>
-    <el-dialog title="登录" :visible.sync="customVisible" width="30%">
+    <el-dialog title="登录" :visible.sync="customVisible" width="30%" custom-class="visitor-submit-box">
       <div class="submit__login">
-        <el-form label-width="80px" :model="customInfo" :rules="submitRules" ref="customForm">
+        <el-form label-width="60px" :model="customInfo" :rules="submitRules" ref="customForm">
           <el-form-item label="昵称" prop="name">
             <el-input v-model="customInfo.name" placeholder="请输入昵称"></el-input>
           </el-form-item>
@@ -76,6 +76,7 @@
       :show-close="false"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
+      custom-class="visitor-submit-box"
     >
       <div class="submit__perfect">
         <el-form label-width="80px" :model="perfect" :rules="submitRules" ref="perfectForm">
@@ -162,17 +163,16 @@ export default {
       window.open(`${BASE_URL}/login/git`, '_blank', 'height=600,width=800,toolbar=no, menubar=no, scrollbars=no')
     },
     openQQ() {
-      this.$message('warning', '咱也不知道为啥就是审核不过！！！')
-      return
+      // return
       // this.qq_win = window.open(
       //   'https://graph.qq.com/oauth2.0/authorize?client_id=&response_type=token&scope=all&redirect_uri=https://www.mapblog.cn/qc_back.html',
       //   'oauth2Login_10000',
       //   'height=525,width=585, toolbar=no, menubar=no, scrollbars=no, status=no, location=yes, resizable=yes'
       // )
-      // QC.Login.showPopup({
-      //   appId: '101454722',
-      //   redirectURI: 'https://mapblog.cn/qc_back.html'
-      // })
+      QC.Login.showPopup({
+        appId: '101999089',
+        redirectURI: 'https://mapblog.cn/qc_back.html'
+      })
     },
     register() {
       this.$refs.customForm.validate(async (valid) => {
@@ -236,11 +236,13 @@ export default {
       QC.Login({}, (info, opts) => {
         console.log('QQ Callback--->>>>>', info, opts)
         // 获取opeId accessToken
-        QC.Login.getMe(async (openId) => {
+        QC.Login.getMe(async (openId, accessToken) => {
+          console.log('QQ Callback--->>>>>', openId, accessToken)
+
           // 查看QQ用户是否被存储了
           const res = await this.$api.isExistedVisitor({
             name: info.nickname,
-            imgUrl: info.figureurl_2,
+            imgUrl: info.figureurl_qq || info.figureurl_2,
             qqOpenId: openId,
             type: 1
           })
@@ -394,7 +396,7 @@ export default {
     }
   }
   &__login {
-    padding: 0 30px 0 0;
+    padding: 0 20px 0 0;
   }
   &__register {
     text-align: right;
@@ -423,10 +425,13 @@ export default {
     }
   }
   &__perfect {
-    padding: 0 30px 0 0;
+    padding: 0 20px 0 0;
   }
   &__perfect-footer {
     text-align: right;
   }
+}
+.visitor-submit-box {
+  min-width: 340px;
 }
 </style>

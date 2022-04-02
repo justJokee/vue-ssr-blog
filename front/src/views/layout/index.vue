@@ -31,12 +31,12 @@
     <footer class="layout__footer">
       <slot name="footer">
         <div class="layout__footer-content" :style="{ backgroundImage: 'url(' + cover + ')' }">
-          <div class="content-item content-copyright">
+          <div class="content-each content-copyright">
             <span>©2018 - 2022&nbsp;&nbsp;&nbsp;</span>
             <a href="https://github.com/justJokee" target="_blank">justJokee</a>
           </div>
-          <div class="content-item content-power">Powerd by Vue2.x ssr</div>
-          <div class="content-item content-icp">
+          <div class="content-each content-power">Powerd by Vue2.x ssr</div>
+          <div class="content-each content-icp">
             <img src="@/assets/img/icp.png" alt="" />
             <a href="http://www.beian.gov.cn/portal/index.do" target="_blank">鲁公安网备 37012502000331号</a>
             <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">鲁ICP备 17052342号</a>
@@ -107,6 +107,11 @@ export default {
       .el-card__body {
         padding: 50px 40px;
       }
+      @include respond-to(xs) {
+        .el-card__body {
+          padding: 20px;
+        }
+      }
     }
     &-pannel {
       flex: 1 1 auto;
@@ -155,7 +160,7 @@ export default {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      .content-item {
+      .content-each {
         padding: 4px;
         z-index: 10;
       }

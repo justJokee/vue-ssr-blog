@@ -78,7 +78,7 @@ export default {
     if (archiveRes.status === 200) return { archives: archiveRes.data, total: archiveRes.total }
   },
   watch: {
-    $route(to, from) {
+    $route() {
       this.getArchiveRes()
     }
   },
@@ -113,6 +113,7 @@ export default {
     .content-left {
       width: 80px;
       height: 80px;
+      flex: 0 0 auto;
       overflow: hidden;
       a {
         display: inline-block;
@@ -120,6 +121,7 @@ export default {
         height: 80px;
       }
       img {
+        border-radius: 4px;
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -134,6 +136,7 @@ export default {
       &__title,
       &__title a {
         transition: all 0.38s ease;
+        @include clamp(2);
       }
       &__title {
         font-size: 16px;

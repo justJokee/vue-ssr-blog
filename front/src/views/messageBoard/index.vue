@@ -161,6 +161,9 @@ export default {
     font-family: 'sf-arch';
     font-size: 28px;
     line-height: 1.8;
+    @include respond-to(xs) {
+      font-size: 18px;
+    }
   }
   &__title {
     padding: 16px 0;

@@ -22,7 +22,12 @@ export function createStore() {
       // 最新评论
       newComments: [],
       // 最新文章
-      newArticles: []
+      newArticles: [],
+      totals: {
+        article: 0,
+        tag: 0,
+        category: 0
+      }
     },
     mutations,
     actions

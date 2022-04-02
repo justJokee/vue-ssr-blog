@@ -84,7 +84,11 @@ export default {
   }
   &__sub {
     padding-left: 50px;
+    @include respond-to(xs) {
+      padding-left: 20px;
+    }
   }
+
   &__empty {
     padding: 16px;
     text-align: center;

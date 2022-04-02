@@ -19,7 +19,7 @@ router.get('/api/front/article/gets', confirmUnpublish, async (req, res) => {
   if (req.query.tag) params.tag = { $in: [req.query.tag] }
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
-  const project = req.query.content == '0' ? { content: 0, content_plain: 0 } : {}
+  const project = req.query.content == '0' ? { content: 0, content_plain: 0, content_draft: 0 } : {}
   if (req.query.tag) params.tag = req.query.tag
   try {
     const total = await db.article.count(params)
@@ -166,7 +166,7 @@ router.patch('/api/front/article/like', async (req, res) => {
 
 // 文章搜索
 router.get('/api/front/article/search', confirmUnpublish, async (req, res) => {
-  const limit = 8
+  const limit = req.query.limit || 10
   const skip = req.query.page * limit - limit
   try {
     const searchDoc = await db.article
@@ -178,14 +178,16 @@ router.get('/api/front/article/search', confirmUnpublish, async (req, res) => {
             { content_plain: { $regex: req.query.keyword, $options: 'i' } }
           ]
         },
-        { content: 0, content_plain: 0, content_draft: 0 }
+        { content: 0, content_draft: 0 }
       )
       .sort({ _id: -1 })
-      .skip(skip)
-      .limit(limit)
+    let finalDoc = []
     if (searchDoc.length) {
+      finalDoc = searchDoc.slice(skip, skip + limit)
+
       const keyword = req.query.keyword
-      searchDoc.forEach((doc) => {
+      finalDoc.forEach((doc) => {
+        if (!doc.content_plain) return
         // title高亮关键词
         doc.title = doc.title.replace(new RegExp(keyword, 'gi'), `<span class='search-keyword'>${keyword}</span>`)
         // content截取首次出现关键词的片段，并高亮关键词
@@ -200,7 +202,8 @@ router.get('/api/front/article/search', confirmUnpublish, async (req, res) => {
     }
     res.json({
       status: 200,
-      data: searchDoc,
+      data: finalDoc,
+      total: searchDoc.length,
       info: '搜索成功'
     })
   } catch (e) {

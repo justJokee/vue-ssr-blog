@@ -14,6 +14,7 @@ router.get('/api/front/category/get', async (req, res) => {
     res.json({
       status: 200,
       data: doc,
+      total: doc.length,
       info: '获取文档分类成功'
     })
   } catch (e) {

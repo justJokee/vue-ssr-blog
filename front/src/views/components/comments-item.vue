@@ -107,6 +107,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+    font-size: 12px;
     // color: #909399;
     @include themeify() {
       color: themed('color-home-article-detail');
@@ -132,6 +133,7 @@ export default {
     }
   }
   &__say {
+    word-break: break-word;
   }
 }
 </style>

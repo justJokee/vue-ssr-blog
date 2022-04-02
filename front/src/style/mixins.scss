@@ -58,3 +58,9 @@ $break_points: (
     @content;
   }
 }
+@mixin clamp($num){
+  display: -webkit-box;
+  -webkit-line-clamp: $num;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

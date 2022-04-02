@@ -21,23 +21,29 @@ export default {
   },
   computed: {},
   methods: {
-    ...mapMutations(['setArchives', 'setCategory', 'setTags', 'setNewComments', 'setNewArticles']),
+    ...mapMutations(['setArchives', 'setCategory', 'setTags', 'setNewComments', 'setNewArticles', 'setTotals']),
     initPannel() {
-      this.$api.getArchives({ countType: 'month', page: 1, limit: 1000 }).then(res => {
+      this.$api.getArchives({ countType: 'month', page: 1, limit: 1000 }).then((res) => {
         if (res.status === 200) this.setArchives(res.data)
       })
-      this.$api.getCategory().then(res => {
-        if (res.status === 200) this.setCategory(res.data)
+      this.$api.getCategory().then((res) => {
+        if (res.status === 200) {
+          this.setTotals({ key: 'category', value: res.total })
+          this.setCategory(res.data)
+        }
       })
-      this.$api.getTags().then(res => {
-        if (res.status === 200) this.setTags(res.data)
+      this.$api.getTags().then((res) => {
+        if (res.status === 200) {
+          this.setTotals({ key: 'tag', value: res.total })
+          this.setTags(res.data)
+        }
       })
       this.$api
         .getArticleComments({
           page: 1,
           limit: 5
         })
-        .then(res => {
+        .then((res) => {
           if (res.status === 200) this.setNewComments(res.data)
         })
       this.$api
@@ -47,8 +53,11 @@ export default {
           limit: 5,
           content: 0
         })
-        .then(res => {
-          if (res.status === 200) this.setNewArticles(res.data)
+        .then((res) => {
+          if (res.status === 200) {
+            this.setTotals({ key: 'article', value: res.total })
+            this.setNewArticles(res.data)
+          }
         })
     }
   }

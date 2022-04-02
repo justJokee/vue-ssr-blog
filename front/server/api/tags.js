@@ -18,6 +18,7 @@ router.get('/api/front/tags/count', async (req, res) => {
     res.json({
       status: 200,
       data: tags,
+      total: tags.length,
       info: '获取标签统计成功'
     })
   } catch (e) {

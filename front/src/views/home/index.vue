@@ -167,8 +167,11 @@ export default {
     }
   }
   &__dictum-info {
+    text-align: center;
     font-size: 24px;
     margin-top: 24px;
+    padding: 0 16px;
+    line-height: 1.5;
   }
   &__typed-cursor {
     display: inline-block;

@@ -4,73 +4,21 @@
 </doc>
 <template>
   <nav class="navbar" :class="{ 'navbar-rollup': rollBack, 'navbar-transparent': rollbackTop }">
-    <div class="navbar-name">Marco's Blog</div>
-    <div class="navbar-menus">
-      <div class="navbar-menu" @click="openSearch">
-        <i class="el-icon-search"></i>
-        <span>搜索</span>
-      </div>
-      <div class="navbar-menu" @click="goTo('home')">
-        <i class="el-icon-s-home"></i>
-        <span>首页</span>
-      </div>
-      <el-dropdown class="navbar-menu">
-        <span class="navbar-menu-title">
-          <i class="el-icon-discover"></i>
-          导航
-          <i class="el-icon-arrow-down"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item @click.native="goTo('archives')">
-            <i class="el-icon-files"></i>
-            归档
-          </el-dropdown-item>
-          <el-dropdown-item @click.native="goTo('tags')">
-            <i class="el-icon-collection-tag"></i>
-            标签
-          </el-dropdown-item>
-          <el-dropdown-item @click.native="goTo('category')">
-            <i class="el-icon-folder-opened"></i>
-            分类
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <!-- <el-dropdown class="navbar-menu">
-        <span class="navbar-menu-title">
-          <i class="el-icon-notebook-2"></i>
-          文档
-          <i class="el-icon-arrow-down"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item></el-dropdown-item>
-          <el-dropdown-item></el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown> -->
-      <el-dropdown class="navbar-menu">
-        <span class="navbar-menu-title">
-          <i class="el-icon-camera"></i>
-          娱乐
-          <i class="el-icon-arrow-down"></i>
-        </span>
-        <el-dropdown-menu slot="dropdown" class="menu-list">
-          <el-dropdown-item @click.native="goTo('movies')">
-            <i class="el-icon-video-camera-solid"></i>
-            电影
-          </el-dropdown-item>
-        </el-dropdown-menu>
-      </el-dropdown>
-      <div class="navbar-menu" @click="goTo('messageBoard')">
-        <i class="el-icon-chat-dot-round"></i>
-        <span>留言板</span>
-      </div>
-      <div class="navbar-menu" @click="friendLink">
-        <i class="el-icon-ship"></i>
-        <span>友链</span>
+    <div class="navbar__name">Marco's Blog</div>
+    <div class="navbar__menus">
+      <horizontal-navbar @goTo="goTo" @openSearch="openSearch"></horizontal-navbar>
+      <div class="vertical-menu-trigger">
+        <div class="navbar-menu" @click="openSearch">
+          <i class="el-icon-search"></i>
+          <span>搜索</span>
+        </div>
+        <i class="el-icon-menu" @click="drawer = true"></i>
       </div>
     </div>
     <el-dialog
       title="搜索"
       :visible.sync="searchVisible"
+      :style="{ minWidth: '340px' }"
       width="30%"
       :append-to-body="true"
       :lock-scroll="false"
@@ -78,28 +26,34 @@
     >
       <search @hasJumped="closeSearch"></search>
     </el-dialog>
+    <el-drawer :append-to-body="true" :size="300" :visible.sync="drawer" direction="rtl">
+      <vertical-navbar @goTo="goTo"></vertical-navbar>
+    </el-drawer>
   </nav>
 </template>
 <script>
 import { mapState, mapMutations } from 'vuex'
 import { getScrollTop } from '@/utils/getScrollTop'
 import search from '@/views/components/search'
+import horizontalNavbar from './horizontal-navbar'
+import verticalNavbar from './vertical-navbar'
 export default {
   name: 'navbar',
   props: {},
-  components: { search },
+  components: { search, horizontalNavbar, verticalNavbar },
   data() {
     return {
       lastTopPos: 0,
       rollbackTop: false,
-      searchVisible: false
+      searchVisible: false,
+      drawer: false
     }
   },
   mounted() {
     if (getScrollTop() == 0) this.rollbackTop = true
     window.addEventListener(
       'scroll',
-      e => {
+      () => {
         const nowTopPos = getScrollTop()
         if (nowTopPos - this.lastTopPos > 0) {
           this.setRollBack(false)
@@ -126,11 +80,6 @@ export default {
     },
     closeSearch() {
       this.searchVisible = false
-    },
-    friendLink() {
-      this.$message({
-        message: '拼命开发中😭'
-      })
     }
   }
 }
@@ -151,46 +100,34 @@ export default {
   @include themeify() {
     color: themed('color-navbar');
   }
-  .navbar-menu {
-    display: inline-block;
-    padding: 0 10px;
-    cursor: pointer;
-    position: relative;
-    [class^='el-icon-'] {
-      font-weight: 900;
-      margin-right: 4px;
-      font-size: 15px;
+  @include respond-to(xs) {
+    padding: 0 16px;
+  }
+  &__menus {
+    display: flex;
+    align-items: center;
+  }
+  .vertical-menu-trigger {
+    display: none;
+  }
+  @include respond-to(xs) {
+    .horizontal-navbar {
+      display: none;
     }
-    @include themeify() {
-      color: themed('color-navbar');
-    }
-    .navbar-menu-title {
-      .el-icon-arrow-down {
-        display: inline-block;
-        transition: all ease 0.38s;
+    .vertical-menu-trigger {
+      display: flex;
+      align-items: center;
+      > i {
+        font-size: 18px;
+        margin-left: 12px;
+      }
+      .el-icon-search {
+        margin-right: 8px;
       }
     }
-    .navbar-menu-title:hover {
-      .el-icon-arrow-down {
-        transform: rotate(180deg);
-      }
-    }
-  }
-  .navbar-menu:hover.navbar-menu:after {
-    width: 100%;
-  }
-  .navbar-menu:after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 3px;
-    background: #80c8f8;
-    display: inline-block;
-    transition: all ease 0.38s;
   }
 }
+
 .menu-list {
   [class^='el-icon-'] {
     font-weight: 900;

@@ -59,10 +59,7 @@ export default {
     }
     &__name {
       padding-top: 4px;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      @include clamp(1);
     }
     &__date {
       padding: 2px 0 !important;

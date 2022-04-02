@@ -25,5 +25,8 @@ export default {
   },
   setVisitor(state, info) {
     state.visitorInfo = info
+  },
+  setTotals(state, kv) {
+    state.totals[kv.key] = kv.value
   }
 }

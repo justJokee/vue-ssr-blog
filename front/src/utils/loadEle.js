@@ -20,7 +20,11 @@ import {
   Timeline,
   TimelineItem,
   RadioGroup,
-  RadioButton
+  RadioButton,
+  Menu,
+  Submenu,
+  MenuItem,
+  drawer
 } from 'element-ui'
 import layout from '@/views/layout/'
 Vue.component('layout', layout)
@@ -44,4 +48,8 @@ Vue.use(Timeline)
 Vue.use(TimelineItem)
 Vue.use(RadioGroup)
 Vue.use(RadioButton)
+Vue.use(Menu)
+Vue.use(MenuItem)
+Vue.use(Submenu)
+Vue.use(drawer)
 Vue.prototype.$message = Message

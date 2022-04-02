@@ -10,7 +10,7 @@
           <img :src="article.headerPic" alt="" />
         </div>
         <div class="article-iterator__item-info">
-          <div>
+          <div class="article-iterator__item-link">
             <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
           </div>
           <div class="article-iterator__item-detail">
@@ -56,6 +56,7 @@ export default {
 .article-iterator {
   &__item {
     height: 280px;
+
     > .el-card__body {
       width: 100%;
       height: 100%;
@@ -79,6 +80,10 @@ export default {
       flex-direction: column;
       justify-content: center;
     }
+    &-link {
+      flex: 0 0 auto;
+      @include clamp(2);
+    }
     &-detail {
       @include themeify() {
         color: themed('color-home-article-detail');
@@ -88,8 +93,11 @@ export default {
     }
     &-abstract {
       line-height: 2;
+      flex: 0 0 auto;
+      @include clamp(2);
     }
   }
+
   &__item-content {
     display: flex;
     width: 100%;
@@ -105,11 +113,38 @@ export default {
       }
     }
   }
+
   &__item:not(:first-child) {
     margin-top: 20px;
   }
   &__item:nth-child(even) .article-iterator__item-pic {
-    order: 2;
+    order: 1;
+  }
+
+  @include respond-to(xs) {
+    &__item {
+      height: auto;
+      &-pic {
+        width: 100%;
+        height: 230px;
+      }
+      &-info {
+        width: 100%;
+        justify-content: normal;
+        padding: 16px;
+        a {
+          font-size: 18px;
+        }
+      }
+    }
+    &__item:nth-child(even) .article-iterator__item-pic {
+      order: 0;
+    }
+  }
+  @include respond-to(xs) {
+    &__item-content {
+      flex-direction: column;
+    }
   }
 }
 </style>
