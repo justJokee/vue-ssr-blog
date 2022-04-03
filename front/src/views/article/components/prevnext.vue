@@ -10,7 +10,7 @@
           <img :src="prevnext.prev.headerPic" alt="" />
           <div class="content__info">
             <div>上一篇</div>
-            <div>{{ this.prevnext.prev.title }}</div>
+            <div class="info-title">{{ this.prevnext.prev.title }}</div>
           </div>
         </a>
       </div>
@@ -19,7 +19,7 @@
           <img :src="prevnext.next.headerPic" alt="" />
           <div class="content__info">
             <div>下一篇</div>
-            <div>{{ this.prevnext.next.title }}</div>
+            <div class="info-title">{{ this.prevnext.next.title }}</div>
           </div>
         </a>
       </div>
@@ -69,6 +69,9 @@ export default {
   &__content {
     position: relative;
     height: 150px;
+    @include respond-to(xs) {
+      height: 100px;
+    }
     @include flex-box-space;
     .content__prev,
     .content__next {
@@ -125,6 +128,13 @@ export default {
       flex-direction: column;
       justify-content: center;
       padding: 0 38px;
+      .info-title {
+        @include clamp(2);
+      }
+
+      @include respond-to(xs) {
+        padding: 0 12px;
+      }
       @include themeify() {
         color: themed('color-title');
       }

@@ -41,7 +41,9 @@ export default {
 @import '~@/views/pannel/style/mixins';
 .pannel-catalog {
   @include pannel-frame;
-
+  @include respond-to(xs) {
+    display: none;
+  }
   .pannel__item-body {
     > ol {
       padding: 0;

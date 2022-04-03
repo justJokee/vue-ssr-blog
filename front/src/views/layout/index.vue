@@ -31,12 +31,12 @@
     <footer class="layout__footer">
       <slot name="footer">
         <div class="layout__footer-content" :style="{ backgroundImage: 'url(' + cover + ')' }">
-          <div class="content-each content-copyright">
+          <div class="layout__footer-item">
             <span>©2018 - 2022&nbsp;&nbsp;&nbsp;</span>
             <a href="https://github.com/justJokee" target="_blank">justJokee</a>
           </div>
-          <div class="content-each content-power">Powerd by Vue2.x ssr</div>
-          <div class="content-each content-icp">
+          <div class="layout__footer-item">Powerd by Vue2.x ssr</div>
+          <div class="layout__footer-item item-icp">
             <img src="@/assets/img/icp.png" alt="" />
             <a href="http://www.beian.gov.cn/portal/index.do" target="_blank">鲁公安网备 37012502000331号</a>
             <a href="https://beian.miit.gov.cn/#/Integrated/index" target="_blank">鲁ICP备 17052342号</a>
@@ -160,29 +160,11 @@ export default {
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      .content-each {
-        padding: 4px;
-        z-index: 10;
-      }
-      .content-copyright,
-      .content-icp {
-        display: flex;
-        align-items: center;
-      }
-      .content-icp {
+
+      .item-icp {
         a {
           margin-left: 6px;
         }
-      }
-      a {
-        color: rgba(255, 255, 255, 0.7);
-      }
-      a:hover {
-        @include themeify() {
-          color: themed('color-ele-primary');
-        }
-
-        // text-decoration: underline;
       }
     }
     &-content:before {
@@ -194,6 +176,20 @@ export default {
       content: '';
       background: rgba(0, 0, 0, 0.3);
       z-index: 0;
+    }
+    &-item {
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      z-index: 10;
+      a {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      a:hover {
+        @include themeify() {
+          color: themed('color-ele-primary');
+        }
+      }
     }
   }
 }

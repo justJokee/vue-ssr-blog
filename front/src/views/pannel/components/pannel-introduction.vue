@@ -4,12 +4,18 @@
 </doc>
 <template>
   <div class="pannel-introduction">
-    <el-card>网站简介</el-card>
+    <el-card>
+      <site-introduction></site-introduction>
+    </el-card>
   </div>
 </template>
 <script>
+import siteIntroduction from '@/views/components/site-introduction'
 export default {
   name: 'pannelIntroduction',
+  components: {
+    siteIntroduction
+  },
   props: {},
   data() {
     return {}
@@ -25,5 +31,8 @@ export default {
   transition: all ease 0.38s;
   margin-bottom: 16px;
   @include pannel-frame;
+  @include respond-to(xs) {
+    display: none;
+  }
 }
 </style>

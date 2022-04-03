@@ -109,6 +109,7 @@ export default {
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
       this.observer = new ResizeObserver(() => {
+        if (document.documentElement.clientWidth <= 768) return
         this.pannelOffsetHeight = pannelNode.offsetHeight
         this.stickyOffsetHeight = stickNode.offsetHeight
         // 尺寸变化后，主动触发一次计算，避免手动滚动页面时才进行重新布局
@@ -125,6 +126,8 @@ export default {
       })
     },
     stickyHandler() {
+      // 视口尺寸小于等于768px，则默认手机状态布局，无需处理sticky逻辑
+      if (document.documentElement.clientWidth <= 768) return
       if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) {
         // 此时应该清空状态
         this.sticky = false
@@ -150,7 +153,6 @@ export default {
       }
     },
     resizeHandler: debounce(function () {
-      console.log('resize触发====》》》》》')
       const pannelNode = document.querySelector('.pannel')
       const layoutBody = document.querySelector('.layout__body-content')
       this.stickyOffsetWidth = pannelNode.offsetWidth + 'px'

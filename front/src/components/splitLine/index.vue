@@ -21,6 +21,9 @@ export default {
   hr {
     position: relative;
     margin: 40px 0;
+    @include respond-to(xs) {
+      margin: 20px 0;
+    }
     @include themeify() {
       border: 2px dashed themed('color-hr-border');
     }

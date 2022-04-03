@@ -5,15 +5,15 @@
 <template>
   <div class="article-iterator">
     <el-card class="article-iterator__item" v-for="(article, index) in articles" :key="index">
-      <div class="article-iterator__item-content">
-        <div class="article-iterator__item-pic">
+      <div class="item-content">
+        <div class="item-content__pic">
           <img :src="article.headerPic" alt="" />
         </div>
-        <div class="article-iterator__item-info">
-          <div class="article-iterator__item-link">
+        <div class="item-content__info">
+          <div class="item-content__link">
             <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
           </div>
-          <div class="article-iterator__item-detail">
+          <div class="item-content__detail">
             <span>
               <i class="el-icon-date"></i>
               发表时间 {{ article.createTime | formatDate }}
@@ -29,7 +29,7 @@
               点赞 {{ article.likeNum }}
             </span>
           </div>
-          <div class="article-iterator__item-abstract">{{ article.abstract }}</div>
+          <div class="item-content__abstract">{{ article.abstract }}</div>
         </div>
       </div>
     </el-card>
@@ -56,94 +56,86 @@ export default {
 .article-iterator {
   &__item {
     height: 280px;
-
+    @include respond-to(xs) {
+      height: auto;
+    }
     > .el-card__body {
       width: 100%;
       height: 100%;
       padding: 0;
     }
-    &-pic {
-      width: 45%;
-      height: 100%;
-      flex: 0 0 auto;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-    &-info {
-      width: 55%;
-      padding: 20px 30px;
-      flex: 0 0 auto;
+    .item-content {
       display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-    &-link {
-      flex: 0 0 auto;
-      @include clamp(2);
-    }
-    &-detail {
-      @include themeify() {
-        color: themed('color-home-article-detail');
+      width: 100%;
+      height: 100%;
+      @include respond-to(xs) {
+        flex-direction: column;
       }
-      font-size: 12px;
-      padding: 12px 0;
-    }
-    &-abstract {
-      line-height: 2;
-      flex: 0 0 auto;
-      @include clamp(2);
+      &__pic {
+        width: 45%;
+        height: 100%;
+        @include respond-to(xs) {
+          width: 100%;
+          height: 230px;
+        }
+        flex: 0 0 auto;
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+      }
+      &__info {
+        width: 55%;
+        padding: 20px 30px;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        @include respond-to(xs) {
+          width: 100%;
+          justify-content: normal;
+          padding: 16px;
+        }
+      }
+      &__link {
+        flex: 0 0 auto;
+        @include clamp(2);
+        a {
+          font-size: 24px;
+          line-height: 1.5;
+          transition: all ease-in-out 0.25s;
+          @include respond-to(xs) {
+            font-size: 18px;
+          }
+        }
+        a:hover {
+          @include themeify() {
+            color: themed('color-ele-primary');
+          }
+        }
+      }
+      &__detail {
+        @include themeify() {
+          color: themed('color-home-article-detail');
+        }
+        font-size: 12px;
+        padding: 12px 0;
+      }
+      &__abstract {
+        line-height: 2;
+        flex: 0 0 auto;
+        @include clamp(2);
+      }
     }
   }
-
-  &__item-content {
-    display: flex;
-    width: 100%;
-    height: 100%;
-    a {
-      font-size: 24px;
-      line-height: 1.5;
-      transition: all ease-in-out 0.25s;
-    }
-    a:hover {
-      @include themeify() {
-        color: themed('color-ele-primary');
-      }
-    }
-  }
-
   &__item:not(:first-child) {
     margin-top: 20px;
   }
-  &__item:nth-child(even) .article-iterator__item-pic {
+  &__item:nth-child(even) .item-content__pic {
     order: 1;
-  }
-
-  @include respond-to(xs) {
-    &__item {
-      height: auto;
-      &-pic {
-        width: 100%;
-        height: 230px;
-      }
-      &-info {
-        width: 100%;
-        justify-content: normal;
-        padding: 16px;
-        a {
-          font-size: 18px;
-        }
-      }
-    }
-    &__item:nth-child(even) .article-iterator__item-pic {
+    @include respond-to(xs) {
       order: 0;
-    }
-  }
-  @include respond-to(xs) {
-    &__item-content {
-      flex-direction: column;
     }
   }
 }

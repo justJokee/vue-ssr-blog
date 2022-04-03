@@ -16,7 +16,7 @@
         </el-radio-group>
       </div>
       <div class="movies__content">
-        <div class="content-item" v-for="(movie, index) in movies" :key="index">
+        <div class="movies__item" v-for="(movie, index) in movies" :key="index">
           <div class="item-pic">
             <a :href="'/app/article/'">
               <img referrerpolicy="no-referrer" v-lazy="movie.pic" alt="" />
@@ -107,7 +107,7 @@ export default {
     text-align: center;
     padding: 16px 0;
   }
-  .content-item {
+  &__item {
     display: flex;
     padding: 22px 0;
     border-bottom: 1px dashed rgb(202, 197, 197);

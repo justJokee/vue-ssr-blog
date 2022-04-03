@@ -4,11 +4,13 @@
 </doc>
 <template>
   <nav class="navbar" :class="{ 'navbar-rollup': rollBack, 'navbar-transparent': rollbackTop }">
-    <div class="navbar__name">Marco's Blog</div>
+    <div class="navbar__name">
+      <a href="https://mapblog.cn">Marco's Blog</a>
+    </div>
     <div class="navbar__menus">
       <horizontal-navbar @goTo="goTo" @openSearch="openSearch"></horizontal-navbar>
       <div class="vertical-menu-trigger">
-        <div class="navbar-menu" @click="openSearch">
+        <div class="trigger__search" @click="openSearch">
           <i class="el-icon-search"></i>
           <span>搜索</span>
         </div>
@@ -26,7 +28,7 @@
     >
       <search @hasJumped="closeSearch"></search>
     </el-dialog>
-    <el-drawer :append-to-body="true" :size="300" :visible.sync="drawer" direction="rtl">
+    <el-drawer :append-to-body="true" custom-class="navbar-drawer" :size="300" :visible.sync="drawer" direction="rtl">
       <vertical-navbar @goTo="goTo"></vertical-navbar>
     </el-drawer>
   </nav>
@@ -37,6 +39,8 @@ import { getScrollTop } from '@/utils/getScrollTop'
 import search from '@/views/components/search'
 import horizontalNavbar from './horizontal-navbar'
 import verticalNavbar from './vertical-navbar'
+import debounce from 'lodash/debounce'
+
 export default {
   name: 'navbar',
   props: {},
@@ -65,6 +69,7 @@ export default {
       },
       false
     )
+    window.addEventListener('resize', this.resizeHandler)
   },
   computed: {
     ...mapState(['rollBack'])
@@ -80,7 +85,15 @@ export default {
     },
     closeSearch() {
       this.searchVisible = false
-    }
+    },
+    resizeHandler: debounce(function () {
+      const width = document.documentElement.clientWidth
+
+      // 切换至手机尺寸后，将sticky相关状态全部置空
+      if (width > 768) {
+        this.drawer = false
+      }
+    }, 200)
   }
 }
 </script>
@@ -103,6 +116,11 @@ export default {
   @include respond-to(xs) {
     padding: 0 16px;
   }
+  &__name {
+    a {
+      color: inherit;
+    }
+  }
   &__menus {
     display: flex;
     align-items: center;
@@ -117,6 +135,9 @@ export default {
     .vertical-menu-trigger {
       display: flex;
       align-items: center;
+      .trigger__search {
+        margin-right: 20px;
+      }
       > i {
         font-size: 18px;
         margin-left: 12px;
@@ -142,14 +163,14 @@ export default {
   position: fixed;
   transform: translateY(100%);
   box-shadow: 0 5px 6px -5px rgba(133, 133, 133, 0.6);
-  .navbar-menu {
-    @include themeify() {
-      color: themed('color-navbar-rollup-color');
-    }
-  }
   @include themeify() {
     color: themed('color-navbar-rollup-color');
     background: themed('color-navbar-rollup-bg');
+  }
+  .navbar__name a {
+    @include themeify() {
+      color: themed('color-navbar-rollup-color');
+    }
   }
 }
 .navbar-transparent {
@@ -159,7 +180,7 @@ export default {
   @include themeify() {
     color: themed('color-navbar');
   }
-  .navbar-menu {
+  .navbar__name a {
     @include themeify() {
       color: themed('color-navbar');
     }

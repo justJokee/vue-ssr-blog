@@ -120,8 +120,14 @@ export default {
 @import '~@/style/index.scss';
 .share {
   @include flex-box-center;
+  @include respond-to(xs) {
+    flex-wrap: wrap;
+  }
   &__tags {
     width: 60%;
+    @include respond-to(xs) {
+      width: 100%;
+    }
     margin-right: 12px;
     > .tag {
       margin-right: 12px;
@@ -132,6 +138,10 @@ export default {
     display: flex;
     justify-content: flex-end;
     width: 40%;
+    @include respond-to(xs) {
+      width: 100%;
+      justify-content: flex-start;
+    }
     a {
       display: inline-block;
       width: 32px;
