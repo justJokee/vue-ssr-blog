@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="category">
-    <layout _title="分类">
+    <layout _title="分类" cover="/img/cover/category.jpg">
       <div class="category__content">
         <ul>
           <li v-for="(item, index) in categories" :key="index" @click="filterArticles(item.name, item._id)">

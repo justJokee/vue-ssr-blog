@@ -156,19 +156,19 @@ export default {
     }
     .design-bg-qq {
       margin: 0 5px 0 0;
-      background: url('/img/share.png') 0 0 no-repeat !important;
+      background: url('~@/assets/img/share.png') 0 0 no-repeat !important;
     }
     .design-bg-qzone {
-      background: url('/img/share.png') -57px 0 no-repeat !important;
+      background: url('~@/assets/img/share.png') -57px 0 no-repeat !important;
     }
     .design-bg-sina {
-      background: url('/img/share.png') -118px -71px no-repeat !important;
+      background: url('~@/assets/img/share.png') -118px -71px no-repeat !important;
     }
     .design-bg-douban {
-      background: url('/img/share.png') -118px -138px no-repeat !important;
+      background: url('~@/assets/img/share.png') -118px -138px no-repeat !important;
     }
     .design-bg-weixin {
-      background: url('/img/share.png') 0 -71px no-repeat !important;
+      background: url('~@/assets/img/share.png') 0 -71px no-repeat !important;
     }
   }
 }

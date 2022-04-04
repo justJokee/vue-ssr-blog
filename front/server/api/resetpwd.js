@@ -9,7 +9,7 @@ router.patch('/api/admin/pwd/reset', confirmToken, async (req, res) => {
     // 旧密码不正确
     if (req.body.oldPassword !== user[0].password) {
       res.json({
-        status: 101,
+        status: 201,
         info: '旧密码不正确'
       })
     } else {

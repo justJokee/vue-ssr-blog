@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="article-filter">
-    <layout :_title="title">
+    <layout :_title="title" cover="/img/cover/articles.jpeg">
       <template slot="custom-body">
         <article-iterator :articles="articles"></article-iterator>
         <div class="article-filter__page">

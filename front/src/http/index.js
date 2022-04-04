@@ -6,10 +6,10 @@ import { Message } from 'element-ui'
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 //response拦截器
 axios.interceptors.response.use(
-  config => {
+  (config) => {
     return config
   },
-  error => {
+  (error) => {
     let errRes = JSON.parse(JSON.stringify(error))
     if (errRes && errRes.response && errRes.response.status === 500) {
       _message('warning', '服务器错误')
@@ -22,12 +22,11 @@ function ajax(type, url, options) {
     axios({
       method: type,
       url: url,
-      // baseURL: "https://www.mapblog.cn",
       baseURL: process.env.BASE_URL,
       params: type === 'get' ? options : null,
       data: type !== 'get' ? qs.stringify(options) : null
     })
-      .then(res => {
+      .then((res) => {
         if (res.status === 200) {
           errorCode(res.data.status)
           resolve(res.data)
@@ -35,7 +34,7 @@ function ajax(type, url, options) {
           reject('request error in ' + url)
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.error(err, url)
         reject(err)
       })
@@ -43,59 +42,19 @@ function ajax(type, url, options) {
 }
 const config = {
   get(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('get', url, options)
-        .then(data => {
-          resolve(data)
-        })
-        .catch(e => {
-          reject(e)
-        })
-    })
+    return ajax('get', url, options)
   },
   post(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('post', url, options)
-        .then(data => {
-          resolve(data)
-        })
-        .catch(e => {
-          reject(e)
-        })
-    })
+    return ajax('post', url, options)
   },
   patch(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('patch', url, options)
-        .then(data => {
-          resolve(data)
-        })
-        .catch(e => {
-          reject(e)
-        })
-    })
+    return ajax('patch', url, options)
   },
   put(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('put', url, options)
-        .then(data => {
-          resolve(data)
-        })
-        .catch(e => {
-          reject(e)
-        })
-    })
+    return ajax('put', url, options)
   },
   delete(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('delete', url, options)
-        .then(data => {
-          resolve(data)
-        })
-        .catch(e => {
-          reject(e)
-        })
-    })
+    return ajax('delete', url, options)
   }
 }
 

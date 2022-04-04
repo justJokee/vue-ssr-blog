@@ -99,10 +99,15 @@ router.patch('/api/front/messageBoard/like', async (req, res) => {
               type: 0,
               msgid: req.body._id,
               ip: getIp(req),
-              like: 1
+              like: 1,
+              createTime: new Date()
             })
             .save()
-        } else await db.commentIp.updateMany({ ip: getIp(req), msgid: req.body._id }, { $set: { like: 1 } })
+        } else
+          await db.commentIp.updateMany(
+            { ip: getIp(req), msgid: req.body._id },
+            { $set: { like: 1, updateTime: new Date() } }
+          )
 
         // 更新留言表
         await db.msgBoard.update({ _id: req.body._id }, { $inc: { like: 1 } })

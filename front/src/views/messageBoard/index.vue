@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="message-board">
-    <layout _title="留言板">
+    <layout _title="留言板" cover="/img/cover/msgboard.jpeg">
       <div class="message-board__content">
         <note>
           <p class="message-board__welcome">you must be a surprise someone is looking forward to</p>

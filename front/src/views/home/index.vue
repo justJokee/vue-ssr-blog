@@ -167,7 +167,7 @@ export default {
 .home-article {
   &__header {
     height: 100vh;
-    background-image: url(https://cdn.jsdelivr.net/gh/jerryc127/butterfly_cdn@2.1.0/top_img/index.jpg);
+    background-image: url(/img/cover/home.jpg);
     background-position: center;
     background-size: cover;
     position: relative;

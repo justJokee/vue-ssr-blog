@@ -41,19 +41,27 @@ router.get('/api/front/article/detail', async (req, res) => {
   const project = excludeContent
     ? { content: 0, content_plain: 0, content_draft: 0 }
     : { content_plain: 0, content_draft: 0 }
+  const ip = getIp(req)
   try {
     const detail = await db.article.find({ publish: 1, articleId }, project)
-
+    // 查询访问ip是否点赞过即将获取的文章
+    const existed = await db.commentIp.find({ ip, type: 2, like: 1, msgid: detail[0]._id })
+    let liked = 0
+    if (existed.length) liked = 1
+    console.log(detail[0])
     res.json({
       status: 200,
-      data: detail[0] || {}
+      data: {
+        ...detail[0]?.toObject(),
+        liked
+      }
     })
 
     // 获取访客信息
     if (process.env.NODE_ENV === 'production') {
       // 更新pv
       await db.article.update({ articleId }, { $inc: { pv: 1 } })
-      const ipInfo = await api.get('https://ip.help.bj.cn', { ip: getIp(req) })
+      const ipInfo = await api.get('https://ip.help.bj.cn', { ip })
       if (ipInfo.status === '200' && ipInfo.data.length) {
         const info = ipInfo.data[0]
         await new db.news({
@@ -119,7 +127,7 @@ router.patch('/api/front/article/like', async (req, res) => {
               msgid: req.body._id,
               ip: getIp(req),
               like: 1,
-              date: new Date()
+              createTime: new Date()
             })
             .save()
         } else {
@@ -132,7 +140,6 @@ router.patch('/api/front/article/like', async (req, res) => {
         // 更新文章表喜欢字段
         await db.article.update({ _id: req.body._id }, { $inc: { likeNum: 1 } })
         const doc = await db.article.find({ _id: req.body._id }, { likeNum: 1 })
-
         res.json({
           status: 200,
           data: {
@@ -153,7 +160,7 @@ router.patch('/api/front/article/like', async (req, res) => {
         status: 200,
         data: {
           _id: req.body._id,
-          like: doc[0].like,
+          like: doc[0].likeNum,
           liked: 0
         },
         info: '取消的是赞，受伤的是心 ಥ﹏ಥ'

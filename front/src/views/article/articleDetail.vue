@@ -39,6 +39,9 @@
         <p>{{ article.abstract }}</p>
       </note>
       <div v-html="article.content" class="article-detail__body"></div>
+      <div class="article-detail__like">
+        <el-button type="primary" :plain="article.liked === 0" @click="likeArticle">👍🏻 {{ likeText }}</el-button>
+      </div>
       <div class="article-detail__copyright">
         <copyright :url="url"></copyright>
       </div>
@@ -133,6 +136,10 @@ export default {
     },
     url() {
       return `${process.env.BASE_URL}/app/article/${this.article.articleId}`
+    },
+    likeText() {
+      if (this.article.liked) return '已赞'
+      return '赞'
     }
   },
   watch: {
@@ -170,6 +177,22 @@ export default {
   },
   methods: {
     ...mapMutations(['setCatalogs', 'setActiveCatalog']),
+    async likeArticle() {
+      const inc = this.article.liked ? -1 : 1
+
+      const likeRes = await this.$api.likeArticle({
+        _id: this.article._id,
+        inc
+      })
+      if (likeRes.status === 200) {
+        this.$message({
+          type: 'success',
+          message: likeRes.info
+        })
+        this.article.likeNum = likeRes.data.like
+        this.article.liked = likeRes.data.liked
+      }
+    },
     async addLike(message) {
       const inc = message.liked ? -1 : 1
       const likeRes = await api.likeArticleComment({
@@ -343,6 +366,10 @@ export default {
   }
   .info-2 {
     margin-top: 8px;
+  }
+  &__like {
+    padding: 20px 12px 12px;
+    text-align: center;
   }
   &__copyright {
     margin-top: 28px;

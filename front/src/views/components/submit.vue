@@ -60,10 +60,10 @@
           <div class="line">第三方登录</div>
           <div class="submit__third-app">
             <a href="javascript: void(0)" @click="openQQ" class="login-qq">
-              <img src="/img/qq.png" alt="QQ登录" />
+              <img src="~@/assets/img/qq.png" alt="QQ登录" />
             </a>
             <a href="javascript: void(0)" class="login-github" @click="openGithub">
-              <img src="/img/github.png" alt="github登录" />
+              <img src="~@/assets/img/github.png" alt="github登录" />
             </a>
           </div>
         </div>

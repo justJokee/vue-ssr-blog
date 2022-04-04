@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="tags">
-    <layout _title="标签">
+    <layout _title="标签" cover="/img/cover/tags.jpg">
       <tags-iterator :tags="tags"></tags-iterator>
     </layout>
   </div>

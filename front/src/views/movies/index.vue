@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="movies">
-    <layout _title="影视记录" cover="/img/article/cover.jpg">
+    <layout _title="影视记录" cover="/img/cover/movie.jpg">
       <note>
         <p>每一帧，都是热爱</p>
       </note>

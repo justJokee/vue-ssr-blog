@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="archives">
-    <layout _title="归档">
+    <layout _title="归档" cover="/img/cover/archive.jpeg">
       <div class="archives__year" v-for="(range, index) in archives" :key="index">
         <div class="year-text">{{ range.year || range.month }}</div>
         <el-timeline>
