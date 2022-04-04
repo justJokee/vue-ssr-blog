@@ -54,7 +54,6 @@ router.post('/api/admin/login', async (req, res) => {
       })
     }
   } catch (e) {
-    console.log('致命错误--->>>', e)
     res.status(500).end()
   }
 })

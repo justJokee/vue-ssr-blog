@@ -42,6 +42,21 @@ import articleIterator from '@/views/components/article-iterator'
 export default {
   // 组件名称
   name: 'home',
+  metaInfo() {
+    return {
+      title: `首页  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: `这是一个用vue ssr 开发的个人博客，记录学习与生活 - Marco's Blog`
+        },
+        {
+          name: 'keywords',
+          content: 'vue ssr,vue博客,技术博客'
+        }
+      ]
+    }
+  },
   // 子组件
   components: {
     articleIterator

@@ -233,16 +233,13 @@ export default {
           }
        */
 
-      QC.Login({}, (info, opts) => {
-        console.log('QQ Callback--->>>>>', info, opts)
+      QC.Login({}, (info) => {
         // 获取opeId accessToken
-        QC.Login.getMe(async (openId, accessToken) => {
-          console.log('QQ Callback--->>>>>', openId, accessToken)
-
+        QC.Login.getMe(async (openId) => {
           // 查看QQ用户是否被存储了
           const res = await this.$api.isExistedVisitor({
             name: info.nickname,
-            imgUrl: info.figureurl_qq || info.figureurl_2,
+            imgUrl: info.figureurl_qq_2 || info.figureurl_2,
             qqOpenId: openId,
             type: 1
           })

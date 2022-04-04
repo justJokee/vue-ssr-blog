@@ -8,7 +8,7 @@
       <navbar></navbar>
       <slot name="header">
         <div class="layout__header-content">
-          <layout-header v-bind="$attrs">
+          <layout-header :cover="cover" v-bind="$attrs">
             <slot name="custom-header"></slot>
           </layout-header>
         </div>
@@ -174,7 +174,7 @@ export default {
       width: 100%;
       height: 100%;
       content: '';
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.4);
       z-index: 0;
     }
     &-item {

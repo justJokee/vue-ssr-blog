@@ -109,8 +109,8 @@ readyPromise.then(() => {
 
   const port = process.env.__SAFE_PORT__
   const uri = 'http://localhost:' + port
-  // uri = 'http://127.0.0.1:' + data;
   console.log()
   console.log('启动服务路径' + uri)
+  console.log()
   server.listen(port, '0.0.0.0')
 })

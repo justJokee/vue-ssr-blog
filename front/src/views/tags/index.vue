@@ -14,6 +14,21 @@ import api from '@/api/'
 import tagsIterator from '@/views/components/tags-iterator'
 export default {
   name: 'tags',
+  metaInfo() {
+    return {
+      title: `标签  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: '用nodejs开发的豆瓣爬虫 douban-spider-v，同步我的观影记录'
+        },
+        {
+          name: 'keywords',
+          content: '豆瓣电影,豆瓣爬虫,豆瓣爬虫,douban spider'
+        }
+      ]
+    }
+  },
   components: { tagsIterator },
   data() {
     return {

@@ -48,6 +48,21 @@ import api from '@/api/messageBoard'
 
 export default {
   name: 'messageBoard',
+  metaInfo() {
+    return {
+      title: `留言板  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: '支持第三方登录的留言板功能'
+        },
+        {
+          name: 'keywords',
+          content: '三方登录,留言板'
+        }
+      ]
+    }
+  },
   components: {
     note,
     submit,

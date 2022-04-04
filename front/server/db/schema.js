@@ -26,7 +26,7 @@ const visitorsSchema = new mongoose.Schema({
   // 0: 自定义用户 1: qq 2: github
   type: 'number',
   githubId: 'number',
-  qqOpenId: 'number',
+  qqOpenId: 'string',
   date: 'date'
 })
 // 文章分类

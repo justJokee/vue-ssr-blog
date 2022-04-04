@@ -65,6 +65,21 @@ async function getArchiveRes(route, page = 1, limit = 10) {
 
 export default {
   name: 'archives',
+  metaInfo() {
+    return {
+      title: `归档  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: '文章归档'
+        },
+        {
+          name: 'keywords',
+          content: '文章归档'
+        }
+      ]
+    }
+  },
   data() {
     return {
       currentPage: 1,

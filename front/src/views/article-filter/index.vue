@@ -37,6 +37,21 @@ async function fetchArticles(route, page) {
 
 export default {
   name: 'articleFilter',
+  metaInfo() {
+    return {
+      title: `文章筛选：${this.title}  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: `${this.title}类文章`
+        },
+        {
+          name: 'keywords',
+          content: `${this.title}`
+        }
+      ]
+    }
+  },
   data() {
     return {
       pageSize: 10,

@@ -59,14 +59,13 @@ export default {
   },
   methods: {
     pick(emoji) {
-      console.log('这是选择的emoji===>>>>', emoji)
       this.emojiShow = false
       this.$emit('getEmoji', emoji)
     },
     filterEmoji() {
-      this.tabs = this.filter.map(ef => {
-        const emojis = Object.keys(emoji).filter(key => {
-          if (Array.isArray(ef.key)) return ef.key.some(efk => emoji[key].includes(efk))
+      this.tabs = this.filter.map((ef) => {
+        const emojis = Object.keys(emoji).filter((key) => {
+          if (Array.isArray(ef.key)) return ef.key.some((efk) => emoji[key].includes(efk))
           else return emoji[key].includes(ef.key)
         })
         return {

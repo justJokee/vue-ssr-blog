@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="article-detail">
-    <layout :headerBg="article.headerPic">
+    <layout :cover="article.headerPic">
       <div class="article-detail__header" slot="custom-header">
         <h1 class="article-detail__title">{{ article.title }}</h1>
         <div class="article-detail__info info-1">
@@ -101,11 +101,11 @@ export default {
   props: {},
   metaInfo() {
     return {
-      title: `${this.article.title}  - Marco's Blog vue ssr blog mapblog`,
+      title: `${this.article.title}  - Marco's Blog`,
       meta: [
         {
           name: 'description',
-          content: this.article.abstract
+          content: this.article.abstract + ` - Marco's Blog mapblog`
         },
         {
           name: 'keywords',
@@ -256,7 +256,6 @@ export default {
       const selectors = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].map((et) => '.article-detail__body ' + et).join(',')
       const nodeList = document.querySelectorAll(selectors)
       if (!nodeList) return
-      console.log(nodeList)
 
       const flatTree = Array.from(nodeList).map((node) => {
         const a = document.createElement('a')

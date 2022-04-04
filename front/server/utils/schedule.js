@@ -1,5 +1,6 @@
 /**
- * @desc 定时任务 - 爬取豆瓣电影
+ * @desc 定时任务 - 爬取豆瓣电影等
+ * @author justJokee
  */
 
 const schedule = require('node-schedule')
@@ -18,15 +19,13 @@ let cache = {
   getMovieDo: []
 }
 const douban = new DoubanSpider({
-  // uid: 'tan-mu'
   uid: '173712770'
 })
 
 function startSchedule() {
   // 每天凌晨1点进行爬取
-  // schedule.scheduleJob('0 0 1 * * *', async () => {
-  schedule.scheduleJob('0 14 18 * * *', async () => {
-    console.log('定时任务触发------>>>>>>>')
+  schedule.scheduleJob('0 0 1 * * *', async () => {
+    console.log('定时任务触发 -->>>>>')
     getMovies()
   })
 }
@@ -42,18 +41,17 @@ async function handleMovies(method) {
   try {
     const res = await douban[method]()
     cache[method].push(res.data)
-    console.log('第1页爬取成功====>>>>>')
+    console.log(`[${method}]: 第1页爬取成功 -->>>>`)
     fs.writeFileSync(`${moviesPath[method]}/pageTotal.txt`, res.page.totalPage + '', 'utf8')
     if (res.page.totalPage > 1) {
       // 保存总页码数
 
       for (let i = 2; i <= res.page.totalPage; i++) {
-        // for (let i = 2; i <= 3; i++) {
-        // 爬取速度1分钟1页，避免触发反爬
+        // 爬取速度 30s/1页，避免触发反爬机制
         await sleep()
         const res = await douban[method](i)
         cache[method].push(res.data)
-        console.log(`第${i}页爬取成功====>>>>>`)
+        console.log(`[${method}]: 第${i}页爬取成功 -->>>>`)
       }
     }
     // 写入json文件
@@ -64,7 +62,7 @@ async function handleMovies(method) {
     // 释放空间
     cache[method] = []
   } catch (e) {
-    console.log('爬虫解析错误---->>>>', e)
+    console.log('爬虫解析错误 -->>>>', e)
     cache = {
       getMovieCollect: [],
       getMovieWish: [],

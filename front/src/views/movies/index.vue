@@ -58,6 +58,21 @@ import note from '@/components/note/'
 
 export default {
   name: 'movies',
+  metaInfo() {
+    return {
+      title: `电影  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: '用nodejs开发的豆瓣爬虫 douban-spider-v，同步我的观影记录'
+        },
+        {
+          name: 'keywords',
+          content: '豆瓣电影,豆瓣爬虫,豆瓣爬虫,douban spider'
+        }
+      ]
+    }
+  },
   props: {},
   components: { rating, note },
   data() {

@@ -52,7 +52,6 @@ export default {
         createTime: this.article.createTime
       })
       if (prevnextRes.status === 200) {
-        console.log('p-next=====', prevnextRes)
         this.prevnext = prevnextRes.data
       }
     },

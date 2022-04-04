@@ -11,7 +11,6 @@ module.exports = function checkPort(port = 6180) {
       }
       if (port == _port) {
         resolve(port)
-        console.log(`port: ${port} was not occupied`)
       } else {
         resolve(_port)
         console.log(`port: ${port} was occupied, try port: ${_port}`)

@@ -25,6 +25,21 @@ import api from '@/api/'
 import dot from '@/components/dot'
 export default {
   name: 'category',
+  metaInfo() {
+    return {
+      title: `文章分类  - Marco's Blog`,
+      meta: [
+        {
+          name: 'description',
+          content: '文章分类'
+        },
+        {
+          name: 'keywords',
+          content: '技术文档，生活感悟'
+        }
+      ]
+    }
+  },
   data() {
     return {
       categories: []

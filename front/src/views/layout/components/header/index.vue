@@ -3,7 +3,7 @@
   @author: justJokee 
 </doc>
 <template>
-  <div class="header" :style="headerBg ? { backgroundImage: 'url(' + headerBg + ')' } : ''">
+  <div class="header" :style="cover ? { backgroundImage: 'url(' + cover + ')' } : ''">
     <div class="header__content">
       <slot>
         <div class="header__default-title">
@@ -17,7 +17,7 @@
 export default {
   name: 'layout-header',
   props: {
-    headerBg: {
+    cover: {
       type: String
       // default: ''
     },

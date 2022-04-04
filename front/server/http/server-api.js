@@ -1,7 +1,5 @@
 const axios = require('axios')
 const qs = require('qs')
-const LRU = require('lru-cache')
-require('es6-promise').polyfill()
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 function ajax(type, url, options) {
   let _params = {}
@@ -11,42 +9,29 @@ function ajax(type, url, options) {
     axios({
       method: type,
       url: url,
-      // baseURL: "http://localhost: 6180",
       ..._params
     })
-      .then(_res => {
+      .then((_res) => {
         if (_res.status === 200) {
           resolve(_res.data)
         } else {
           reject('request error in ' + url)
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err, url)
       })
   })
 }
 const config = {
   get(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('get', url, options).then(data => {
-        resolve(data)
-      })
-    })
+    return ajax('get', url, options)
   },
   post(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('post', url, options).then(data => {
-        resolve(data)
-      })
-    })
+    return ajax('post', url, options)
   },
   patch(url, options) {
-    return new Promise((resolve, reject) => {
-      ajax('patch', url, options).then(data => {
-        resolve(data)
-      })
-    })
+    return ajax('patch', url, options)
   }
 }
 

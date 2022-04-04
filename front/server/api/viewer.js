@@ -111,7 +111,6 @@ router.get('/api/front/viewer/getDevice', async (req, res) => {
       info: '访客设备信息统计成功'
     })
   } catch (e) {
-    console.log('对方水电费', e)
     res.status(500).end()
   }
 })
