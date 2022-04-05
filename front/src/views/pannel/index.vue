@@ -54,9 +54,11 @@ export default {
       stickyBottom: false,
       pannelOffsetTop: 0,
       stickyOffsetTop: 0,
+      bodyPageWrapperTop: 0,
       pannelOffsetHeight: 0,
       stickyOffsetWidth: 'auto',
       stickyOffsetHeight: 0,
+      bodyPageWrapperHeight: 0,
       observer: null
     }
   },
@@ -106,12 +108,15 @@ export default {
     initStickybehavior() {
       window.addEventListener('scroll', this.stickyHandler, false)
       window.addEventListener('resize', this.resizeHandler, false)
+      const bodyPageWrapperNode = document.querySelector('.body-page__wrapper')
       const pannelNode = document.querySelector('.pannel')
       const stickNode = document.querySelector('.pannel__sticky')
       this.observer = new ResizeObserver(() => {
         if (document.documentElement.clientWidth <= 768) return
         this.pannelOffsetHeight = pannelNode.offsetHeight
         this.stickyOffsetHeight = stickNode.offsetHeight
+        this.bodyPageWrapperHeight = bodyPageWrapperNode.offsetHeight
+
         // 尺寸变化后，主动触发一次计算，避免手动滚动页面时才进行重新布局
         this.stickyHandler()
       })
@@ -120,15 +125,17 @@ export default {
       this.$nextTick(() => {
         this.stickyOffsetTop = getElementTop(stickNode)
         this.pannelOffsetTop = getElementTop(pannelNode)
+        this.bodyPageWrapperTop = getElementTop(bodyPageWrapperNode)
         this.stickyOffsetHeight = stickNode.offsetHeight
         this.stickyOffsetWidth = stickNode.offsetWidth + 'px'
         this.pannelOffsetHeight = pannelNode.offsetHeight
+        this.bodyPageWrapperHeight = bodyPageWrapperNode.offsetHeight
       })
     },
     stickyHandler() {
       // 视口尺寸小于等于768px，则默认手机状态布局，无需处理sticky逻辑
       if (document.documentElement.clientWidth <= 768) return
-      if (this.stickyOffsetTop + this.stickyOffsetHeight >= this.pannelOffsetTop + this.pannelOffsetHeight) {
+      if (this.stickyOffsetTop + this.stickyOffsetHeight > this.bodyPageWrapperTop + this.bodyPageWrapperHeight) {
         // 此时应该清空状态
         this.sticky = false
         this.stickyBottom = false

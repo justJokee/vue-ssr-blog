@@ -17,11 +17,13 @@
     <main class="layout__body">
       <div class="layout__body-content">
         <div class="layout__body-page">
-          <slot name="custom-body">
-            <el-card class="layout__body-default">
-              <slot></slot>
-            </el-card>
-          </slot>
+          <div class="body-page__wrapper">
+            <slot name="custom-body">
+              <el-card class="layout__body-default">
+                <slot></slot>
+              </el-card>
+            </slot>
+          </div>
         </div>
         <div v-if="pannelShow" class="layout__body-pannel">
           <pannel></pannel>

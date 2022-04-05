@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="home-article">
-    <layout>
+    <layout cover="/img/cover/home.jpg">
       <div id="home-article-header" class="home-article__header" slot="header">
         <div class="home-article__dictum">
           <div class="home-article__site-name">Marco's Blog</div>
@@ -166,24 +166,37 @@ export default {
 @import '~@/style/index.scss';
 .home-article {
   &__header {
+    width: 100vw;
     height: 100vh;
-    background-image: url(/img/cover/home.jpg);
+    background-image: url('/img/cover/home.jpg');
     background-position: center;
     background-size: cover;
     position: relative;
     @include flex-box-center;
+    position: relative;
+  }
+  &__header:before {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.4);
   }
   &__dictum {
     display: flex;
     flex-direction: column;
     align-items: center;
+    z-index: 10;
+    transform: translateY(-20px);
     @include themeify() {
       color: themed('color-navbar');
     }
   }
   &__dictum-info {
     text-align: center;
-    font-size: 24px;
+    font-size: 22px;
     margin-top: 24px;
     padding: 0 16px;
     line-height: 1.5;
@@ -197,7 +210,7 @@ export default {
     animation: typed 0.5s ease infinite alternate;
   }
   &__site-name {
-    font-size: 38px;
+    font-size: 36px;
   }
   &__go {
     position: absolute;
