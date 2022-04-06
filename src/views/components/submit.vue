@@ -252,7 +252,7 @@ export default {
               // 存储
               this.tempInfo = {
                 name: info.nickname,
-                imgUrl: info.figureurl_2,
+                imgUrl: info.figureurl_qq_2 || info.figureurl_2,
                 type: 1,
                 qqOpenId: openId
               }

@@ -55,20 +55,7 @@ export default {
   },
   mounted() {
     if (getScrollTop() == 0) this.rollbackTop = true
-    window.addEventListener(
-      'scroll',
-      () => {
-        const nowTopPos = getScrollTop()
-        if (nowTopPos - this.lastTopPos > 0) {
-          this.setRollBack(false)
-          this.rollbackTop = false
-        } else if (nowTopPos == 0) {
-          this.rollbackTop = true
-        } else this.setRollBack(true)
-        this.lastTopPos = nowTopPos
-      },
-      false
-    )
+    window.addEventListener('scroll', this.scrollHandler)
     window.addEventListener('resize', this.resizeHandler)
   },
   computed: {
@@ -86,6 +73,17 @@ export default {
     closeSearch() {
       this.searchVisible = false
     },
+    scrollHandler() {
+      const nowTopPos = getScrollTop()
+      // nowTopPos this.lastTopPos在移动端可为负数
+      if (nowTopPos >= 0 && this.lastTopPos >= 0 && nowTopPos - this.lastTopPos > 0) {
+        this.setRollBack(false)
+        this.rollbackTop = false
+      } else if (nowTopPos <= 0) {
+        this.rollbackTop = true
+      } else this.setRollBack(true)
+      this.lastTopPos = nowTopPos
+    },
     resizeHandler: debounce(function () {
       const width = document.documentElement.clientWidth
 
@@ -94,6 +92,10 @@ export default {
         this.drawer = false
       }
     }, 200)
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.scrollHandler)
+    window.removeEventListener('resize', this.resizeHandler)
   }
 }
 </script>

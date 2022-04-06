@@ -172,7 +172,6 @@ export default {
     background-position: center;
     background-size: cover;
     position: relative;
-    @include flex-box-center;
     position: relative;
   }
   &__header:before {
@@ -189,6 +188,9 @@ export default {
     flex-direction: column;
     align-items: center;
     z-index: 10;
+    width: 100%;
+    position: absolute;
+    top: 45%;
     transform: translateY(-20px);
     @include themeify() {
       color: themed('color-navbar');
@@ -200,17 +202,27 @@ export default {
     margin-top: 24px;
     padding: 0 16px;
     line-height: 1.5;
+    @include respond-to(xs) {
+      margin-top: 14px;
+      font-size: 18px;
+      line-height: 1.5;
+    }
   }
   &__typed-cursor {
-    display: inline-block;
     margin-left: 4px;
     font-size: 28px;
+    @include respond-to(xs) {
+      font-size: 18px;
+    }
   }
   .is-typed-cursor-anmation {
     animation: typed 0.5s ease infinite alternate;
   }
   &__site-name {
     font-size: 36px;
+    @include respond-to(xs) {
+      font-size: 28px;
+    }
   }
   &__go {
     position: absolute;
