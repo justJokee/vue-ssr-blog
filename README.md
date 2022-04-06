@@ -1,68 +1,105 @@
-# 新版本更新中
-# vue-ssr-blog 
-[博客地址 http://www.mapblog.cn](http://www.mapblog.cn "mapblog小站")
-> 这是一个完整的vue个人博客项目，包括前台页面展示和一个后台管理。<br>
-> 详情请分别进入admin和front目录查看README文件
+# vue-ssr-blog-front
+![vue](https://img.shields.io/badge/vue-2.5.13-brightgreen.svg)
+![vuex](https://img.shields.io/badge/vuex-3.0.1-brightgreen.svg)
+![vue-router](https://img.shields.io/badge/vue--router-3.0.1-yellowgreen.svg)
+![axios](https://img.shields.io/badge/axios-0.17.1-blue.svg)
+![express](https://img.shields.io/badge/express-4.16.2-green.svg)
+![mongodb](https://img.shields.io/badge/mongodb-3.2.18-green.svg)
+> vue-ssr-blog 的前台项目，采用服务端渲染
+## 主要技术栈：
+1. vue(vue-ssr)
+2. vue-router
+3. vuex
+4. axios
+5. nodejs
+6. express
+7. mongodb
+8. mongoose
+## 必要说明：
+- 详见根目录下的README说明
+## 博客前台的实现功能：
+- 全局响应式
+- 文章
+  - 按标签分类展示
+  - 按时间归档
+- 文章分享
+- 文章评论
+- 留言
+- 所有标签展示
+- 推荐阅读浏览量前五的文章
+- 支持QQ、github第三方登录
+## Build Setup
 
-## 主目录：
-```bash
-│  .gitignore
-│  README.md
-│
-├─admin  后台管理（前台渲染）
-└─front  前台页面（vue-ssr服务端渲染）
-```
-## 在clone之前的必要说明：
-
-- 本项目采用的是mongodb数据库，默认的数据库名称为 “blog”（修改目录：/front/server/db）*
-- 数据库安全：（修改目录：/front/server/db）*
-  - 用户名： “username”
-  - 密码： “password”
-- 后台管理登录：（修改目录：/front/server/db）
-  - 初始用户名： “admin”
-  - 初始密码： “12345”
-- 自行修改后台管理的jsonwebtoken的密码配置文件（修改目录：/front/server/secret）
-- 第三方登陆的各种clientid和secret请自行更换
-  - /front/src/index.template.html
-  - /front/src/components/userLogin
-  - /front/server/api/visitors
-- front 下所起的express服务是整个站点的服务器，负责前后台的数据交互。当然它也负责前台的开发模式热更新，通过NODE_ENV控制
-- admin 下所起的服务仅供开发时的热更新和http请求转发,数据交互依靠上面所说的的front下所起的express服务器
-
-**确保启动项目前本说明中的前两点与自己的mongodb数据库保持一致，否则项目会启动失败！！**<br>
-## clone到本地
-```bash
-git clone git@github.com:justJokee/vue-ssr-blog.git
-```
-### front
-```bash
-cd /front
+``` bash
 # install dependencies
-npm install or cnpm install
+npm install
+
 # serve with hot reload at localhost:6180
 npm run dev
-# build for production
+
+# build for production with minification
 npm run build
 # serve for production
 npm start
 ```
-### admin
+## 目录
 ```bash
-cd /admin
-# install dependencies
-npm install or cnpm install
-# serve with hot reload at localhost:8080
-npm run dev
-# build for production
-npm run build
+|.babeirc   babel配置文件
+|.editorconfig 
+|.postcssrc.js
+| index.html 
+| package.json    webpack配置文件
+| README.md
+| server.js   最重要的express服务器文件
+├─build       webpack配置
+├─screenShot  存放README中的预览图
+├─dist  
+├─server    
+│  ├─api    后端数据接口
+│  ├─db     mogodb配置
+│  │  ├─copyDownload    数据库备份后把待下载文件打包压缩储存到此处
+│  │  └─dbData    数据库备份文件储存目录（未压缩时）
+│  ├─http         后端封装的axios库
+│  ├─middleware   验证token的中间件
+│  ├─secret       token的密码配置文件
+│  └─utils        删除文件夹等工具函数
+├─src
+│  ├─assets
+│  │  ├─css
+│  │  └─js
+│  ├─components   组件文件夹
+│  │  ├─article
+│  │  ├─base
+│  │  ├─comment
+│  │  ├─home
+│  │  ├─life
+│  │  ├─messageBoard
+│  │  ├─search
+│  │  ├─tab
+│  │  ├─timeLine    时间轴组件
+│  │  └─vistors     访客登陆组件
+│  ├─mixin
+│  ├─router   路由
+│  ├─store    vuex相关
+│  │  └─api   前台封装的axios库
+│  └─utils    一些常用的工具函数
+└─static      静态文件夹
+    ├─css
+    │  └─fonts
+    ├─img
+    │  ├─banner
+    │  ├─emoji
+    │  └─technical
+    ├─js
+    └─ueditor
+        └─nodejs  配置ueditor在nodejs环境下实现上传功能的插件
 ```
-## 相关参考：
-1. [vue-ssr官方文档](https://ssr.vuejs.org/zh/ "https://ssr.vuejs.org/zh/")<br>
-2. [基于vue-ssr服务端渲染入门详解](https://juejin.im/post/5a50f208f265da3e5132ed91 "https://juejin.im/post/5a50f208f265da3e5132ed91")<br>
-3. [Vue2 SSR 的优化之旅](https://segmentfault.com/a/1190000007985486 "https://segmentfault.com/a/1190000007985486")<br>
-4. [vue-emoji](https://github.com/jkchao/vue-emoji "https://github.com/jkchao/vue-emoji")<br>
-5. [nodejs-ueditor插件](https://github.com/netpi/ueditor "https://github.com/netpi/ueditor")<br>
-...<br>
-###### 感谢以上作者们的无私分享精神，让我在建立这个博客的过程中获益良多。
-###### 这是我第一个开源小作品，同时也是学习Vue过程中的练手项目。代码谈不上简练美观and霸气，但希望能对刚开始学习的同学有所帮助。若本项目不小心帮到了你，不妨右上角鼓励一下【手动滑稽.jpg】
-###### Ok, that's all !
+# 预览图
+## 首页
+![home](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/home1.png)
+## 技术文章导航（大于8个标签则列表显示）
+![articleRoot](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/articleRoot.jpg)
+## 文章详情页
+![article](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/article1.png)
+## 留言页
+![msgboard](https://github.com/justJokee/vue-ssr-blog/raw/master/front/screenShot/msgboard1.png)
