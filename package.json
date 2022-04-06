@@ -5,7 +5,8 @@
   "author": "",
   "private": true,
   "scripts": {
-    "preinstall": "node ./preinstall.js && husky install",
+    "preinstall": "node ./preinstall.js",
+    "prepare": "husky install",
     "dev": "cross-env NODE_ENV=development node server",
     "start": "cross-env NODE_ENV=production node server",
     "build": "rimraf dist && npm run build:client && npm run build:server && npm run copy",
