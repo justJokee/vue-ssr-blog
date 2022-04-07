@@ -7,6 +7,11 @@ const schedule = require('node-schedule')
 const DoubanSpider = require('douban-spider-v')
 const fs = require('fs-extra')
 const path = require('path')
+// 确保文件目录存在
+fs.ensureDirSync(path.join(__dirname, '../files/movies/collect'))
+fs.ensureDirSync(path.join(__dirname, '../files/movies/wish'))
+fs.ensureDirSync(path.join(__dirname, '../files/movies/do'))
+
 const moviesPath = {
   getMovieCollect: path.join(__dirname, '../files/movies/collect'),
   getMovieWish: path.join(__dirname, '../files/movies/wish'),

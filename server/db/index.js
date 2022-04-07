@@ -75,12 +75,32 @@ const initUser = async () => {
     console.log()
   }
 }
+// TODO: 后续会增加分类管理
+const initCategorys = async () => {
+  const category = await db.category.find({})
 
+  if (!category.length) {
+    await new db.category({
+      name: '技术文档',
+      total: 0,
+      createTime: new Date()
+    }).save()
+    await new db.category({
+      name: '生活感悟',
+      total: 0,
+      createTime: new Date()
+    }).save()
+    console.log()
+    console.log('you have created category now!')
+    console.log()
+  }
+}
 // 建立连接
 mongoose.Promise = global.Promise
 mongoose.connection.openUri(`mongodb://${dbSecret.user}:${dbSecret.pwd}@localhost:27017/${dbSecret.db}`)
 mongoose.connection.once('open', () => {
   initUser()
+  initCategorys()
 })
 
 module.exports = db

@@ -44,6 +44,13 @@ router.get('/api/front/article/detail', async (req, res) => {
   const ip = getIp(req)
   try {
     const detail = await db.article.find({ publish: 1, articleId }, project)
+    if (!detail.length) {
+      res.json({
+        status: 102,
+        info: '文章不存在或已删除'
+      })
+      return
+    }
     // 查询访问ip是否点赞过即将获取的文章
     const existed = await db.commentIp.find({ ip, type: 2, like: 1, msgid: detail[0]._id })
     let liked = 0

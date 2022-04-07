@@ -39,6 +39,9 @@
         <p>{{ article.abstract }}</p>
       </note>
       <div v-html="article.content" class="article-detail__body"></div>
+      <div class="article-detail__update">
+        <span>最后编辑于：{{ article.updateTime | formatDate }}</span>
+      </div>
       <div class="article-detail__like">
         <el-button type="primary" :plain="article.liked === 0" @click="likeArticle">👍🏻 {{ likeText }}</el-button>
       </div>
@@ -363,6 +366,7 @@ export default {
   }
 
   &__info {
+    padding: 0 12px;
     @include themeify() {
       color: themed('color-navbar');
     }
@@ -370,8 +374,17 @@ export default {
   .info-2 {
     margin-top: 8px;
   }
+  &__update {
+    margin-top: 20px;
+    padding: 14px;
+    text-align: right;
+    @include themeify() {
+      color: themed('color-ele-holder');
+    }
+  }
   &__like {
-    padding: 20px 12px 12px;
+    margin-top: 20px;
+    padding: 14px;
     text-align: center;
   }
   &__copyright {
