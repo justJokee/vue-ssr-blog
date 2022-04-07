@@ -7,6 +7,7 @@ const schedule = require('node-schedule')
 const DoubanSpider = require('douban-spider-v')
 const fs = require('fs-extra')
 const path = require('path')
+const { doubanConfig } = require('../db/secret')
 // 确保文件目录存在
 fs.ensureDirSync(path.join(__dirname, '../files/movies/collect'))
 fs.ensureDirSync(path.join(__dirname, '../files/movies/wish'))
@@ -24,7 +25,7 @@ let cache = {
   getMovieDo: []
 }
 const douban = new DoubanSpider({
-  uid: '173712770'
+  uid: doubanConfig.uid
 })
 
 function startSchedule() {

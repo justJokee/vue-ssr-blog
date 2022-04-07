@@ -38,7 +38,7 @@
       <note>
         <p>{{ article.abstract }}</p>
       </note>
-      <div v-html="article.content" class="article-detail__body"></div>
+      <div v-html="article.content" class="article-detail__body ql-editor"></div>
       <div class="article-detail__update">
         <span>最后编辑于：{{ article.updateTime | formatDate }}</span>
       </div>
@@ -93,7 +93,7 @@ import submit from '@/views/components/submit'
 import copyright from './components/copyright'
 import share from './components/share'
 import prevnext from './components/prevnext'
-
+import '@/assets/css/quill.snow.css'
 function jumpAnchor(route) {
   if (route.query.anchor === 'a_cm') {
     const el = document.querySelector('#a_cm')
@@ -421,6 +421,13 @@ export default {
     .comment__page {
       @include flex-box-center;
       padding: 16px 0;
+    }
+  }
+  // 覆盖 quill.js 中的部分css
+  .ql-editor {
+    padding: 0;
+    ul {
+      padding-left: 0;
     }
   }
 }

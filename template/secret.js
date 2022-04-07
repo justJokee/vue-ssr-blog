@@ -32,3 +32,7 @@ exports.qiniuConfig = {
   // Bucket 的外链默认域名，在 Bucket 的内容管理里查看
   Domain: ''
 }
+// 豆瓣uid
+exports.doubanConfig = {
+  uid: '173712770'
+}
