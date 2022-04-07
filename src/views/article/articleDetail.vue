@@ -426,8 +426,13 @@ export default {
   // 覆盖 quill.js 中的部分css
   .ql-editor {
     padding: 0;
-    ul {
+    line-height: 2;
+    ul,
+    ol {
       padding-left: 0;
+    }
+    li.ql-indent-1:not(.ql-direction-rtl) {
+      padding-left: 3.5em;
     }
   }
 }

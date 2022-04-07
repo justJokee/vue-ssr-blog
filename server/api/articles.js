@@ -36,7 +36,7 @@ router.get('/api/front/article/gets', confirmUnpublish, async (req, res) => {
 })
 
 // 获取文章详细信息
-router.get('/api/front/article/detail', async (req, res) => {
+router.get('/api/front/article/detail', confirmUnpublish, async (req, res) => {
   const { articleId, excludeContent } = req.query
   const project = excludeContent
     ? { content: 0, content_plain: 0, content_draft: 0 }
