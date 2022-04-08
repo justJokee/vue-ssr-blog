@@ -41,7 +41,7 @@ router.get('/api/front/article/detail', confirmUnpublish, async (req, res) => {
   const project = excludeContent
     ? { content: 0, content_plain: 0, content_draft: 0 }
     : { content_plain: 0, content_draft: 0 }
-  const ip = getIp(req)
+  const ip = req.query._ip || getIp(req)
   try {
     const detail = await db.article.find({ publish: 1, articleId }, project)
     if (!detail.length) {

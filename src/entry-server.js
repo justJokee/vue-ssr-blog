@@ -19,7 +19,8 @@ export default (context) => {
               const res = await Component.asyncData({
                 store,
                 route: router.currentRoute,
-                isServer: true
+                isServer: true,
+                _ip: context._ip
               })
               return { res, Component }
             }

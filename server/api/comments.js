@@ -14,7 +14,8 @@ const api = require('../http/')
 router.get('/api/front/comments/get', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
   const skip = (req.query.page || 1) * limit - limit
-  const ip = getIp(req)
+  const ip = req.query._ip || getIp(req)
+
   const articleFilter = Reflect.has(req.query, 'articleId') ? { articleId: parseInt(req.query.articleId) } : {}
   try {
     const total = await db.comment.count({ ...articleFilter, parentId: null })

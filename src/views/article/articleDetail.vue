@@ -163,15 +163,17 @@ export default {
     window.addEventListener('scroll', this.handleScroll, false)
   },
   updated() {},
-  async asyncData({ route, isServer }) {
+  async asyncData({ route, isServer, _ip }) {
     const articleRes = await api.getArticle({
       publish: 1,
-      articleId: route.params.id
+      articleId: route.params.id,
+      _ip
     })
     const commentRes = await api.getArticleComments({
       page: 1,
       limit: 10,
-      articleId: route.params.id
+      articleId: route.params.id,
+      _ip
     })
     if (articleRes.status === 200) {
       if (!isServer) setTimeout(() => jumpAnchor(route), 0)
@@ -433,6 +435,15 @@ export default {
     }
     li.ql-indent-1:not(.ql-direction-rtl) {
       padding-left: 3.5em;
+    }
+    pre > code {
+      background: 0 0 !important;
+    }
+    code:not([class*='language-']) {
+      background-color: #f0f0f0;
+      border-radius: 3px;
+      font-size: 90%;
+      padding: 3px 5px;
     }
   }
 }

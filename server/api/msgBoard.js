@@ -14,7 +14,8 @@ const confirmToken = require('../middleware/confirmToken')
 router.get('/api/front/messageBoard/gets', async (req, res) => {
   const limit = parseInt(req.query.limit) || 10
   const skip = req.query.page * limit - limit
-  const ip = getIp(req)
+  const ip = req.query._ip || getIp(req)
+
   try {
     const total = await db.msgBoard.count({ parentId: null })
     const totalAll = await db.msgBoard.count({})
