@@ -18,7 +18,7 @@
       <div class="movies__content">
         <div class="movies__item" v-for="(movie, index) in movies" :key="index">
           <div class="item-pic">
-            <a :href="'/app/article/'">
+            <a :href="movie.href" target="_blank">
               <img referrerpolicy="no-referrer" v-lazy="movie.pic" alt="" />
             </a>
           </div>

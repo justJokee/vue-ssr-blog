@@ -445,6 +445,12 @@ export default {
       font-size: 90%;
       padding: 3px 5px;
     }
+    blockquote {
+      border-left: 4px solid #ccc;
+      margin-bottom: 5px;
+      margin-top: 5px;
+      padding-left: 16px;
+    }
   }
 }
 </style>
