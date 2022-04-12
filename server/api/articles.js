@@ -360,8 +360,6 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
   const updates = {}
   try {
     if (Reflect.get(req.body, 'content')) {
-      // 删除富文本中的标签等，保留静态文本字段
-      updates.content_plain = req.body.content.replace(/<.*?>|\n|&nbsp;/g, '')
       // 默认存储为草稿
       updates.content_draft = req.body.content
       // 重要！一定要删除！
@@ -370,6 +368,8 @@ router.patch('/api/admin/article/edit', confirmToken, async (req, res) => {
       // 文档 发布/更新 content 与 content_draft保持一致同步
       if (req.body.editing === '0') {
         updates.content = updates.content_draft
+        // 删除富文本中的标签等，保留静态文本字段
+        updates.content_plain = updates.content.replace(/<.*?>|\n|&nbsp;/g, '')
       }
     }
     // 数据存储前获取原始发布状态
