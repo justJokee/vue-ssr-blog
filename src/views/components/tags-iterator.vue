@@ -4,7 +4,7 @@
 </doc>
 <template>
   <div class="tags-iterator">
-    <div class="tags-iterator__content">
+    <div class="tags-iterator__content" v-if="tags.length">
       <span
         class="tags-iterator__item"
         v-for="(tag, index) in tags"
@@ -15,6 +15,7 @@
         {{ tag.tag }}
       </span>
     </div>
+    <empty v-else></empty>
   </div>
 </template>
 <script>

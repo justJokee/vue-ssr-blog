@@ -11,21 +11,24 @@
           <span>最新文章</span>
         </div>
         <div class="pannel__item-body">
-          <div class="body-item" v-for="(article, index) in newArticles" :key="index">
-            <div class="body-pic">
-              <router-link :to="'/app/article/' + article.articleId">
-                <img v-lazy="article.headerPic" alt="" />
-              </router-link>
-            </div>
-            <div class="body-info">
-              <div class="body-info__title">
+          <template v-if="newArticles.length">
+            <div class="body-item" v-for="(article, index) in newArticles" :key="index">
+              <div class="body-pic">
                 <router-link :to="'/app/article/' + article.articleId">
-                  {{ article.title }}
+                  <img v-lazy="article.headerPic" alt="" />
                 </router-link>
               </div>
-              <div class="body-info__date">{{ article.createTime | formatDate }}</div>
+              <div class="body-info">
+                <div class="body-info__title">
+                  <router-link :to="'/app/article/' + article.articleId">
+                    {{ article.title }}
+                  </router-link>
+                </div>
+                <div class="body-info__date">{{ article.createTime | formatDate }}</div>
+              </div>
             </div>
-          </div>
+          </template>
+          <empty v-else></empty>
         </div>
       </div>
     </el-card>

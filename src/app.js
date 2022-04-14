@@ -6,6 +6,7 @@ import loadEle from '@/utils/loadEle'
 import App from './App.vue'
 import moment from 'moment'
 import api from '@/api/'
+import empty from '@/components/empty'
 import { createRouter } from './router'
 import { createStore } from './store'
 import { sync } from 'vuex-router-sync'
@@ -18,6 +19,8 @@ Vue.filter('formatDate', (val) => {
 Vue.mixin(mergeAsyncData)
 Vue.prototype.$moment = moment
 Vue.prototype.$api = api
+Vue.component('empty', empty)
+Vue.config.devtools = true
 /* eslint-disable no-new */
 export function createApp() {
   const router = createRouter()

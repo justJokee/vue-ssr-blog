@@ -23,7 +23,7 @@
           </div>
           <div class="message-board__list">
             <comments :messages="messages" @submitReply="submitReply" @addLike="addLike"></comments>
-            <div class="message-board__page">
+            <div class="message-board__page" v-if="messages.length">
               <el-pagination
                 :current-page.sync="currentPage"
                 :total="total"

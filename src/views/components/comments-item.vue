@@ -5,13 +5,17 @@
 <template>
   <div class="comments-item">
     <div class="comments-item__avatar" :class="{ 'comments-item__avatar--small': subType }">
-      <img :src="message.imgUrl" alt="" />
+      <a :href="message.link" target="_blank">
+        <img :src="message.imgUrl" alt="" />
+      </a>
     </div>
     <div class="comments-item__content">
       <div class="comments-item__visitor">
-        <span class="detail-visitor-name" :class="{ 'detail-visitor-name--bold': message.admin }">
-          {{ message.name }}
-        </span>
+        <a :href="message.link" target="_blank">
+          <span class="detail-visitor-name" :class="{ 'detail-visitor-name--bold': message.admin }">
+            {{ message.name }}
+          </span>
+        </a>
         <span class="detail-visitor-aite" v-if="message.aite" style="fontweight: bold">&nbsp;@&nbsp;</span>
         <span class="detail-visitor-aited" v-if="message.aite">{{ message.aite }} :</span>
       </div>
@@ -80,6 +84,7 @@ export default {
     width: 50px;
     height: 50px;
     flex: 0 0 auto;
+
     img {
       border-radius: 4px;
       width: 100%;

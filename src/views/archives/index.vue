@@ -5,37 +5,41 @@
 <template>
   <div class="archives">
     <layout _title="归档" cover="/img/cover/archive.jpeg">
-      <div class="archives__year" v-for="(range, index) in archives" :key="index">
-        <div class="year-text">{{ range.year || range.month }}</div>
-        <el-timeline>
-          <el-timeline-item
-            v-for="(article, mi) in range.months"
-            :key="'art_' + mi"
-            type="primary"
-            :hide-timestamp="true"
-          >
-            <div class="archives__content">
-              <div class="content-left">
-                <router-link :to="'/app/article/' + article.articleId">
-                  <img v-lazy="article.headerPic" alt="" />
-                </router-link>
-              </div>
-              <div class="content-right">
-                <div class="content-right__title">
+      <template v-if="archives.length">
+        <div class="archives__year" v-for="(range, index) in archives" :key="index">
+          <div class="year-text">{{ range.year || range.month }}</div>
+          <el-timeline>
+            <el-timeline-item
+              v-for="(article, mi) in range.months"
+              :key="'art_' + mi"
+              type="primary"
+              :hide-timestamp="true"
+            >
+              <div class="archives__content">
+                <div class="content-left">
                   <router-link :to="'/app/article/' + article.articleId">
-                    {{ article.title }}
+                    <img v-lazy="article.headerPic" alt="" />
                   </router-link>
                 </div>
-                <div class="content-right__date">
-                  <i class="el-icon-date"></i>
-                  {{ article.createTime | formatDate }}
+                <div class="content-right">
+                  <div class="content-right__title">
+                    <router-link :to="'/app/article/' + article.articleId">
+                      {{ article.title }}
+                    </router-link>
+                  </div>
+                  <div class="content-right__date">
+                    <i class="el-icon-date"></i>
+                    {{ article.createTime | formatDate }}
+                  </div>
                 </div>
               </div>
-            </div>
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-      <div class="archives__page">
+            </el-timeline-item>
+          </el-timeline>
+        </div>
+      </template>
+      <empty v-else></empty>
+
+      <div class="archives__page" v-if="archives.length">
         <el-pagination
           :total="total"
           layout="prev, pager, next"

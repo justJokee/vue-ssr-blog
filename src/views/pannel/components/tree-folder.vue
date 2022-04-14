@@ -4,8 +4,12 @@
 </doc>
 <template>
   <ol class="tree-folder">
-    <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index" @click="jumpAnchor(catalog)">
-      <div class="tree-folder__content" :class="{ 'tree-folder__content--active': catalog.tempId === activeCatalog }">
+    <li v-for="(catalog, index) in catalogs" :key="catalog.level + '_' + index">
+      <div
+        class="tree-folder__content"
+        :class="{ 'tree-folder__content--active': catalog.tempId === activeCatalog }"
+        @click="jumpAnchor(catalog)"
+      >
         <div class="tree-folder__order">
           <!-- <span v-if="catalog.level_tree">{{ curIndex + 1 + '.' + (index + 1) }}</span>
           <span v-else>{{ index + 1 }}.</span> -->

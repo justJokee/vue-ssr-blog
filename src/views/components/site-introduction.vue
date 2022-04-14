@@ -11,7 +11,7 @@
       <p class="site-introduction__sitename">Marco</p>
       <p>
         Hi，欢迎来到 Marco's Blog，这是一个使用 vue ssr 开发的，记录学习与生活的个人博客，你可以在
-        <a href="">这里</a>
+        <a href="https://mapblog.cn/app/article/8">这里</a>
         了解到关于本站的更多技术细节。
       </p>
     </div>

@@ -10,12 +10,13 @@
         <span>归档</span>
       </div>
       <div class="pannel__item-body">
-        <ul>
+        <ul v-if="archives.length">
           <li v-for="(archive, index) in archives" :key="index" @click="filterArchives(archive)">
             <span>{{ archive.month }}</span>
             <span>{{ archive.total }}</span>
           </li>
         </ul>
+        <empty v-else></empty>
       </div>
     </el-card>
   </div>

@@ -4,34 +4,39 @@
 </doc>
 <template>
   <div class="article-iterator">
-    <el-card class="article-iterator__item" v-for="(article, index) in articles" :key="index">
-      <div class="item-content">
-        <div class="item-content__pic">
-          <img :src="article.headerPic" alt="" />
-        </div>
-        <div class="item-content__info">
-          <div class="item-content__link">
-            <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
+    <template v-if="articles.length">
+      <el-card class="article-iterator__item" v-for="(article, index) in articles" :key="index">
+        <div class="item-content">
+          <div class="item-content__pic">
+            <img :src="article.headerPic" alt="" />
           </div>
-          <div class="item-content__detail">
-            <span>
-              <i class="el-icon-date"></i>
-              发表时间 {{ article.createTime | formatDate }}
-            </span>
-            <span>&nbsp;|&nbsp;</span>
-            <span>
-              <i class="el-icon-chat-dot-round"></i>
-              评论数 {{ article.commentNum }}
-            </span>
-            <span>&nbsp;|&nbsp;</span>
-            <span>
-              <i class="el-icon-star-off"></i>
-              点赞 {{ article.likeNum }}
-            </span>
+          <div class="item-content__info">
+            <div class="item-content__link">
+              <router-link :to="'/app/article/' + article.articleId">{{ article.title }}</router-link>
+            </div>
+            <div class="item-content__detail">
+              <span>
+                <i class="el-icon-date"></i>
+                发表时间 {{ article.createTime | formatDate }}
+              </span>
+              <span>&nbsp;|&nbsp;</span>
+              <span>
+                <i class="el-icon-chat-dot-round"></i>
+                评论数 {{ article.commentNum }}
+              </span>
+              <span>&nbsp;|&nbsp;</span>
+              <span>
+                <i class="el-icon-star-off"></i>
+                点赞 {{ article.likeNum }}
+              </span>
+            </div>
+            <div class="item-content__abstract">{{ article.abstract }}</div>
           </div>
-          <div class="item-content__abstract">{{ article.abstract }}</div>
         </div>
-      </div>
+      </el-card>
+    </template>
+    <el-card class="article-iterator__item" v-else>
+      <empty text="您还没有文章，赶快去创建吧~"></empty>
     </el-card>
   </div>
 </template>

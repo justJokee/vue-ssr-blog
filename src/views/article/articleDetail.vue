@@ -429,6 +429,15 @@ export default {
   .ql-editor {
     padding: 0;
     line-height: 2;
+    .code-toolbar {
+      margin-top: 12px;
+    }
+    a {
+      color: #409eff;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
     ul,
     ol {
       padding-left: 0;

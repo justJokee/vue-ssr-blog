@@ -11,22 +11,25 @@
           <span>最新评论</span>
         </div>
         <div class="pannel__item-body">
-          <div class="body-item" v-for="(comment, index) in newComments" :key="index">
-            <div class="body-pic">
-              <router-link :to="'/app/article/' + comment.articleId + '?anchor=a_cm'">
-                <img v-lazy="comment.imgUrl" alt="" />
-              </router-link>
-            </div>
-            <div class="body-info">
-              <div class="body-info__title">
+          <template v-if="newComments.length">
+            <div class="body-item" v-for="(comment, index) in newComments" :key="index">
+              <div class="body-pic">
                 <router-link :to="'/app/article/' + comment.articleId + '?anchor=a_cm'">
-                  {{ comment.content }}
+                  <img v-lazy="comment.imgUrl" alt="" />
                 </router-link>
               </div>
-              <div class="body-info__name">{{ comment.name }}</div>
-              <div class="body-info__date">发表于：{{ comment.date | formatDate }}</div>
+              <div class="body-info">
+                <div class="body-info__title">
+                  <router-link :to="'/app/article/' + comment.articleId + '?anchor=a_cm'">
+                    {{ comment.content }}
+                  </router-link>
+                </div>
+                <div class="body-info__name">{{ comment.name }}</div>
+                <div class="body-info__date">发表于：{{ comment.date | formatDate }}</div>
+              </div>
             </div>
-          </div>
+          </template>
+          <empty v-else></empty>
         </div>
       </div>
     </el-card>
