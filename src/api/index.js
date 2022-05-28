@@ -6,7 +6,7 @@ import category from './category'
 import tags from './tags'
 import entertainment from './entertainment'
 import qiniu from './qiniu'
-
+import friendLink from './friendLink'
 export default {
   ...article,
   ...visitor,
@@ -15,5 +15,6 @@ export default {
   ...category,
   ...tags,
   ...entertainment,
-  ...qiniu
+  ...qiniu,
+  ...friendLink
 }

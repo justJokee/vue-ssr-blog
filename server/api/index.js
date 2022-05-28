@@ -12,6 +12,7 @@ const movies = require('./movies')
 const qiniu = require('./qiniu')
 const viewer = require('./viewer')
 const count = require('./count')
+const friendLink = require('./friendLink')
 
 module.exports = (app) => {
   app.use(viewer)
@@ -28,4 +29,5 @@ module.exports = (app) => {
   app.use(movies)
   app.use(qiniu)
   app.use(count)
+  app.use(friendLink)
 }

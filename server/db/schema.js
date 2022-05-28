@@ -3,7 +3,9 @@
  * @author justJokee
  */
 const mongoose = require('mongoose')
+const { db } = require('./secret')
 
+// 用户表
 const userSchema = new mongoose.Schema({
   account: 'string',
   password: 'string',
@@ -11,6 +13,8 @@ const userSchema = new mongoose.Schema({
   avatar: 'string',
   lastLoginTime: Date
 })
+
+// 访问记录表
 const viewerSchema = new mongoose.Schema({
   ip: 'string',
   count: 'number',
@@ -18,6 +22,8 @@ const viewerSchema = new mongoose.Schema({
   system: 'string',
   date: 'date'
 })
+
+// 自定义用户表
 const visitorsSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
@@ -29,6 +35,7 @@ const visitorsSchema = new mongoose.Schema({
   qqOpenId: 'string',
   date: 'date'
 })
+
 // 文章分类
 const categorySchema = new mongoose.Schema({
   name: {
@@ -39,6 +46,8 @@ const categorySchema = new mongoose.Schema({
   createTime: 'date',
   updateTime: 'date'
 })
+
+// 文章表
 const articleSchema = new mongoose.Schema({
   articleId: 'number',
   categoryId: mongoose.Schema.Types.ObjectId,
@@ -63,6 +72,8 @@ const articleSchema = new mongoose.Schema({
   createTime: 'date',
   updateTime: 'date'
 })
+
+// 文章备注表
 const commentSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
@@ -78,6 +89,8 @@ const commentSchema = new mongoose.Schema({
   admin: 'number',
   parentId: mongoose.Schema.Types.ObjectId
 })
+
+// 文章点赞表
 const msgBoardSchema = new mongoose.Schema({
   name: 'string',
   imgUrl: 'string',
@@ -91,6 +104,8 @@ const msgBoardSchema = new mongoose.Schema({
   admin: 'number',
   date: 'date'
 })
+
+// 评论表
 const newsSchema = new mongoose.Schema({
   type: 'string',
   // 文章评论/留言板
@@ -114,12 +129,14 @@ const newsSchema = new mongoose.Schema({
   leaveMessageId: mongoose.Schema.Types.ObjectId,
   content: 'string'
 })
+
+// IP备注表
 const commentIpSchema = new mongoose.Schema({
   ip: {
     type: 'string',
     required: true
   },
-  // 0: 留言 1: 文章评论 2: 文章赞
+  // 0: 留言 1: 文章评论 2: 文章赞 3: 友链申请
   type: {
     type: 'number',
     required: true
@@ -136,9 +153,32 @@ const commentIpSchema = new mongoose.Schema({
   updateTime: 'date'
 })
 
+// 计数表
 const counterSchema = new mongoose.Schema({
   _id: 'string',
   seq: 'number'
+})
+
+// 友链表
+const friendLinkSchema = new mongoose.Schema({
+  siteName: 'string',
+  siteAvatar: 'string',
+  siteLink: 'string',
+  siteDescribe: 'string',
+  sort: 'number',
+  email: 'string',
+  groupId: mongoose.Schema.Types.ObjectId,
+  status: 'number', // 状态: 0: 申请中 1: 已通过 2: 未通过 -1: 已删除
+  createTime: 'date',
+  updateTime: 'date'
+})
+
+// 友链分组
+const friendLinkGroupSchema = new mongoose.Schema({
+  name: 'string',
+  sort: 'number',
+  createTime: 'date',
+  updateTime: 'date'
 })
 
 module.exports = {
@@ -151,5 +191,7 @@ module.exports = {
   newsSchema,
   counterSchema,
   commentIpSchema,
-  viewerSchema
+  viewerSchema,
+  friendLinkSchema,
+  friendLinkGroupSchema
 }

@@ -10,6 +10,7 @@ const tags = () => import('@/views/tags/')
 const articleFilter = () => import('@/views/article-filter/')
 const category = () => import('@/views/category/')
 const movies = () => import('@/views/movies/')
+const friendLink = () => import('@/views/friendLink/')
 
 Vue.use(Router)
 Vue.use(Meta)
@@ -66,6 +67,11 @@ export function createRouter() {
         path: '/app/movies',
         name: 'movies',
         component: movies
+      },
+      {
+        path: '/app/friendLink',
+        name: 'friendLink',
+        component: friendLink
       }
     ],
     scrollBehavior(to, from, savedPosition) {
