@@ -77,6 +77,148 @@ router.post('/api/front/friendLink/apply', async (req, res) => {
   }
 })
 
+// 获取友链分组列表
+router.get('/api/front/friendLinkGroup/list', async (req, res) => {
+  try {
+    const groupList = await db.friendLinkGroup.find()
+    res.send({
+      status: 200,
+      data: groupList,
+      total: groupList.length,
+      info: '获取友链分组列表成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+
+// admin获取友链列表
+router.get('/api/admin/friendLink/list', async (req, res) => {
+  try {
+    // 实现模糊搜索以及分页
+    const {siteName, siteLink, groupId, status, page, limit} = req.query
+    let query = {}
+    if(siteName) {
+      query.siteName = new RegExp(siteName)
+    }
+
+    if(siteLink) {
+      query.siteLink = new RegExp(siteLink)
+    }
+
+    if(groupId) {
+      query.groupId = groupId
+    }
+
+    if(status) {
+      query.status = status
+    }
+
+    const total = await db.friendLink.count(query)
+    const friendLinkList = await db.friendLink.find(query).skip((page - 1) * limit).limit(+limit)
+    res.send({
+      status: 200,
+      data: friendLinkList,
+      total: total,
+      info: '获取友链列表成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 删除友链
+router.delete('/api/admin/friendLink/delete', async (req, res) => {
+  try {
+    // 支持批量删除,逗号分隔
+    const ids = req.query.id.split(',')
+    await db.friendLink.deleteMany({_id: {$in: ids}})
+    res.send({
+      status: 200,
+      info: '删除友链成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 通过友链
+router.put('/api/admin/friendLink/pass', async (req, res) => {
+  try {
+    // 希望每个友链都能看一看
+    await db.friendLink.updateMany({_id: req.body.id }, {$set: {status: 1}})
+    res.send({
+      status: 200,
+      info: '通过友链成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 拒绝友链
+router.put('/api/admin/friendLink/reject', async (req, res) => {
+  try {
+    // 希望每个友链都能看一看
+    await db.friendLink.updateMany({_id: req.body.id}, {$set: {status: 2}})
+    res.send({
+      status: 200,
+      info: '友链不通过成功'
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
+// 友链表的插入或更新
+router.post('/api/admin/friendLink/insertOrUpdate', async (req, res) => {
+  try {
+    const {_id, siteName, siteLink, siteAvatar, siteDescribe, groupId, status, sort, email} = req.body
+    let info = ''
+    let statusCode = 200
+    if(_id) {
+      // 更新
+      const friendLink = await db.friendLink.findOne({_id})
+      if(friendLink) {
+        friendLink.siteName = siteName
+        friendLink.siteLink = siteLink
+        friendLink.siteAvatar = siteAvatar
+        friendLink.siteDescribe = siteDescribe
+        friendLink.groupId = groupId
+        friendLink.status = status
+        friendLink.sort = +sort
+        friendLink.email = email
+        await friendLink.save()
+        info = '更新友链成功'
+      } else {
+        info = '更新友链失败，友链不存在'
+        statusCode = 201
+      }
+    } else {
+      // 插入
+      const friendLink = new db.friendLink({
+        siteName,
+        siteLink,
+        siteAvatar,
+        siteDescribe,
+        groupId,
+        status,
+        sort: +sort,
+        email
+      })
+      await friendLink.save()
+      info = '插入友链成功'
+    }
+    res.send({
+      status: statusCode,
+      info
+    })
+  } catch (e) {
+    res.status(500).end()
+  }
+})
+
 // 检查友链信息是否合法
 function checkSite(site) {
   for (const key in siteRules) {
