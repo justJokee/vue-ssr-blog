@@ -173,7 +173,8 @@ router.post('/api/front/messageBoard/save', async (req, res) => {
       content,
       parentId,
       aite,
-      like: 0
+      like: 0,
+      date: new Date()
     }).save()
     res.json({
       status: 200,
